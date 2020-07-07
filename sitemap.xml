@@ -1,42 +1,42 @@
-<?xml-stylesheet type="text/xsl" href="https://spongecaptain.github.io/sitemap.xsl"?>
+<?xml-stylesheet type="text/xsl" href="https://spongecaptain.cool/sitemap.xsl"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://spongecaptain.github.io/post/</loc>
+    <loc>https://spongecaptain.cool/post/</loc>
     <lastmod>2020-07-07T00:47:22+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://spongecaptain.github.io/post/second/</loc>
+    <loc>https://spongecaptain.cool/post/second/</loc>
     <lastmod>2020-07-07T00:47:22+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://spongecaptain.github.io/</loc>
+    <loc>https://spongecaptain.cool/</loc>
     <lastmod>2020-07-07T00:47:02+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://spongecaptain.github.io/first/</loc>
+    <loc>https://spongecaptain.cool/first/</loc>
     <lastmod>2020-07-07T00:47:02+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://spongecaptain.github.io/categories/</loc>
+    <loc>https://spongecaptain.cool/categories/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
-    <loc>https://spongecaptain.github.io/tags/</loc>
+    <loc>https://spongecaptain.cool/tags/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>

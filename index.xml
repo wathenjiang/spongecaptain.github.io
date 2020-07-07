@@ -2,30 +2,30 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Even - A super concise theme for Hugo</title>
-    <link>https://spongecaptain.github.io/</link>
+    <link>https://spongecaptain.cool/</link>
     <description>Recent content on Even - A super concise theme for Hugo</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Tue, 07 Jul 2020 00:47:02 +0800</lastBuildDate>
     
-	<atom:link href="https://spongecaptain.github.io/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://spongecaptain.cool/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Second</title>
-      <link>https://spongecaptain.github.io/post/second/</link>
+      <link>https://spongecaptain.cool/post/second/</link>
       <pubDate>Tue, 07 Jul 2020 00:47:22 +0800</pubDate>
       
-      <guid>https://spongecaptain.github.io/post/second/</guid>
+      <guid>https://spongecaptain.cool/post/second/</guid>
       <description>Hello World!</description>
     </item>
     
     <item>
       <title>First</title>
-      <link>https://spongecaptain.github.io/first/</link>
+      <link>https://spongecaptain.cool/first/</link>
       <pubDate>Tue, 07 Jul 2020 00:47:02 +0800</pubDate>
       
-      <guid>https://spongecaptain.github.io/first/</guid>
+      <guid>https://spongecaptain.cool/first/</guid>
       <description>hello world</description>
     </item>
     

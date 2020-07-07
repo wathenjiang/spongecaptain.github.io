@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: https://spongecaptain.github.io/sitemap.xml
+Sitemap: https://spongecaptain.cool/sitemap.xml
