@@ -12,12 +12,12 @@
     
     
     <item>
-      <title>Test</title>
-      <link>https://spongecaptain.cool/post/test/</link>
-      <pubDate>Tue, 07 Jul 2020 11:09:15 +0800</pubDate>
+      <title>Hugo 博客搭建指北</title>
+      <link>https://spongecaptain.cool/post/howtousehugo/</link>
+      <pubDate>Tue, 07 Jul 2020 11:53:47 +0800</pubDate>
       
-      <guid>https://spongecaptain.cool/post/test/</guid>
-      <description>1. 标题 1 xxx 图片测试： 2. 标题 2 xxx 3. 标题 3 1 2 3 4 5 puiblic class Foo{ public void test(){ } }</description>
+      <guid>https://spongecaptain.cool/post/howtousehugo/</guid>
+      <description>Hugo 博客搭建指北 自己曾经搭建过基于 Hexo 的博客，由于诸多原因弃之，在此启用 Hugo 作为静态博客。 1. 安装 Hugo 1 2 brew install hugo # 安装 Hugo hugo version # 安装版本查询，成功则说明</description>
     </item>
     
     <item>
