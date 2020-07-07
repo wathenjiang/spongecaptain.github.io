@@ -26,7 +26,7 @@
 <meta name="generator" content="Hugo 0.67.0 with theme even" />
 
 
-<link rel="canonical" href="https://spongecaptain.cool/post/howtousehugo/" />
+<link rel="canonical" href="https://spongecaptain.cool/post/hugo/howtousehugo/" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -42,14 +42,14 @@
 <meta property="og:title" content="Hugo 博客搭建指北" />
 <meta property="og:description" content="Hugo 博客搭建指北 自己曾经搭建过基于 Hexo 的博客，由于诸多原因弃之，在此启用 Hugo 作为静态博客。 1. 安装 Hugo 1 2 brew install hugo # 安装 Hugo hugo version # 安装版本查询，成功则说明" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://spongecaptain.cool/post/howtousehugo/" />
+<meta property="og:url" content="https://spongecaptain.cool/post/hugo/howtousehugo/" />
 <meta property="article:published_time" content="2020-07-07T11:53:47+08:00" />
 <meta property="article:modified_time" content="2020-07-07T11:53:47+08:00" />
 <meta itemprop="name" content="Hugo 博客搭建指北">
 <meta itemprop="description" content="Hugo 博客搭建指北 自己曾经搭建过基于 Hexo 的博客，由于诸多原因弃之，在此启用 Hugo 作为静态博客。 1. 安装 Hugo 1 2 brew install hugo # 安装 Hugo hugo version # 安装版本查询，成功则说明">
 <meta itemprop="datePublished" content="2020-07-07T11:53:47&#43;08:00" />
 <meta itemprop="dateModified" content="2020-07-07T11:53:47&#43;08:00" />
-<meta itemprop="wordCount" content="4825">
+<meta itemprop="wordCount" content="5040">
 
 
 
@@ -127,8 +127,8 @@
       <div class="post-meta">
         <span class="post-time"> 2020-07-07 </span>
         
-          <span class="more-meta"> 约 4825 字 </span>
-          <span class="more-meta"> 预计阅读 10 分钟 </span>
+          <span class="more-meta"> 约 5040 字 </span>
+          <span class="more-meta"> 预计阅读 11 分钟 </span>
         <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
       </div>
     </header>
@@ -208,8 +208,8 @@ tree <span class="c1"># 查看 workspace 的目录结构</span>
 </span></code></pre></td>
 <td class="lntd">
 <pre class="chroma"><code class="language-fallback" data-lang="fallback">.
-├── archetypes # 内容类型，在创建新内容时自动生成内容的配置
-├── content # 网站内容，Markdown 文件
+├── archetypes # 储存.md的模板文件，新建一个 .md 文件时，就会按此模版创建
+├── content # 储存网站的所有内容，写的 md 文章存放在这里
 ├── data # 保存站点可使用的配置文件
 ├── layouts # 网站模版，选择主题后会将主题中的 layouts 文件夹中的内容复制到此文件夹中
 ├── static # 包含 CSS、JavaScript、Fonts、media 等，决定网站的外观。选择主题后会将主题中的 ststic 文件夹中的内容复制到此文件夹中
@@ -764,7 +764,7 @@ title = &#34;My New Hugo Site&#34;
 <p>因为在 <code>config.toml</code> 文件中配置 baseURL 为 http://localhost:1313/，因此我们访问这个地址即可。</p>
 </blockquote>
 <p>此时的显示效果如下：</p>
-<p><!-- raw HTML omitted --></p>
+<p><img src="../../../images/img_hugo/image-20200707130625634.png" alt="image-20200707130625634"></p>
 <ul>
 <li><code>--buildDrafts</code>: 生成被标记为 「草稿」 的文档；</li>
 <li><code>-w</code>: 监控更改，如果发生更改直接显示到博客上；</li>
@@ -832,7 +832,7 @@ git push -u origin master
 </div>
 </div><p>接着，我们就能够通过 GitPage 页面访问我们的 about 文章了。</p>
 <p>首先在 GitHub 的博客项目上显式如下：</p>
-<p><!-- raw HTML omitted --></p>
+<p><img src="../../../images/img_hugo/image-20200707130608947.png" alt="image-20200707130608947"></p>
 <p>点击它就能够访问了。</p>
 <h2 id="7-创建新文章">7. 创建新文章</h2>
 <p>创建新文章的命令如下：</p>
@@ -935,8 +935,7 @@ git push
 </div><p>最后通过访问 <a href="https://spongecaptain.github.io/first/">https://spongecaptain.github.io/first/</a> 就能读到 md 对应生成的 html 静态页面。</p>
 <h2 id="8-引入-gittalk-评论系统">8. 引入 GitTalk 评论系统</h2>
 <p>首先要去 GitHub 上创建一个 <a href="https://github.com/settings/applications/new">Github Application</a>，如果此时没有个性域名，那么可以都填入 github.io 地址，如下：</p>
-<p><!-- raw HTML omitted --></p>
-<p>记下 <code>Client ID</code> 和 <code>Client Secret</code>，因为我使用的是 Even 主题，因此直接在配置文件中填入响应内容即可。</p>
+<p><img src="../../../images/img_hugo/image-20200707130553434.png" alt="image-20200707130553434">记下 <code>Client ID</code> 和 <code>Client Secret</code>，因为我使用的是 Even 主题，因此直接在配置文件中填入响应内容即可。</p>
 <ul>
 <li>
 <p>将 <code>[Client ID]</code> 替换为 Github Application 的 Client ID</p>
@@ -974,13 +973,15 @@ git push
 </code></pre></td></tr></table>
 </div>
 </div><p>下面是我的配置：</p>
-<p><img src="../../static/static/images/image-20200707101515089-4094250.png" alt="image-20200707101515089"></p>
+<p><img src="../../../images/img_hugo/image-20200707130531689.png" alt="image-20200707130531689"></p>
+<p>’接着由于我们添加了个性化域名，需要修改其他配置：</p>
 </li>
-</ul>
-<p>接着由于我们添加了个性化域名，需要修改其他配置：</p>
-<ul>
-<li>GitTalk 中的对应的 GitHub Applicaiton 的 Homepage URL 以及 Authorization callback URL 都修改为你拥有的域名。</li>
-<li>congfig.toml 配置文件中的 baseURL 修改为个性域名地址。</li>
+<li>
+<p>GitTalk 中的对应的 GitHub Applicaiton 的 Homepage URL 以及 Authorization callback URL 都修改为你拥有的域名。</p>
+</li>
+<li>
+<p>congfig.toml 配置文件中的 baseURL 修改为个性域名地址。</p>
+</li>
 </ul>
 <p>最后，刚刚设置的 domain 通常不能马上生效，因此需要等待十分钟左右才能够正常通过域名访问博客，不过此时通过 github.io 访问已经是被禁止了。</p>
 <h2 id="10-搜索引擎优化">10. 搜索引擎优化</h2>
@@ -1005,7 +1006,7 @@ git push
 </code></pre></td></tr></table>
 </div>
 </div><p>打开 <a href="https://www.google.com/webmasters/">Google网站站长</a>，点击 “<a href="https://search.google.com/search-console?hl=zh-CN">SEARCH CONSOLE </a>” 进入，然后添加资源，如<code>spongecaptain.cool</code>，然后通过 DNS 域名验证即可，具体的做法如下：</p>
-<p><!-- raw HTML omitted --></p>
+<p><img src="../../../images/img_hugo/image-20200707130501567.png" alt="image-20200707130501567"></p>
 <p>复制此内容，然后作为记录值加入即可。</p>
 <blockquote>
 <p>由于百度搜索对于个人博客几乎只会在非常靠后的索索结果，因此可以选择不配置。</p>
@@ -1130,20 +1131,7 @@ sequenceDiagrams:
 </code></pre></td></tr></table>
 </div>
 </div><p><strong>另一方面，发布的文章如何才能显示图片呢？</strong></p>
-<p>首先我们需要在 ~/myblog/static 下创建 images 目录，然后对上面的 ~/myblog/archetypes/default.md 进行修改，加入如下的默认图片地址：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">typora-copy-images-to: /Users/wjjiang/myblog/static/images
-</code></pre></td></tr></table>
-</div>
-</div><blockquote>
-<p>这个地址取决于你博客在本地的路径。采用的 md 编辑器为 Typora。</p>
-</blockquote>
-<p>在此配置下，图片会默认存放到此路径下。</p>
-<p>接着，如果我们运行 <code>hugo</code> 来生成网页，其会自动在 public/ 路径下存放 images 文件夹以及文件。</p>
+<p>如果我们运行 <code>hugo</code> 命令来生成网页，其会自动在 public/ 路径下存放 images 文件夹以及文件。</p>
 <blockquote>
 <p>Hugo在生成页面时，会拷贝静态资源到 public 文件夹，包括：</p>
 <ol>
@@ -1155,16 +1143,68 @@ sequenceDiagrams:
 <li>渲染已生成页面对应的<strong>正文页面</strong>，生成文件夹对应的<strong>列表页面</strong>，生成<strong>分类页面</strong>，生成<strong>主页</strong>。</li>
 </ol>
 </blockquote>
-<p>但是问题出现了：Even 主题下生成的 html 的图片路径还是会视图访问 public/static/images，而 Hugo 默认配置情况下只会将 images 复制到 static 中，为此，我们的做法是在 ~/myblog/static 下创建 static/images 目录，因此对头信息修改如下：</p>
+<p>因此，如果你的图片引用地址为 ~/myblog/static/images，那么发布后的 html 的图片将引用 public/static/images，但是 Hugo 只会自动地将 static 下的 images 目录拷贝到 public 路径下，因此图片引用会出错。</p>
+<p>这里有多种解决办法：</p>
+<ol>
+<li>每次负责将 ~/myblog/static 目录完整地拷贝一份到 public 目录下；</li>
+<li>使用图床；</li>
+</ol>
+<p>我们 ~/myblog 目录下创建了 images 目录，其内部还有如下目录：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">.
+├── img_ComputerNetwork
+├── imghugo
+├── img_java
+├── img_mysql
+├── img_netty
+├── img_redis
+└── img_spring
+</code></pre></td></tr></table>
+</div>
+</div><p>由于我自己的 md 文件放在 ~/myblog/content/post/hugo 路径下，因此我们若要访问到 imghugo 路径下的图片，那么需要设置如下的相对路径：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-fallback" data-lang="fallback">typora-copy-images-to: /Users/wjjiang/myblog/static/static/images
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="o">../../../</span><span class="n">images</span><span class="o">/</span><span class="n">img_hugo</span><span class="o">/</span><span class="n">xx</span><span class="o">.</span><span class="na">png</span>
 </code></pre></td></tr></table>
 </div>
+</div><p>如果你的编辑器是 Typora，那么可以添加如下头描述：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">typora-copy-images-to: ../../../images/img_hugo
+</code></pre></td></tr></table>
 </div>
+</div><blockquote>
+<p>即使我们手动地在配置文件中添加静态文件目录，如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-toml" data-lang="toml"><span class="nx">staticDir</span> <span class="p">=</span> <span class="p">[</span><span class="s2">&#34;images&#34;</span><span class="p">]</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>Hugo</code>  命令在执行时会手动地替我们将 images 的子目录添加到 public 目录下。因此<strong>不需要配置</strong>这一项。</p>
+</blockquote>
+<p>接着，我们将 images 整个目录拷贝一份到 public 顶级目录即可。</p>
+<p><strong>注意事项</strong>：相对路径根据 md 文件和图片存放路径的不同而不同。</p>
+
     </div>
 
     

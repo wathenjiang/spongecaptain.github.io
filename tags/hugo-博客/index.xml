@@ -13,10 +13,10 @@
     
     <item>
       <title>Hugo 博客搭建指北</title>
-      <link>https://spongecaptain.cool/post/howtousehugo/</link>
+      <link>https://spongecaptain.cool/post/hugo/howtousehugo/</link>
       <pubDate>Tue, 07 Jul 2020 11:53:47 +0800</pubDate>
       
-      <guid>https://spongecaptain.cool/post/howtousehugo/</guid>
+      <guid>https://spongecaptain.cool/post/hugo/howtousehugo/</guid>
       <description>Hugo 博客搭建指北 自己曾经搭建过基于 Hexo 的博客，由于诸多原因弃之，在此启用 Hugo 作为静态博客。 1. 安装 Hugo 1 2 brew install hugo # 安装 Hugo hugo version # 安装版本查询，成功则说明</description>
     </item>
     
