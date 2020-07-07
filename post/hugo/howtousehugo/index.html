@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="Spongecaptain" /><meta name="description" content="Hugo 博客搭建指北 自己曾经搭建过基于 Hexo 的博客，由于诸多原因弃之，在此启用 Hugo 作为静态博客。 1. 安装 Hugo 1 2 brew install hugo # 安装 Hugo hugo version # 安装版本查询，成功则说明" /><meta name="keywords" content="Java, 分享, 博客" />
+<meta name="author" content="Spongecaptain" /><meta name="description" content="将 Hugo 博客搭建到 GitHub，并进行自定义域名、评论系统等等配置" /><meta name="keywords" content="Hugo, GitHub Pages" />
 
 
 
@@ -40,22 +40,22 @@
 
 
 <meta property="og:title" content="Hugo 博客搭建指北" />
-<meta property="og:description" content="Hugo 博客搭建指北 自己曾经搭建过基于 Hexo 的博客，由于诸多原因弃之，在此启用 Hugo 作为静态博客。 1. 安装 Hugo 1 2 brew install hugo # 安装 Hugo hugo version # 安装版本查询，成功则说明" />
+<meta property="og:description" content="将 Hugo 博客搭建到 GitHub，并进行自定义域名、评论系统等等配置" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://spongecaptain.cool/post/hugo/howtousehugo/" />
 <meta property="article:published_time" content="2020-07-07T11:53:47+08:00" />
 <meta property="article:modified_time" content="2020-07-07T11:53:47+08:00" />
 <meta itemprop="name" content="Hugo 博客搭建指北">
-<meta itemprop="description" content="Hugo 博客搭建指北 自己曾经搭建过基于 Hexo 的博客，由于诸多原因弃之，在此启用 Hugo 作为静态博客。 1. 安装 Hugo 1 2 brew install hugo # 安装 Hugo hugo version # 安装版本查询，成功则说明">
+<meta itemprop="description" content="将 Hugo 博客搭建到 GitHub，并进行自定义域名、评论系统等等配置">
 <meta itemprop="datePublished" content="2020-07-07T11:53:47&#43;08:00" />
 <meta itemprop="dateModified" content="2020-07-07T11:53:47&#43;08:00" />
-<meta itemprop="wordCount" content="5040">
+<meta itemprop="wordCount" content="5065">
 
 
 
 <meta itemprop="keywords" content="Hugo 博客," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Hugo 博客搭建指北"/>
-<meta name="twitter:description" content="Hugo 博客搭建指北 自己曾经搭建过基于 Hexo 的博客，由于诸多原因弃之，在此启用 Hugo 作为静态博客。 1. 安装 Hugo 1 2 brew install hugo # 安装 Hugo hugo version # 安装版本查询，成功则说明"/>
+<meta name="twitter:description" content="将 Hugo 博客搭建到 GitHub，并进行自定义域名、评论系统等等配置"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -126,8 +126,10 @@
 
       <div class="post-meta">
         <span class="post-time"> 2020-07-07 </span>
-        
-          <span class="more-meta"> 约 5040 字 </span>
+        <div class="post-category">
+            <a href="/categories/hugo/"> Hugo </a>
+            </div>
+          <span class="more-meta"> 约 5065 字 </span>
           <span class="more-meta"> 预计阅读 11 分钟 </span>
         <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
       </div>
@@ -1149,7 +1151,7 @@ sequenceDiagrams:
 <li>每次负责将 ~/myblog/static 目录完整地拷贝一份到 public 目录下；</li>
 <li>使用图床；</li>
 </ol>
-<p>我们 ~/myblog 目录下创建了 images 目录，其内部还有如下目录：</p>
+<p>这里我选择不使用 static 目录，而是在 ~/myblog 目录下创建一个 images 目录，其内部还有如下目录：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt">1
@@ -1200,7 +1202,7 @@ sequenceDiagrams:
 <pre class="chroma"><code class="language-toml" data-lang="toml"><span class="nx">staticDir</span> <span class="p">=</span> <span class="p">[</span><span class="s2">&#34;images&#34;</span><span class="p">]</span>
 </code></pre></td></tr></table>
 </div>
-</div><p><code>Hugo</code>  命令在执行时会手动地替我们将 images 的子目录添加到 public 目录下。因此<strong>不需要配置</strong>这一项。</p>
+</div><p><code>Hugo</code>  命令在执行时会手动地替我们将 images 的子目录添加到 public 目录下，因此引用时还是会出错，因此<strong>不需要配置</strong>这一项。</p>
 </blockquote>
 <p>接着，我们将 images 整个目录拷贝一份到 public 顶级目录即可。</p>
 <p><strong>注意事项</strong>：相对路径根据 md 文件和图片存放路径的不同而不同。</p>
