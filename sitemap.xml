@@ -2,6 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://spongecaptain.cool/</loc>
+    <lastmod>2020-07-07T17:00:18+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/test/</loc>
+    <lastmod>2020-07-07T17:00:18+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/post/</loc>
+    <lastmod>2020-07-07T16:59:50+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/post/hugo/test/</loc>
+    <lastmod>2020-07-07T16:59:50+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://spongecaptain.cool/categories/</loc>
     <lastmod>2020-07-07T11:53:47+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -30,13 +58,6 @@
   </url>
   
   <url>
-    <loc>https://spongecaptain.cool/post/</loc>
-    <lastmod>2020-07-07T11:53:47+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://spongecaptain.cool/tags/</loc>
     <lastmod>2020-07-07T11:53:47+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -45,13 +66,6 @@
   
   <url>
     <loc>https://spongecaptain.cool/about/</loc>
-    <lastmod>2020-07-07T00:02:06+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/</loc>
     <lastmod>2020-07-07T00:02:06+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
