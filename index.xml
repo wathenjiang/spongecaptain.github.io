@@ -12,6 +12,15 @@
     
     
     <item>
+      <title>Test</title>
+      <link>https://spongecaptain.cool/post/test/</link>
+      <pubDate>Tue, 07 Jul 2020 11:09:15 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/test/</guid>
+      <description>1. 标题 1 xxx 图片测试： 2. 标题 2 xxx 3. 标题 3 1 2 3 4 5 puiblic class Foo{ public void test(){ } }</description>
+    </item>
+    
+    <item>
       <title>About</title>
       <link>https://spongecaptain.cool/about/</link>
       <pubDate>Tue, 07 Jul 2020 00:02:06 +0800</pubDate>
