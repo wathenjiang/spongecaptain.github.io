@@ -35,7 +35,7 @@
 
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-<link href="/sass/main.min.e23b16f70676ed692f169c65f07230cd9d3e790a4b5b15dc32b1ee36e7604994.css" rel="stylesheet">
+<link href="/sass/main.min.5fea096e37195c371192d35632e9af224383e8d109731cf8d875ebe3b7578722.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
@@ -49,7 +49,7 @@
 <meta itemprop="description" content="将 Hugo 博客搭建到 GitHub，并进行自定义域名、评论系统等等配置">
 <meta itemprop="datePublished" content="2020-07-07T11:53:47&#43;08:00" />
 <meta itemprop="dateModified" content="2020-07-07T11:53:47&#43;08:00" />
-<meta itemprop="wordCount" content="5065">
+<meta itemprop="wordCount" content="5561">
 
 
 
@@ -129,8 +129,8 @@
         <div class="post-category">
             <a href="/categories/hugo/"> Hugo </a>
             </div>
-          <span class="more-meta"> 约 5065 字 </span>
-          <span class="more-meta"> 预计阅读 11 分钟 </span>
+          <span class="more-meta"> 约 5561 字 </span>
+          <span class="more-meta"> 预计阅读 12 分钟 </span>
         <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
       </div>
     </header>
@@ -151,6 +151,8 @@
     <li><a href="#9-独立域名配置">9. 独立域名配置</a></li>
     <li><a href="#10-搜索引擎优化">10. 搜索引擎优化</a></li>
     <li><a href="#11-个性化发布文章">11. 个性化发布文章</a></li>
+    <li><a href="#12-修改-hugo-even-主题标题样式">12. 修改 Hugo Even 主题标题样式</a></li>
+    <li><a href="#13-hugo-常用命令">13. Hugo 常用命令</a></li>
   </ul>
 </nav>
   </div>
@@ -1206,6 +1208,74 @@ sequenceDiagrams:
 </blockquote>
 <p>接着，我们将 images 整个目录拷贝一份到 public 顶级目录即可。</p>
 <p><strong>注意事项</strong>：相对路径根据 md 文件和图片存放路径的不同而不同。</p>
+<h2 id="12-修改-hugo-even-主题标题样式">12. 修改 Hugo Even 主题标题样式</h2>
+<p>Hugo Even 自带主题的标题样式合适中文标题，为了英文更好看，我决定进行修改。</p>
+<p>修改如下文件：<code>~/myblog/themes/even/assets/sass/_partial/_header/_logo.scss</code></p>
+<p>将以下内容覆盖源文件即可：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-scss" data-lang="scss"><span class="nc">.logo-wrapper</span> <span class="p">{</span>
+  <span class="nt">float</span><span class="nd">:</span> <span class="nt">left</span><span class="p">;</span>
+
+  <span class="nc">.logo</span> <span class="p">{</span>
+    <span class="nt">font-size</span><span class="nd">:</span> <span class="nt">40px</span><span class="p">;</span>
+    <span class="nt">font-family</span><span class="nd">:</span> <span class="nt">Arial</span><span class="o">,</span> <span class="s2">&#34;Microsoft YaHei&#34;</span><span class="o">,</span> <span class="s2">&#34;Hiragino Sans GB&#34;</span><span class="o">,</span> <span class="s2">&#34;WenQuanYi Micro Hei&#34;</span><span class="o">,</span> <span class="nt">sans-serif</span><span class="p">;</span>
+
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">@include</span><span class="nd"> max-screen</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nc">.logo-wrapper</span> <span class="p">{</span>
+    <span class="nt">display</span><span class="nd">:</span> <span class="nt">none</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>当然你可以选择其他字体，我这里推荐的是我认为比较舒适的字体。</p>
+</blockquote>
+<p>类似的操作，修改同级目录下 _menu.scss 文件的字体配置，如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-scss" data-lang="scss"><span class="nn">#</span> <span class="nt">修改为</span>
+<span class="nt">font-family</span><span class="nd">:</span> <span class="nt">Arial</span><span class="o">,</span> <span class="s2">&#34;Microsoft YaHei&#34;</span><span class="o">,</span> <span class="s2">&#34;Hiragino Sans GB&#34;</span><span class="o">,</span> <span class="s2">&#34;WenQuanYi Micro Hei&#34;</span><span class="o">,</span> <span class="nt">sans-serif</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>关于字体的推荐：<a href="https://www.zhihu.com/question/19680724">知乎-网页设计中最常用的字体有哪些？（中文和英文）</a></p>
+</blockquote>
+<h2 id="13-hugo-常用命令">13. Hugo 常用命令</h2>
+<p>Hugo 常用命令：</p>
+<ul>
+<li><code>hugo new post/to/your/path xx.md</code> 写一篇文章于 <code>content/to/your/path</code> 路径下；</li>
+<li><code>hugo</code> 将 md 转换为 html 文件并写于 public 目录下了；</li>
+<li><code>hugo server</code> 开启本地调试，默认地址是：http://localhost:1313/。默认支持动态调试，修改配置文件、md 文档时都会自动生效，直接可以在 html 页面上实时看到变化；</li>
+<li>将 public 目录下的文件推到远端 GitHub Pages 对应的仓库则需要使用 <code>git add .</code> 、<code>git commit -m &quot;这里请描述你做了什么修改&quot;</code>、<code>git push</code> 等命令。</li>
+</ul>
+<blockquote>
+<p>在我看来 Hugo 确实比 Hexo 要现代化不少，可能这就是 Go 语言的魅力吧。</p>
+</blockquote>
 
     </div>
 
