@@ -6,27 +6,18 @@
     <description>Recent content on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 07 Jul 2020 00:47:02 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 07 Jul 2020 00:02:06 +0800</lastBuildDate>
     
 	<atom:link href="https://spongecaptain.cool/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Second</title>
-      <link>https://spongecaptain.cool/post/second/</link>
-      <pubDate>Tue, 07 Jul 2020 00:47:22 +0800</pubDate>
+      <title>About</title>
+      <link>https://spongecaptain.cool/about/</link>
+      <pubDate>Tue, 07 Jul 2020 00:02:06 +0800</pubDate>
       
-      <guid>https://spongecaptain.cool/post/second/</guid>
-      <description>Hello World!</description>
-    </item>
-    
-    <item>
-      <title>First</title>
-      <link>https://spongecaptain.cool/first/</link>
-      <pubDate>Tue, 07 Jul 2020 00:47:02 +0800</pubDate>
-      
-      <guid>https://spongecaptain.cool/first/</guid>
-      <description>hello world</description>
+      <guid>https://spongecaptain.cool/about/</guid>
+      <description>我是谁，我在哪？</description>
     </item>
     
   </channel>
