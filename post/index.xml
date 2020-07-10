@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 07 Jul 2020 11:53:47 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 10 Jul 2020 23:11:12 +0800</lastBuildDate>
     
 	<atom:link href="https://spongecaptain.cool/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>窥探 MySQL 索引</title>
+      <link>https://spongecaptain.cool/post/mysql/mysqlindexsummary/</link>
+      <pubDate>Fri, 10 Jul 2020 23:11:12 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/mysql/mysqlindexsummary/</guid>
+      <description>MySQL 索引 [toc] 1. 什么是数据库索引 在关系数据库中，如果有上万甚至上亿条记录，在查找记录的时候，想要获得非常快的速度，就需要使用索引。 索引是关系数据库</description>
+    </item>
     
     <item>
       <title>Hugo 博客搭建指北</title>
