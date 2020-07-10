@@ -158,7 +158,7 @@
         <li><a href="#42-红黑树-redblack-tree">4.2 红黑树-Red/Black Tree</a></li>
         <li><a href="#43-哈希索引">4.3 哈希索引</a></li>
         <li><a href="#44-b-树-b-tree">4.4 B 树-B-tree</a></li>
-        <li><a href="#45-btree">4.5 B^+^Tree</a></li>
+        <li><a href="#45-btree">4.5 B+Tree</a></li>
         <li><a href="#46-非数据结构出发的索引分类">4.6 非数据结构出发的索引分类</a></li>
       </ul>
     </li>
@@ -193,7 +193,7 @@
 <li>B-Tree；</li>
 </ul>
 <blockquote>
-<p>其中 MySQL 的 InnoDB 支持 B^+^Tree 以及 Hash 表，下面会具体分析各个数据结构的区别。</p>
+<p>其中 MySQL 的 InnoDB 支持 B+Tree 以及 Hash 表，下面会具体分析各个数据结构的区别。</p>
 </blockquote>
 <p>如果我们事先对某个列字段建立好了索引，那么 MySQL 在依靠列字段进行搜索的时候就会优先去索引中搜寻，而不必依靠在数据表中的逐行搜寻。</p>
 <blockquote>
@@ -701,8 +701,8 @@
 <p><img src="../../../images/img_mysql/image-20200710225542791.png" alt="image-20200710225542791" style="zoom:50%;" /></p>
 <p><strong>B 树的特点</strong>：</p>
 <p>B 树相对于平衡二叉树的不同是，<strong>每个节点包含的关键字增多了，特别是在 B 树应用到数据库中的时候</strong>，数据库充分利用了磁盘块的原理（磁盘数据存储是采用块的形式存储的，每个块的大小为 4K，每次 I/O 进行数据读取时，同一个磁盘块的数据可以一次性读取出来）把节点大小限制和充分使用在磁盘快大小范围；把树的节点关键字增多后树的层级比原来的二叉树少了，减少数据查找的次数和复杂度；</p>
-<h3 id="45-btree">4.5 B^+^Tree</h3>
-<h4 id="451-btree-概述">4.5.1 B^+^Tree 概述</h4>
+<h3 id="45-btree">4.5 B+Tree</h3>
+<h4 id="451-btree-概述">4.5.1 B+Tree 概述</h4>
 <p><img src="../../../images/img_mysql/image-20200629111505187.png" alt="image-20200629111505187"></p>
 <p>B+ 树是 B 树的一个升级版，相对于 B 树来说 B+ 树更充分的利用了节点的空间，让查询速度更加稳定，其速度完全接近于二分法查找。为什么说 B+ 树查找的效率要比 B 树更高、更稳定；我们先看看两者的区别：</p>
 <ol>
@@ -739,7 +739,7 @@
 </ul>
 <p>因此，虽然索引有冗余，但是存储的总索引数量为 1170 * 1170*16 = 21902400，已经 2 千万 + 的数据了。</p>
 <hr>
-<p><strong>B^+^ 树的特点</strong>：</p>
+<p><strong>B+ 树的特点</strong>：</p>
 <ol>
 <li><strong>B+树的层级更少</strong>：相较于B树B+每个<strong>非叶子</strong>节点存储的关键字数更多，树的层级更少所以查询数据更快；</li>
 <li><strong>B+树查询速度更稳定</strong>：B+所有关键字数据地址都存在<strong>叶子</strong>节点上，即每一个索引实际上距离根节点距离相同，所以每次查找的次数都相同所以查询速度要比 B 树更稳定;</li>
@@ -800,7 +800,7 @@
 <blockquote>
 <p>不管哪一个存储引擎，都是描述一个表。虽然一个数据库通常有其默认的存储引擎设置。</p>
 </blockquote>
-<h4 id="453-myisam-中的-btree">4.5.3 MyISAM 中的 B^+^Tree</h4>
+<h4 id="453-myisam-中的-btree">4.5.3 MyISAM 中的 B+Tree</h4>
 <p>MyISAM 引擎使用 B+Tree 作为索引结构，<strong>叶节点的 data 域存放的是数据记录的地址</strong>。下图是 MyISAM 索引的原理图：</p>
 <p><img src="../../../images/img_mysql/image-20200710225757162.png" alt="image-20200710225757162" style="zoom:50%;" /></p>
 <blockquote>
@@ -810,7 +810,7 @@
 <p><img src="../../../images/img_mysql/image-20200710225814547.png" alt="image-20200710225814547" style="zoom:50%;" /></p>
 <p>同样也是一棵 B+Tree，data 域保存数据记录的地址。因此，MyISAM 中索引检索的算法为首先按照 B+Tree 搜索算法搜索索引，如果指定的 Key 存在，则取出其 data 域的值，然后以 data 域的值为地址，读取相应数据记录。</p>
 <p>MyISAM 的索引方式也叫做“非聚集”的，之所以这么称呼是为了与 InnoDB 的聚集索引区分。</p>
-<h4 id="454-innodb-中的-btree">4.5.4 InnoDB 中的 B^+^Tree</h4>
+<h4 id="454-innodb-中的-btree">4.5.4 InnoDB 中的 B+Tree</h4>
 <p>虽然 InnoDB 也使用 B+Tree 作为索引结构，但具体实现方式却与 MyISAM 截然不同。</p>
 <p>第一个重大区别是 InnoDB 的数据文件本身就是索引文件。从上文知道，MyISAM 索引文件和数据文件是分离的，索引文件仅保存数据记录的地址。而<strong>在 InnoDB 中，表数据文件本身就是按 B+Tree 组织的一个索引结构，这棵树的叶节点 data 域保存了完整的数据记录</strong>。这个索引的 key 是数据表的主键，因此 InnoDB 表数据文件本身就是主索引。</p>
 <p><img src="../../../images/img_mysql/image-20200710225826283.png" alt="image-20200710225826283" style="zoom: 67%;" /></p>
