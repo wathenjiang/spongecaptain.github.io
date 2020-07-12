@@ -12,15 +12,6 @@
     
     
     <item>
-      <title>TestColor</title>
-      <link>https://spongecaptain.cool/post/hugo/testcolor/</link>
-      <pubDate>Sun, 12 Jul 2020 23:16:51 +0800</pubDate>
-      
-      <guid>https://spongecaptain.cool/post/hugo/testcolor/</guid>
-      <description>1. 用于测试配图颜色 图 1： 图 2：</description>
-    </item>
-    
-    <item>
       <title>窥探 MySQL 索引</title>
       <link>https://spongecaptain.cool/post/mysql/mysqlindexsummary/</link>
       <pubDate>Fri, 10 Jul 2020 23:11:12 +0800</pubDate>
