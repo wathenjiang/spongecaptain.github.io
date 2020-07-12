@@ -49,7 +49,7 @@
 <meta itemprop="description" content="MySQL 索引 1. 什么是数据库索引 在关系数据库中，如果有上万甚至上亿条记录，在查找记录的时候，想要获得非常快的速度，就需要使用索引。 索引是关系数据库中">
 <meta itemprop="datePublished" content="2020-07-10T23:11:12&#43;08:00" />
 <meta itemprop="dateModified" content="2020-07-10T23:11:12&#43;08:00" />
-<meta itemprop="wordCount" content="18029">
+<meta itemprop="wordCount" content="18028">
 
 
 
@@ -129,7 +129,7 @@
         <div class="post-category">
             <a href="/categories/mysql-%E6%8A%80%E6%9C%AF%E6%96%87%E7%AB%A0/"> MySQL 技术文章 </a>
             </div>
-          <span class="more-meta"> 约 18029 字 </span>
+          <span class="more-meta"> 约 18028 字 </span>
           <span class="more-meta"> 预计阅读 36 分钟 </span>
         <span id="busuanzi_container_page_pv" class="more-meta"> <span id="busuanzi_value_page_pv"><img src="/img/spinner.svg" alt="spinner.svg"/></span> 次阅读 </span>
       </div>
@@ -512,7 +512,10 @@
 <blockquote>
 <p>红黑树是一种自平衡二叉查找树。我们可以将红黑树看做为二叉搜索树的改进版本，其在树的结构失衡非常严重的时候会通过旋转来解决问题。</p>
 </blockquote>
-<p>![Screen Recording 2020-06-29 at 09.57.45](../../../images/img_mysql/Screen Recording 2020-06-29 at 09.57.45.gif)</p>
+<blockquote>
+<p>由于 Gif 暂时不支持</p>
+</blockquote>
+<p><img src="../../../images/img_mysql/red_black_tree.gif" alt="Screen Recording 2020-06-29 at 09.57.45"></p>
 <p>最终的数据结构如下图所示：</p>
 <p><img src="../../../images/img_mysql/image-20200710225435274.png" alt="image-20200710225435274" /></p>
 <p>我们可以发现，在自增整数作为索引的背景下红黑树的表现比二叉搜索树好非常多，原本第 6 行数据要在表上查找 6 次，现在仅仅需要查找 3 次，效率高了不少。</p>
