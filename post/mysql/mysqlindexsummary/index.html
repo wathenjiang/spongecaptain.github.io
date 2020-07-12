@@ -199,7 +199,7 @@
 <blockquote>
 <p>注意事项：在一次查询中，MySQL 只能使用一个索引。</p>
 </blockquote>
-<p><img src="../../../images/img_mysql/1.png" alt="img" style="zoom: 50%;" /></p>
+<img src="../../../images/img_mysql/1.png" alt="img" s/>
 <p>比如上表左侧为数据库中的多行数据，右侧为索引（数据结构为二叉搜索树类型）：</p>
 <ul>
 <li>如果单单用数据库的表来查找 Col2  =89 的数据，因为表格相对于 Col1 自增，但是<strong>对于 Col2 没有任何排序要求</strong>，因此我们必定需要遍历 6 行数据才能找到对应的行；</li>
