@@ -199,7 +199,7 @@
 <blockquote>
 <p>注意事项：在一次查询中，MySQL 只能使用一个索引。</p>
 </blockquote>
-<img src="../../../images/img_mysql/1.png" alt="img" s/>
+<p><img src="../../../images/img_mysql/1.png" alt="img" /></p>
 <p>比如上表左侧为数据库中的多行数据，右侧为索引（数据结构为二叉搜索树类型）：</p>
 <ul>
 <li>如果单单用数据库的表来查找 Col2  =89 的数据，因为表格相对于 Col1 自增，但是<strong>对于 Col2 没有任何排序要求</strong>，因此我们必定需要遍历 6 行数据才能找到对应的行；</li>
@@ -289,8 +289,8 @@
 <li>MUL 为普通索引；</li>
 </ul>
 <p>例如下面两图：</p>
-<p><img src="../../../images/img_mysql/image-20200710225309130.png" alt="image-20200710225309130" style="zoom:50%;" /></p>
-<p><img src="../../../images/img_mysql/image-20200710225328562.png" alt="image-20200710225328562" style="zoom:50%;" /></p>
+<img src="../../../images/img_mysql/image-20200710225309130.png" alt="image-20200710225309130"/>
+<img src="../../../images/img_mysql/image-20200710225328562.png" alt="image-20200710225328562"/>
 <hr>
 <p>索引的创建可以归纳为如下：</p>
 <p>常用以下两种方式：</p>
@@ -505,7 +505,7 @@
 </blockquote>
 <p><strong>那么二叉搜索树适合来做索引的内部数据结构吗？</strong></p>
 <p>我们通常会拿<strong>自增的整型键值作为索引</strong>，那么如果使用二叉搜索树，数据结构如下：</p>
-<p><img src="../../../images/img_mysql/image-20200710225418343.png" alt="image-20200710225418343" style="zoom:25%;" /></p>
+<p><img src="../../../images/img_mysql/image-20200710225418343.png" alt="image-20200710225418343" /></p>
 <p>可见，此时二叉搜索树由于其极度的单边增长趋势，相当于单向链表。而在单向链表上进行遍历搜索和原本在表中按行搜索没有任何区别，因为从遍历次数上来看还是需要遍历相同的次数，而且在删除、插入时还要维护索引。</p>
 <p>因此使用二叉搜索树来作为索引没有优势只有额外的消耗，因此二叉搜索树不适合作为索引内部的数据结构。</p>
 <h3 id="42-红黑树-redblack-tree">4.2 红黑树-Red/Black Tree</h3>
@@ -514,7 +514,7 @@
 </blockquote>
 <p>![Screen Recording 2020-06-29 at 09.57.45](../../../images/img_mysql/Screen Recording 2020-06-29 at 09.57.45.gif)</p>
 <p>最终的数据结构如下图所示：</p>
-<p><img src="../../../images/img_mysql/image-20200710225435274.png" alt="image-20200710225435274" style="zoom: 33%;" /></p>
+<p><img src="../../../images/img_mysql/image-20200710225435274.png" alt="image-20200710225435274" /></p>
 <p>我们可以发现，在自增整数作为索引的背景下红黑树的表现比二叉搜索树好非常多，原本第 6 行数据要在表上查找 6 次，现在仅仅需要查找 3 次，效率高了不少。</p>
 <blockquote>
 <p>这就是二叉树变平衡了的优势。</p>
@@ -666,7 +666,7 @@
 </li>
 </ul>
 <p>最后我们用一个图和一个实际的例子来理解 B 树（这里为了理解方便我就直接用实际字母的大小来排列 C&gt;B&gt;A）</p>
-<p><img src="../../../images/img_mysql/image-20200710225502624.png" alt="image-20200710225502624" style="zoom:50%;" /></p>
+<p><img src="../../../images/img_mysql/image-20200710225502624.png" alt="image-20200710225502624" /></p>
 <blockquote>
 <p>其有两个方向的大小关系：</p>
 <ul>
@@ -694,7 +694,7 @@
 <li>排序规则：满足节点本身比左边节点大，比右边节点小的排序规则;</li>
 </ol>
 <p>先插入 3、8、31、11：</p>
-<p><img src="../../../images/img_mysql/image-20200710225525627.png" alt="image-20200710225525627" style="zoom:50%;" /></p>
+<p><img src="../../../images/img_mysql/image-20200710225525627.png" alt="image-20200710225525627"  /></p>
 <p>再插入 23、29：</p>
 <p><img src="../../../images/img_mysql/image-20200629105357351.png" alt="image-20200629105357351"></p>
 <p>再插入50、28：</p>
@@ -752,9 +752,9 @@
 </blockquote>
 <h4 id="452-数据库的磁盘目录文件">4.5.2 数据库的磁盘目录文件。</h4>
 <p>对于一个 MySQL 应用程序，其在磁盘上安装时会有其安装目录，在安装目录下有一个 data 目录专门用于存放数据库文件夹，如下：</p>
-<p><img src="../../../images/img_mysql/image-20200710225720481.png" alt="image-20200710225720481" style="zoom:50%;" /></p>
+<p><img src="../../../images/img_mysql/image-20200710225720481.png" alt="image-20200710225720481" /></p>
 <p>那么每一个数据库中又有很多表，每一个表不再对应文件夹，而是数据库目录下的一组文件，如下：</p>
-<p><img src="../../../images/img_mysql/image-20200710225740128.png" alt="image-20200710225740128" style="zoom:50%;" /></p>
+<p><img src="../../../images/img_mysql/image-20200710225740128.png" alt="image-20200710225740128" /></p>
 <p>也可以用如下表示：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -802,7 +802,7 @@
 </blockquote>
 <h4 id="453-myisam-中的-btree">4.5.3 MyISAM 中的 B+Tree</h4>
 <p>MyISAM 引擎使用 B+Tree 作为索引结构，<strong>叶节点的 data 域存放的是数据记录的地址</strong>。下图是 MyISAM 索引的原理图：</p>
-<p><img src="../../../images/img_mysql/image-20200710225757162.png" alt="image-20200710225757162" style="zoom:50%;" /></p>
+<img src="../../../images/img_mysql/image-20200710225757162.png" alt="image-20200710225757162"/>
 <blockquote>
 <p>从上图也可以看出，表单存储文件和索引存储是分开独立存储的。</p>
 </blockquote>
@@ -813,12 +813,12 @@
 <h4 id="454-innodb-中的-btree">4.5.4 InnoDB 中的 B+Tree</h4>
 <p>虽然 InnoDB 也使用 B+Tree 作为索引结构，但具体实现方式却与 MyISAM 截然不同。</p>
 <p>第一个重大区别是 InnoDB 的数据文件本身就是索引文件。从上文知道，MyISAM 索引文件和数据文件是分离的，索引文件仅保存数据记录的地址。而<strong>在 InnoDB 中，表数据文件本身就是按 B+Tree 组织的一个索引结构，这棵树的叶节点 data 域保存了完整的数据记录</strong>。这个索引的 key 是数据表的主键，因此 InnoDB 表数据文件本身就是主索引。</p>
-<p><img src="../../../images/img_mysql/image-20200710225826283.png" alt="image-20200710225826283" style="zoom: 67%;" /></p>
+<p><img src="../../../images/img_mysql/image-20200710225826283.png" alt="image-20200710225826283"  /></p>
 <p>上图是 InnoDB 主索引（同时也是数据文件）的示意图，可以看到叶节点包含了完整的数据记录。这种索引叫做聚集索引。<strong>因为 InnoDB 的数据文件本身要按主键聚集，所以 InnoDB 要求表必须有主键（MyISAM 可以没有），如果没有显式指定，则 MySQL 系统会自动选择一个可以唯一标识数据记录的列作为主键，如果不存在这种列，则 MySQL 自动为 InnoDB 表生成一个隐含字段作为主键，这个字段长度为 6 个字节，类型为长整形</strong>。</p>
 <h3 id="46-非数据结构出发的索引分类">4.6 非数据结构出发的索引分类</h3>
 <h4 id="461-辅助索引">4.6.1 辅助索引</h4>
 <p><strong>第二个与 MyISAM 索引的不同是 InnoDB 的辅助索引 data 域存储相应记录主键的值而不是地址</strong>。换句话说，InnoDB 的所有辅助索引都引用主键作为 data 域。例如，下图为定义在 Col3 上的一个辅助索引：</p>
-<p><img src="../../../images/img_mysql/image-20200710225846287.png" alt="image-20200710225846287" style="zoom: 67%;" /></p>
+<p><img src="../../../images/img_mysql/image-20200710225846287.png" alt="image-20200710225846287" /></p>
 <p>这里以英文字符的 ASCII 码作为比较准则。聚集索引这种实现方式使得按主键的搜索十分高效，但是<strong>辅助索引搜索需要检索两遍索引：首先检索辅助索引获得主键，然后用主键到主索引中检索获得记录</strong>。</p>
 <h4 id="462-联合复合索引">4.6.2 联合（复合）索引</h4>
 <p>在上文中，我们都是假设索引只引用了单个的列，实际上，MySQL 中的索引可以以一定顺序引用多个列，这种索引叫做联合索引，一般的，一个联合索引是一个有序元组&lt;a1, a2, …, an&gt;，其中各个元素均为数据表的一列，实际上要严格定义索引需要用到关系代数，但是这里我不想讨论太多关系代数的话题，因为那样会显得很枯燥，所以这里就不再做严格定义。另外，单列索引可以看成联合索引元素数为 1 的特例。</p>
@@ -827,9 +827,9 @@
 <blockquote>
 <p>Tip：基于 InnoDB 存储引擎。</p>
 </blockquote>
-<p><img src="../../../images/img_mysql/image-20200710225911228.png" alt="image-20200710225911228" style="zoom: 33%;" /></p>
+<p><img src="../../../images/img_mysql/image-20200710225911228.png" alt="image-20200710225911228" /></p>
 <p>联合索引长下面的样子：</p>
-<p><img src="../../../images/img_mysql/image-20200710225927419.png" alt="image-20200710225927419" style="zoom:50%;" /></p>
+<p><img src="../../../images/img_mysql/image-20200710225927419.png" alt="image-20200710225927419"  /></p>
 <p>联合索引：<strong>联合索引的所有索引列都出现在索引数上，并依次比较三列的大小</strong>。</p>
 <ul>
 <li>
@@ -857,7 +857,7 @@
 </code></pre></td></tr></table>
 </div>
 </div><p>也就是 T1 表中 a 列为 4 的这条记录。存储引擎首先从根节点（一般常驻内存）开始查找，<strong>第一个索引的第一个索引列为 1，12 大于 1，第二个索引的第一个索引列为 56，12 小于 56，于是从这俩索引的中间读到下一个节点的磁盘文件地址</strong>，从磁盘上 Load 这个节点，通常伴随一次磁盘 I/O，然后在内存里去查找。当 Load 叶子节点的第二个节点时又是一次磁盘 I/O，比较第一个元素，b= 12，c=14，d=3 完全符合，于是找到该索引下的 data 元素即ID值，再从主键索引树上找到最终数据。</p>
-<p><img src="../../../images/img_mysql/image-20200710225944787.png" alt="image-20200710225944787" style="zoom:50%;" /></p>
+<p><img src="../../../images/img_mysql/image-20200710225944787.png" alt="image-20200710225944787"  /></p>
 <blockquote>
 <p>当然遗漏了从主键索引上查找的步骤，但是和上述过程完全是类似的，只不过主键索引是唯一的，而不像联合索引那般有多个匹配条件。</p>
 </blockquote>
@@ -904,7 +904,7 @@
 </li>
 </ul>
 <p>在 MyISAM 中二级索引叶子节点存储数据行的地址，而 InnoDB 中存储的是主键值（不是主键地址）。InnoDB 的策略好处是：当出现行移动或者数据页分裂时二级索引的维护工作，不需要维护变动的指针；坏处是：使用主键值当作指针会让二级索引占用更多的空间。特它们的区别可以用下图表示：</p>
-<p><img src="../../../images/img_mysql/image-20200708141758217.png" alt="image-20200708141758217" style="zoom:33%;" /></p>
+<p><img src="../../../images/img_mysql/image-20200708141758217.png" alt="image-20200708141758217"  /></p>
 <ul>
 <li>
 <p>Row 代表一行行数据，InnoDB 的 Row 存储于主键索引的叶子节点中，MyISAM 的 ROW 单独存储于另一个文件。</p>
@@ -926,7 +926,7 @@
 </li>
 <li>
 <p>剩余所有列的值（下图中因为其他列只有 col2）；</p>
-<p><img src="../../../images/img_mysql/image-20200708143155228.png" alt="image-20200708143155228" style="zoom:50%;" /></p>
+<p><img src="../../../images/img_mysql/image-20200708143155228.png" alt="image-20200708143155228" /></p>
 </li>
 </ul>
 <h4 id="464-覆盖索引">4.6.4 覆盖索引</h4>
@@ -1113,7 +1113,7 @@
 <p>原文中没有 WHERE 子句，我额外添加上的，因为否则在我们 MySQL 版本上会导致不使用索引，最终导致使用 file sort。</p>
 </blockquote>
 <p>我们来看看这个联合索引 ab 的结构。</p>
-<p><img src="../../../images/img_mysql/image-20200708151001663.png" alt="image-20200708151001663" style="zoom:50%;" /></p>
+<p><img src="../../../images/img_mysql/image-20200708151001663.png" alt="image-20200708151001663" /></p>
 <p>可以看到，在这个索引上，数据存储顺序是：</p>
 <ul>
 <li>优先按照 a 值从左向右递增；</li>
@@ -1205,7 +1205,7 @@
 </div>
 </div><p>我们将索引 ab 的定义做了修改，在字段 b 后面加上 desc，表示对于相同的 a 值，字段 b 按照倒序存储。</p>
 <p>这个表对应的索引 ab 的结构图如下：</p>
-<p><img src="../../../images/img_mysql/image-20200708153433585.png" alt="image-20200708153433585" style="zoom:50%;" /></p>
+<p><img src="../../../images/img_mysql/image-20200708153433585.png" alt="image-20200708153433585" /></p>
 <p>接着我们再次执行 explain，如下：</p>
 <p><img src="../../../images/img_mysql/image-20200708153548182.png" alt="image-20200708153548182"></p>
 <p>Descending Indexes 可以避免这种情况下的排序操作，语句的执行性能自然就提升了。</p>
@@ -1300,7 +1300,7 @@
 </blockquote>
 <p>这条查询仅仅会返回 2~4 之间的行，但是实际上获取了1~4 之间的行的排他锁。</p>
 <p>InnoDB 会锁住第 1 行，这是因为 MySQL 为该查询选择的执行计划是索引范围扫描：</p>
-<p><img src="../../../images/img_mysql/image-20200708161603193-4201276.png" alt="image-20200708161603193" style="zoom:67%;" /></p>
+<p><img src="../../../images/img_mysql/image-20200708161603193-4201276.png" alt="image-20200708161603193"  /></p>
 <p>换句话说，底层存储引擎的操作是 “从索引的开头开始获取满足条件 actor_ id&lt; 5 的记录”，服务器并没有告诉 InnoDB 可以过滤第 1 行的 WHERE 条件。注意到 EXPLAIN 的 Extra 列出现了 **“Using where”，这表示 MySQL 服务器将存储引擎返回行以后再应用 WHERE 过滤条件**。</p>
 <h2 id="7-减少索引和数据碎片">7. 减少索引和数据碎片</h2>
 <p>B-Tree 索引可能会碎片化，这会降低查询的效率。碎片化的索引可能会以很差或者无序的方式存储在磁盘上。</p>
