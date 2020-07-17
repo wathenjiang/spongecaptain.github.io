@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 10 Jul 2020 23:11:12 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 17 Jul 2020 23:24:19 +0800</lastBuildDate>
     
 	<atom:link href="https://spongecaptain.cool/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Java 反射小总结</title>
+      <link>https://spongecaptain.cool/post/java/refelectionsummary/</link>
+      <pubDate>Fri, 17 Jul 2020 23:24:19 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/java/refelectionsummary/</guid>
+      <description>Java 反射小总结 1. Java 反射能做什么？ Java 反射：在运行状态中，能够任意一个类的所有属性和方法，能够调用任意一个对象的的方法和属性； Java &amp;ldquo;正射</description>
+    </item>
     
     <item>
       <title>窥探 MySQL 索引</title>

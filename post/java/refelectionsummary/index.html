@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Java 反射小总结 - Spongecaptain 的个人技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Spongecaptain" /><meta name="description" content="Java 反射小总结 1. Java 反射能做什么？ Java 反射：在运行状态中，能够任意一个类的所有属性和方法，能够调用任意一个对象的的方法和属性； Java &amp;ldquo;正射" /><meta name="keywords" content="Java, 反射, 性能" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.67.0 with theme even" />
+
+
+<link rel="canonical" href="https://spongecaptain.cool/post/java/refelectionsummary/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.d3c0906e4826953bbecacbaae42a5a06ea7dd1d8ed9c6483ee5e2e9c94ea5a18.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Java 反射小总结" />
+<meta property="og:description" content="Java 反射小总结 1. Java 反射能做什么？ Java 反射：在运行状态中，能够任意一个类的所有属性和方法，能够调用任意一个对象的的方法和属性； Java &ldquo;正射" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://spongecaptain.cool/post/java/refelectionsummary/" />
+<meta property="article:published_time" content="2020-07-17T23:24:19+08:00" />
+<meta property="article:modified_time" content="2020-07-17T23:24:19+08:00" />
+<meta itemprop="name" content="Java 反射小总结">
+<meta itemprop="description" content="Java 反射小总结 1. Java 反射能做什么？ Java 反射：在运行状态中，能够任意一个类的所有属性和方法，能够调用任意一个对象的的方法和属性； Java &ldquo;正射">
+<meta itemprop="datePublished" content="2020-07-17T23:24:19&#43;08:00" />
+<meta itemprop="dateModified" content="2020-07-17T23:24:19&#43;08:00" />
+<meta itemprop="wordCount" content="2599">
+
+
+
+<meta itemprop="keywords" content="反射," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java 反射小总结"/>
+<meta name="twitter:description" content="Java 反射小总结 1. Java 反射能做什么？ Java 反射：在运行状态中，能够任意一个类的所有属性和方法，能够调用任意一个对象的的方法和属性； Java &ldquo;正射"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body class = body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/about/index.html">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/index.html">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Java 反射小总结</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-07-17 </span>
+        <div class="post-category">
+            <a href="/categories/java/"> Java </a>
+            </div>
+          <span class="more-meta"> 约 2599 字 </span>
+          <span class="more-meta"> 预计阅读 6 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-java-反射能做什么">1. Java 反射能做什么？</a></li>
+    <li><a href="#2-java-反射的具体用例">2. Java 反射的具体用例</a>
+      <ul>
+        <li><a href="#21-运行时获取对象的类型">2.1 运行时获取对象的类型</a></li>
+        <li><a href="#22-获取类信息类名所有方法所有字段所有构造器实现的接口">2.2 获取类信息：类名、所有方法、所有字段、所有构造器、实现的接口</a></li>
+        <li><a href="#23-构造任意对象">2.3 构造任意对象</a></li>
+        <li><a href="#24-动态执行意方法">2.4 动态执行意方法</a></li>
+        <li><a href="#25-动态操作任意属性">2.5 动态操作任意属性</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-反射的执行效率">3. 反射的执行效率</a>
+      <ul>
+        <li><a href="#31-利用反射来构造实例的效率">3.1 利用反射来构造实例的效率</a></li>
+        <li><a href="#32-利用反射来调用方法的效率">3.2 利用反射来调用方法的效率</a></li>
+        <li><a href="#33-反射性能小节">3.3 反射性能小节</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h1 id="java-反射小总结">Java 反射小总结</h1>
+<h2 id="1-java-反射能做什么">1. Java 反射能做什么？</h2>
+<ul>
+<li>Java 反射：在运行状态中，能够任意一个类的所有属性和方法，能够调用任意一个对象的的方法和属性；</li>
+<li>Java &ldquo;正射&rdquo;：在编写代码编写类的所有属性、方法。</li>
+</ul>
+<p>如果要对 Java 的反射机制做一个总结，无外乎以下几个功能：</p>
+<ul>
+<li>在运行时判断任何一个对象的类型（运行时的类型由 Class 类型实例确定）；</li>
+<li>在运行时构造任何一个类的对象；</li>
+<li>在运行时判断任何一个类所具有的成员变量和方法；</li>
+<li>在运行时调用任意一个对象的方法；</li>
+<li>JDK 版本的动态代理；</li>
+</ul>
+<h2 id="2-java-反射的具体用例">2. Java 反射的具体用例</h2>
+<h3 id="21-运行时获取对象的类型">2.1 运行时获取对象的类型</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="n">Class</span> <span class="n">clazz</span>  <span class="o">=</span> <span class="n">object</span><span class="o">.</span><span class="na">getClass</span><span class="o">();</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>运行时类型即 Class 类型实例，当拿到此实例后，可以通过此实例进行各种方法调用，Java 的反射机制的运行大多基于此。</p>
+<p><strong>为什么 Java 中的所有实例都能通过 <code>getClass()</code> 方法返回其运行时类型 Class 实例？</strong></p>
+<p>这是因为 JVM 底层的为引用变量有两个指针：</p>
+<ul>
+<li>堆内的对象实例指针；</li>
+<li>方法区的 Class 实例指针。</li>
+</ul>
+<p>如下图所示：</p>
+<p><img src="../../../images/img_java/image-20200716170902645.png" alt="image-20200716170902645" style="zoom: 50%;" /></p>
+<h3 id="22-获取类信息类名所有方法所有字段所有构造器实现的接口">2.2 获取类信息：类名、所有方法、所有字段、所有构造器、实现的接口</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="n">String</span> <span class="n">className</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span> <span class="c1">//获取类的名称
+</span><span class="c1"></span><span class="n">Method</span><span class="o">[]</span> <span class="n">methods</span> <span class="o">=</span> <span class="n">claszz</span><span class="o">.</span><span class="na">getDeclareMethods</span><span class="o">();</span> <span class="c1">//获取类中定义的方法
+</span><span class="c1"></span><span class="n">Field</span><span class="o">[]</span> <span class="n">fields</span> <span class="o">=</span> <span class="n">classz</span><span class="o">.</span><span class="na">getDeclaredFields</span><span class="o">();</span> <span class="c1">//获取类中定义的字段
+</span><span class="c1"></span><span class="n">Constructor</span><span class="o">[]</span> <span class="n">constructors</span> <span class="o">=</span>  <span class="n">clazz</span><span class="o">.</span><span class="na">getDeclaredConstructors</span><span class="o">();</span><span class="c1">//获取类的所有构造器
+</span><span class="c1"></span><span class="n">Annotation</span><span class="o">[]</span> <span class="n">annotations</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getAnnotations</span><span class="o">();</span><span class="c1">//获取类的所有注解（类）
+</span><span class="c1"></span><span class="n">Class</span><span class="o">[]</span> <span class="n">interfaces</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getInterfaces</span><span class="o">();</span><span class="c1">//获取类实现的所有接口对应的 Class 实例
+</span></code></pre></td></tr></table>
+</div>
+</div><h3 id="23-构造任意对象">2.3 构造任意对象</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="s">&#34;className&#34;</span><span class="o">).</span><span class="na">newInstance</span><span class="o">();</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>className 可以是任意一个类的全限定名，这与我们一般使用 <code>new Foo()</code> 来构造对象可不一样，因为只有在真正运行时才能知道 className 字符串所指向类的具体类型。</p>
+<p>注意事项：<code>newInstance()</code> 方法要求被构造的类必须有无参构造版本，否则会跑出异常。</p>
+<p>另一方面，我们这里说的是构造任意对象，实际上也包括通过任意构造器来构造对象，而 <code>newInstace()</code> 方法仅仅支持无参构造器显然是不符合要求的。我们可以通过 Constructor 实例来构造任意实例，如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="n">Constructor</span> <span class="n">constructor</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getConstructor</span><span class="o">(</span><span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">,</span><span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">Object</span> <span class="n">obj</span> <span class="o">=</span> <span class="n">constructor</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">400</span><span class="o">,</span><span class="n">500</span><span class="o">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>利用 Constructor 实例来构造任意实例大致分为两步：</p>
+<ul>
+<li>利用 Class 实例得到 Constructor 实例，其仅仅需要输入构造器的入口参数类型。这是因为构造器的名字总是和类名保持一致；</li>
+<li>通过 Constructor 实例的 <code>newInstance()</code> 方法，输入构造器的入口参数就能够创建实例；</li>
+</ul>
+<h3 id="24-动态执行意方法">2.4 动态执行意方法</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="n">Method</span> <span class="n">method</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getDeclareMethod</span><span class="o">(</span><span class="s">&#34;add&#34;</span><span class="o">,</span><span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">,</span><span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="k">this</span><span class="o">,</span><span class="n">1</span><span class="err">，</span><span class="n">1</span><span class="o">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>动态执行任意方法分为两个步骤：</p>
+<ul>
+<li>获得 Method 实例，此实例通过 Class 实例来构造，因为有不同的方法，因此需要方法名，又因为存在方法重载，因此需要方法入口参数的限定；</li>
+<li>通过 Method 的 <code>invoke()</code> 方法来动态执行任意方法，对于调用类的静态方法，第一个参数可以为 null，否则为方法的接收实例；</li>
+</ul>
+<p>注意事项，对于 private 修饰的方法我们在类外并不能调用，但是通过额外调用如下语句能够破除这个限制：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="n">method</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>如果不进行这一步，那么会抛出异常。</p>
+<h3 id="25-动态操作任意属性">2.5 动态操作任意属性</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="n">Filed</span> <span class="n">field</span> <span class="o">=</span> <span class="n">clazz</span><span class="o">.</span><span class="na">getDeclaredField</span><span class="o">(</span><span class="s">&#34;name&#34;</span><span class="o">);</span>
+<span class="n">field</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="k">this</span><span class="o">,</span><span class="s">&#34;foo&#34;</span><span class="o">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>动态操作任何属性也至少分为两步：</p>
+<ul>
+<li>获得 Field 实例，此实例通过 Class 实例来构造，不同于方法存在重载，字段名唯一，因此输入字段名即可；</li>
+<li>通过 Filed 实例的 <code>set()</code> 方法进行字段的修改，第一个参数为字段所属的类或者实例。当字段为静态字段时，那么 <code>set()</code> 方法的第一个参数可以为 null；</li>
+</ul>
+<p>注意到这一节属性带有任意两个字，这意味着我们通过反射还可以修改 private 以及 final 修饰的字段，只需要执行如下语句：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="n">field</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="3-反射的执行效率">3. 反射的执行效率</h2>
+<h3 id="31-利用反射来构造实例的效率">3.1 利用反射来构造实例的效率</h3>
+<p>反射除了可以轻而易举地破坏面向对象的类封装，相较于非反射代码执行效率会比较差。</p>
+<p>在 <a href="https://docs.oracle.com/javase/tutorial/reflect/index.html">Oracle Tutorial</a> 中指出，反射的额外开销的原因为：Because reflection involves types that are dynamically resolved, certain Java virtual machine optimizations can not be performed. Consequently, reflective operations have slower performance than their non-reflective counterparts, and should be avoided in sections of code which are called frequently in performance-sensitive applications.</p>
+<p>总结为如下原因：因为类型动态解析，所以特性的 JVM 优化策略无法进行。</p>
+<p>下面是一个实验性代码，比较直接构造实例和通过反射构造实例的效率上的差异：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Run</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">RUNS</span> <span class="o">=</span> <span class="n">3000000</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">A</span> <span class="o">{</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+    <span class="n">doRegular</span><span class="o">();</span>
+    <span class="n">doReflection</span><span class="o">();</span>
+    <span class="n">doRegular</span><span class="o">();</span>
+    <span class="n">doReflection</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">doRegular</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+    <span class="n">A</span><span class="o">[]</span> <span class="n">as</span> <span class="o">=</span> <span class="k">new</span> <span class="n">A</span><span class="o">[</span><span class="n">RUNS</span><span class="o">];</span>
+    <span class="kt">long</span> <span class="n">start</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">nanoTime</span><span class="o">();</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">RUNS</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+      <span class="n">as</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="k">new</span> <span class="n">A</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">&#34;new A(), %,d ns%n&#34;</span><span class="o">,</span> <span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">nanoTime</span><span class="o">()</span> <span class="o">-</span> <span class="n">start</span><span class="o">)/</span><span class="n">RUNS</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">doReflection</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+    <span class="n">A</span><span class="o">[]</span> <span class="n">as</span> <span class="o">=</span> <span class="k">new</span> <span class="n">A</span><span class="o">[</span><span class="n">RUNS</span><span class="o">];</span>
+    <span class="kt">long</span> <span class="n">start</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">nanoTime</span><span class="o">();</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">RUNS</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+      <span class="n">as</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">&#34;A.class.newInstance(), %,d ns%n&#34;</span><span class="o">,</span> <span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">nanoTime</span><span class="o">()</span> <span class="o">-</span> <span class="n">start</span><span class="o">)/</span><span class="n">RUNS</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>例子来源：<a href="https://stackoverflow.com/questions/435553/java-reflection-performance">stackoverflow</a></p>
+</blockquote>
+<p>测试结果如下：</p>
+<blockquote>
+<p>new A(), 11 ns
+A.class.newInstance(), 11 ns
+new A(), 3 ns
+A.class.newInstance(), 6 ns</p>
+</blockquote>
+<p>上述运行结果依次对应于：</p>
+<ul>
+<li>第一次通过 new 来构造 3 百万个 A 类型实例；</li>
+<li>第一次通过反射来构造 3 百万个 A 类型实例；</li>
+<li>第二次通过 new 来构造 3 百万个 A 类型实例；</li>
+<li>第二次通过反射来构造 3 百万个 A 类型实例；</li>
+</ul>
+<p>不管 new 还是反射，我们可以看到第二轮的效率总是好于第一轮，这是因为 JVM 的运行时优化，但是使用反射来构造实例显然优化幅度不大，这也反应了 <a href="https://docs.oracle.com/javase/tutorial/reflect/index.html">Oracle Tutorial</a>  的说法。</p>
+<p>另一方面，第一轮中 new 和反射构造实例消耗了同样的时间，可见事实上如果不考虑 JVM 的优化，使用 new 关键字和使用反射来构造实例有着近乎相同的效率。</p>
+<h3 id="32-利用反射来调用方法的效率">3.2 利用反射来调用方法的效率</h3>
+<p>利用类似的逻辑，利用如下代码来演示通过 <code>Method.invoke()</code> 以及直接通过方法调用在效率上的差别：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Run</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">RUNS</span> <span class="o">=</span> <span class="n">3000000</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">A</span> <span class="o">{</span>
+        <span class="kd">public</span> <span class="kt">double</span> <span class="nf">test</span><span class="o">(){</span>
+            <span class="kd">final</span> <span class="kt">double</span> <span class="n">random</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">random</span><span class="o">();</span>
+            <span class="k">return</span> <span class="n">random</span><span class="o">;</span>
+
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">A</span> <span class="n">a</span> <span class="o">=</span> <span class="k">new</span> <span class="n">A</span><span class="o">();</span>
+        <span class="n">doRegular</span><span class="o">(</span><span class="n">a</span><span class="o">);</span>
+        <span class="n">doReflection</span><span class="o">(</span><span class="n">a</span><span class="o">);</span>
+        <span class="n">doRegular</span><span class="o">(</span><span class="n">a</span><span class="o">);</span>
+        <span class="n">doReflection</span><span class="o">(</span><span class="n">a</span><span class="o">);</span>
+
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">doRegular</span><span class="o">(</span><span class="n">A</span> <span class="n">a</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="kt">double</span><span class="o">[]</span> <span class="n">ds</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">double</span><span class="o">[</span><span class="n">RUNS</span><span class="o">];</span>
+        <span class="kt">long</span> <span class="n">start</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">nanoTime</span><span class="o">();</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">RUNS</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">ds</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="na">test</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">&#34;a.test(), %,d ns%n&#34;</span><span class="o">,</span> <span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">nanoTime</span><span class="o">()</span> <span class="o">-</span> <span class="n">start</span><span class="o">)/</span><span class="n">RUNS</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">doReflection</span><span class="o">(</span><span class="n">A</span> <span class="n">a</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="kt">double</span><span class="o">[]</span> <span class="n">ds</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">double</span><span class="o">[</span><span class="n">RUNS</span><span class="o">];</span>
+        <span class="kt">long</span> <span class="n">start</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">nanoTime</span><span class="o">();</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">RUNS</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">ds</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="o">(</span><span class="kt">double</span><span class="o">)</span><span class="n">A</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&#34;test&#34;</span><span class="o">).</span><span class="na">invoke</span><span class="o">(</span><span class="n">a</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">&#34;A.class.getMethod(\&#34;test()\&#34;).invoke(a), %,d ns%n&#34;</span><span class="o">,</span> <span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">nanoTime</span><span class="o">()</span> <span class="o">-</span> <span class="n">start</span><span class="o">)/</span><span class="n">RUNS</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>控制台输出：</p>
+<blockquote>
+<p>a.test(), 24 ns
+A.class.getMethod(&ldquo;test()&quot;).invoke(a), 214 ns
+a.test(), 23 ns
+A.class.getMethod(&ldquo;test()&quot;).invoke(a), 194 ns</p>
+</blockquote>
+<p>从这里可以看出对于方法的调用，利用反射进行方法调用和直接方法调用有着巨大的速度差距，原因在于：</p>
+<ul>
+<li>直接调用方法的内部调用逻辑是：堆内的对象 &mdash;-&gt;方法区的 Class 对象 &mdash;-&gt; 找到方法指针 &mdash;-&gt; 执行方法；</li>
+<li>利用反射进行方法调用需要这样的几步：构造 Class 对象 &mdash;&gt; <strong>通过输入的方法名找到 Class 中的方法 &mdash;-&gt; 封装为 Method 实例</strong> &mdash;-&gt; 绑定接收方法的对象 &mdash;-&gt; 找到方法指针 &mdash;-&gt; 执行方法；</li>
+</ul>
+<p>就是因为利用反射调用方法需要额外构造非常多的步骤，特别是需要通过方法名来找到 Class 中的方法后封装为 Method 实例是最消耗性能的一步。</p>
+<h3 id="33-反射性能小节">3.3 反射性能小节</h3>
+<ul>
+<li>
+<p>利用反射来构造实例的效率：</p>
+<ul>
+<li>
+<p>在不考虑 JVM 优化的情况下，利用反射来构造实例与直接利用 new 关键字来构造实例在执行效率上区别不大。</p>
+</li>
+<li>
+<p>考虑 JVM 优化的情况下，利用反射来构造实例比直接 new 效率几乎差了一倍。</p>
+<blockquote>
+<p>仅仅上述实验，这个效率的量化比例是不准确的，但是性能好坏是能够比较的。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>
+<p>利用反射来调用方法的效率：</p>
+<p>利用反射来调用方法比直接通过 <code>foo.bar()</code> 直接方法调用在执行效率上几乎慢了一个数量级，主要是因为需要额外构造 Class、Method 实例，以及通过指针直接找到方法比通过方法名找到方法在效率上高上不少。</p>
+</li>
+</ul>
+
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/%E5%8F%8D%E5%B0%84/">反射</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/mysql/mysqlindexsummary/">
+            <span class="next-text nav-default">窥探 MySQL 索引</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+
+
+      <h3>转载申请</h3>
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/>
+        <img alt=知识共享许可协议 style=border-width:0 src=https://img.draveness.me/creative-commons.png>
+      </a>
+      <br>本作品采用
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/ target="_blank" style="text-decoration:underline;" >
+      知识共享署名 4.0 国际许可协议</a>
+      进行许可，转载时请注明作者姓名以及原文链接，图片在使用时请保留全部内容，可适当缩放并在引用处附上图片所在的文章链接。
+
+      
+    </footer>
+  </article>
+        </div>
+        <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '2020-07-17 23:24:19 \x2b0800 CST',
+        title: 'Java 反射小总结',
+        clientID: 'b8e9909664fb69930809',
+        clientSecret: '847d9069c9532ab260721afb9f036cdb8f52aec4',
+        repo: 'Spongecaptain.github.io',
+        owner: 'Spongecaptain',
+        admin: ['Spongecaptain'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a></noscript>
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:wjjiang19@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/spongecaptain" class="iconfont icon-github" title="github"></a>
+  <a href="https://spongecaptain.cool/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Spongecaptain</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.d7b7ada643c9c1a983026e177f141f7363b4640d619caf01d8831a6718cd44ea.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
