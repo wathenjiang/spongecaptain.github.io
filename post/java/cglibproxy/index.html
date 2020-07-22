@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>CGLIB 动态代理的实际演练 - Spongecaptain 的个人技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Spongecaptain" /><meta name="description" content="#CGLIB 动态代理的实际演练 JDK 动态代理技术最大的问题就在于其必须要求接口参与，即不是接口的方法无法进行动态代理。CGLIB 动态代理技术解决了这个问题" /><meta name="keywords" content="Java, 动态代理, CGLIB" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.67.0 with theme even" />
+
+
+<link rel="canonical" href="https://spongecaptain.cool/post/java/cglibproxy/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.d3c0906e4826953bbecacbaae42a5a06ea7dd1d8ed9c6483ee5e2e9c94ea5a18.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="CGLIB 动态代理的实际演练" />
+<meta property="og:description" content="#CGLIB 动态代理的实际演练 JDK 动态代理技术最大的问题就在于其必须要求接口参与，即不是接口的方法无法进行动态代理。CGLIB 动态代理技术解决了这个问题" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://spongecaptain.cool/post/java/cglibproxy/" />
+<meta property="article:published_time" content="2020-07-22T21:03:45+08:00" />
+<meta property="article:modified_time" content="2020-07-22T21:03:45+08:00" />
+<meta itemprop="name" content="CGLIB 动态代理的实际演练">
+<meta itemprop="description" content="#CGLIB 动态代理的实际演练 JDK 动态代理技术最大的问题就在于其必须要求接口参与，即不是接口的方法无法进行动态代理。CGLIB 动态代理技术解决了这个问题">
+<meta itemprop="datePublished" content="2020-07-22T21:03:45&#43;08:00" />
+<meta itemprop="dateModified" content="2020-07-22T21:03:45&#43;08:00" />
+<meta itemprop="wordCount" content="6610">
+
+
+
+<meta itemprop="keywords" content="Java,动态代理,CGLIB," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="CGLIB 动态代理的实际演练"/>
+<meta name="twitter:description" content="#CGLIB 动态代理的实际演练 JDK 动态代理技术最大的问题就在于其必须要求接口参与，即不是接口的方法无法进行动态代理。CGLIB 动态代理技术解决了这个问题"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body class = body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/about/index.html">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/index.html">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">CGLIB 动态代理的实际演练</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-07-22 </span>
+        <div class="post-category">
+            <a href="/categories/cglib/"> CGLIB </a>
+            </div>
+          <span class="more-meta"> 约 6610 字 </span>
+          <span class="more-meta"> 预计阅读 14 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents"></nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>#CGLIB 动态代理的实际演练</p>
+<p>JDK 动态代理技术最大的问题就在于其必须要求接口参与，即不是接口的方法无法进行动态代理。CGLIB 动态代理技术解决了这个问题，其在构造代理类过程中完全不需要接口的参与。</p>
+<p><strong>CGLIB 是什么？</strong></p>
+<p>CGLIB 是 Code Generation Library 的缩写，<a href="https://github.com/cglib/cglib">GitHub 官方项目</a> 中提到：cglib is a powerful, high performance and quality Code Generation Library. It is used to extend JAVA classes and implements interfaces at runtime. See samples and API documentation to learn more about features.</p>
+<p><strong>关键词</strong>：<strong>运行时</strong>生成继承 Java 类以及实现了相关接口的代码；</p>
+<p>CGLIB 用途广泛，特别是 AOP 领域，依赖于 CGLIB 的知名项目有：Spring、Guice、Hibernate、iBATIS。</p>
+<p><img src="../../../images/img_java/image-20200717222208104.png" alt="image-20200717222208104" style="zoom: 67%;" /></p>
+<p>在了解 CGLIB 原理之前，不妨先看看使用 CGLIB 的一个例子。</p>
+<hr>
+<p>首先，由于 CGLIB 是第三方项目，因此需要引入依赖，这里以 Maven 为例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>cglib<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>cglib<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>3.3.0<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>然后创建被代理类代码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Proxyee</span> <span class="o">{</span>
+
+  <span class="kd">public</span> <span class="n">String</span> <span class="nf">sayHello</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">){</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;hello &#34;</span><span class="o">+</span> <span class="n">name</span><span class="o">);</span>
+    <span class="k">return</span>  <span class="s">&#34;hello &#34;</span><span class="o">+</span> <span class="n">name</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">year</span><span class="o">(</span><span class="kt">int</span> <span class="n">year</span><span class="o">){</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;This is &#34;</span> <span class="o">+</span> <span class="n">year</span><span class="o">);</span>
+    <span class="k">return</span> <span class="n">year</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>接着我们引入 CGLIB，实现动态代理机制以及测试类：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ProxyerUtil</span> <span class="kd">implements</span> <span class="n">MethodInterceptor</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">Enhancer</span> <span class="n">enhancer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Enhancer</span><span class="o">();</span>
+  	<span class="c1">//此方法相当于 JDK 动态代理 InvocationHandler.invoke() 方法
+</span><span class="c1"></span>    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">intercept</span><span class="o">(</span><span class="n">Object</span> <span class="n">obj</span><span class="o">,</span> <span class="n">Method</span> <span class="n">method</span><span class="o">,</span> <span class="n">Object</span><span class="o">[]</span> <span class="n">args</span><span class="o">,</span> <span class="n">MethodProxy</span> <span class="n">proxy</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Throwable</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;--------Log.log()---------&#34;</span><span class="o">);</span>
+        <span class="kd">final</span> <span class="n">Object</span> <span class="n">o1</span> <span class="o">=</span> <span class="n">proxy</span><span class="o">.</span><span class="na">invokeSuper</span><span class="o">(</span><span class="n">obj</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;--------Log.log()---------&#34;</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">o1</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">newProxyInstance</span><span class="o">(</span><span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">clazz</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//设置产生的代理对象的父类，也就是被代理对象（被增强对象）
+</span><span class="c1"></span>        <span class="n">enhancer</span><span class="o">.</span><span class="na">setSuperclass</span><span class="o">(</span><span class="n">clazz</span><span class="o">);</span>
+        <span class="c1">//设置代理类的代理方法（代理方法作为回调封装在 MethodInterceptor 实例中）
+</span><span class="c1"></span>        <span class="n">enhancer</span><span class="o">.</span><span class="na">setCallback</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+        <span class="c1">//使用默认无参数的构造函数创建目标对象
+</span><span class="c1"></span>        <span class="k">return</span> <span class="n">enhancer</span><span class="o">.</span><span class="na">create</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kd">final</span> <span class="n">ProxyerUtil</span> <span class="n">proxyerUtil</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ProxyerUtil</span><span class="o">();</span>
+        <span class="n">Proxyee</span> <span class="n">proxyer</span> <span class="o">=</span> <span class="o">(</span><span class="n">Proxyee</span><span class="o">)</span> <span class="n">proxyerUtil</span><span class="o">.</span><span class="na">newProxyInstance</span><span class="o">(</span><span class="n">Proxyee</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">proxyer</span><span class="o">.</span><span class="na">sayHello</span><span class="o">(</span><span class="s">&#34;SpongeCaptain&#34;</span><span class="o">);</span>
+        <span class="n">proxyer</span><span class="o">.</span><span class="na">year</span><span class="o">(</span><span class="n">2020</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>控制台输出：</p>
+<p>&mdash;&mdash;&ndash;Log.log()&mdash;&mdash;&mdash;
+hello SpongeCaptain
+&mdash;&mdash;&ndash;Log.log()&mdash;&mdash;&mdash;
+&mdash;&mdash;&ndash;Log.log()&mdash;&mdash;&mdash;
+This is 2020
+&mdash;&mdash;&ndash;Log.log()&mdash;&mdash;&mdash;</p>
+</blockquote>
+<p>MethodInterceptor 的 <code>intercept()</code> 方法有四个入口参数，依次为：</p>
+<ul>
+<li>Object obj (被)代理的对象，在 CGLIB 的语义中就是已经增强了的对象</li>
+<li>Method method 代理方法</li>
+<li>Object[] args 方法参数</li>
+<li>MethodProxy proxy 代理方法：如果代理方法有多个，那么就会对应多个不同的 MethodProxy 实例。</li>
+</ul>
+<p>我们能注意到入口参数有两个参数都表示代理方法，它们实现的功能是类似的，但是 MethodProxy 通过非反射来实现方法的调用，效率更高一点。</p>
+<p>MethodProxy 类有两个 invoke 方法，如下：</p>
+<ul>
+<li><code>MethodProxy.invoke()</code> 用于调用已经代理的方法；</li>
+<li><code>MethodProxy.invokeSuper()</code> 用于调用被代理的方法；</li>
+</ul>
+<hr>
+<p>另一方面，<strong>在 CGLIB 中没有被代理对象这一个说法</strong>。和 JDK 的动态代理作比较就是：</p>
+<ul>
+<li>JDK 动态代理中，我们首先构造被代理对象实例，然后注入 InvocationHandler 实例，然后将 InvocationHandler 实例交给 <code>Proxy.newInstance()</code> 方法来构造动态代理类实例。注入被代理对象是必要的，因此如果想在代理类中调用被代理类的方法，必须通过注入的被代理类对象来执行；</li>
+<li>CGLIB 动态代理汇汇中，我们并不需要构造被代理对象实例，我们只要给予其被代理类.class 即可。其内部的执行逻辑和 JDK 动态代理不一致。</li>
+</ul>
+<p>正是因为这个原因，MethodInterceptor 的 <code>intercept()</code> 方法的第一个入口参数的语义就是 (被)代理的对象，在 CGLIB 的语义中就是已经增强了的对象，相当于 JDK 动态代理中的 <code>InvocationHandler.invoke()</code> 方法的第一个入口参数。</p>
+<p><strong>那么 CGLIB 内部的运行逻辑又是怎么样的呢？</strong></p>
+<p>首先可以画出我们在上面得到的代理类实例 <code>Proxyee proxyer</code> 的继承、实现、依赖关系图：</p>
+<p><img src="../../../images/img_java/image-20200717161633475.png" alt="image-20200717161633475" style="zoom:25%;" /></p>
+<p>其中：</p>
+<ul>
+<li>Proxyee：为被代理<strong>类</strong>（被增强<strong>类</strong>）；</li>
+<li>Proxyer：为代理<strong>实例</strong>，从原本的类，即被代理类增强而来；</li>
+<li>Factory：为 net.sf.cglib.proxy.Factory 接口类，这个类是 CGLIB 中实现代理所必要实现的接口，用于提供一些工具方法，和 Proxyee 没有关系；</li>
+</ul>
+<p>可见 CGLIB 版本的动态代理和 JDK 版本的动态代理有很大的区别，<strong>其完全不依赖于被代理类的实例</strong>，那么其是如何产生代理对象 proxyer 实例的呢？</p>
+<p>CGLIB 是高效的代码生成包，底层依靠 <a href="https://asm.ow2.io/">ASM</a>（开源的 java 字节码编辑类库）操作字节码实现。也就是说，CGLIB 的做法是对 Proxyee 类的字节码直接进行修改增强得到代理类 Proxyer，而不是通过生成引用了 Proxyee 实例的 Proxyer 类的字节码，然后再利用字节码生成 Proxyer 实例。</p>
+<p>在开启 CGLIB 的 debug 模式后，能够得到 CGLIB 动态生成的字节码文件，开启方式很简单，在 main 方法中主动调用：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="n">String</span> <span class="n">location</span> <span class="o">=</span>  <span class="n">ProxyerUtil</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getResource</span><span class="o">(</span><span class="s">&#34;&#34;</span><span class="o">).</span><span class="na">getPath</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;debugging/&#34;</span><span class="o">;</span>
+<span class="n">System</span><span class="o">.</span><span class="na">setProperty</span><span class="o">(</span><span class="n">DebuggingClassWriter</span><span class="o">.</span><span class="na">DEBUG_LOCATION_PROPERTY</span><span class="o">,</span> <span class="n">location</span><span class="o">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>在开启 DEBUG  模式后运行代码，会在 target/cglibproxy/debugging/cglibproxy/ 目录下生成三个 .class 字节码文件，它们分别是：</p>
+<ul>
+<li><code>Proxyee$$EnhancerByCGLIB$$551d55b3$$FastClassByCGLIB$$dece6ddd.class</code></li>
+<li><code>Proxyee$$EnhancerByCGLIB$$551d55b3.class</code></li>
+<li><code>Proxyee$$FastClassByCGLIB$$dbd539ed.class</code></li>
+</ul>
+<p>其中只有一个类为 Proxyee 的子类：<code>Proxyee$$EnhancerByCGLIB$$551d55b3</code> 其他两个类都是 FastClass 的子类。</p>
+<p>首先我们来看 Proxyee 的子类，因为只有它具有代理方法。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//省略其他逻辑，仅仅看代理方法
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">final</span> <span class="n">String</span> <span class="nf">sayHello</span><span class="o">(</span><span class="n">String</span> <span class="n">var1</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">MethodInterceptor</span> <span class="n">var10000</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">CGLIB$CALLBACK_0</span><span class="o">;</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">var10000</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">CGLIB$BIND_CALLBACKS</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+    <span class="n">var10000</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">CGLIB$CALLBACK_0</span><span class="o">;</span>
+  <span class="o">}</span>
+	
+  <span class="c1">//this 类型：Proxyee 与 Factory 的子类
+</span><span class="c1"></span>  <span class="c1">//CGLIB$sayHello$0$Method 类型：Method 类型，从名字就可以看出指向的是 Proxyee.sayHello() 方法
+</span><span class="c1"></span>  <span class="c1">//new Object[]{var1}：显然是方法的入口参数
+</span><span class="c1"></span>  <span class="c1">//CGLIB$sayHello$0$Proxy 类型：MethodProxy 类型
+</span><span class="c1"></span>  <span class="c1">//var10000 类型：MethodInterceptor 类型
+</span><span class="c1"></span>  <span class="k">return</span> <span class="n">var10000</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">?</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span><span class="n">var10000</span><span class="o">.</span><span class="na">intercept</span><span class="o">(</span>
+    <span class="k">this</span><span class="o">,</span> <span class="n">CGLIB$sayHello$0$Method</span><span class="o">,</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[]{</span><span class="n">var1</span><span class="o">},</span> <span class="n">CGLIB$sayHello$0$Proxy</span><span class="o">)</span><span class="err">：</span> <span class="kd">super</span><span class="o">.</span><span class="na">sayHello</span><span class="o">(</span><span class="n">var1</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">final</span> <span class="n">Integer</span> <span class="nf">year</span><span class="o">(</span><span class="kt">int</span> <span class="n">var1</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">MethodInterceptor</span> <span class="n">var10000</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">CGLIB$CALLBACK_0</span><span class="o">;</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">var10000</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">CGLIB$BIND_CALLBACKS</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+    <span class="n">var10000</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">CGLIB$CALLBACK_0</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="k">return</span> <span class="n">var10000</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">?</span> <span class="o">(</span><span class="n">Integer</span><span class="o">)</span><span class="n">var10000</span><span class="o">.</span><span class="na">intercept</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">CGLIB$year$1$Method</span><span class="o">,</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[]{</span><span class="k">new</span> <span class="n">Integer</span><span class="o">(</span><span class="n">var1</span><span class="o">)},</span> <span class="n">CGLIB$year$1$Proxy</span><span class="o">)</span> <span class="o">:</span> <span class="kd">super</span><span class="o">.</span><span class="na">year</span><span class="o">(</span><span class="n">var1</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>
+<p>首先，我们可以注意到，代理方法都被 <code>final</code> 声明，这说明我们不能继承动态生成的代理类，因此也不能对代理类进行再代理。</p>
+</li>
+<li>
+<p>其次，我们可以注意到，代理方法最终是通过 MethodInterceptor 的 <code>intercept()</code> 方法来完成执行逻辑的。</p>
+<blockquote>
+<p>如果 MethodInterceptor 类型的 var10000 指向 null，那么就直接调用父类，也就是被代理类的被代理方法。</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>那么问题来了，为什么还 CGLIB 还生成另外两个继承于 FastClass 的匿名内部类呢？</strong></p>
+<p>这是因为 FastClass 能更快地提供非反射的方法调用，正如之前所说的 MethodProxy 实例就基于 FastClass 进行非反射的代理方法调用，而 Method 实例则是通过反射机制进行方法调用的。</p>
+<blockquote>
+<p>在介绍 MethodInterceptor.intercept() 方法的入口参数时有提到这一点。</p>
+</blockquote>
+<p><strong>MethodProxy 实例为什么会和 FastClass 类有关系？</strong></p>
+<p>下面是 MethodProxy.init() 方法，就是用于初始化这层关系，如下所示：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span>
+<span class="o">{</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">fastClassInfo</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span>
+  <span class="o">{</span>
+    <span class="kd">synchronized</span> <span class="o">(</span><span class="n">initLock</span><span class="o">)</span>
+    <span class="o">{</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">fastClassInfo</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span>
+      <span class="o">{</span>
+        <span class="n">CreateInfo</span> <span class="n">ci</span> <span class="o">=</span> <span class="n">createInfo</span><span class="o">;</span>
+				<span class="c1">//初始化索引和方法签名以及建立两者的关系（延迟初始化）
+</span><span class="c1"></span>        <span class="n">FastClassInfo</span> <span class="n">fci</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FastClassInfo</span><span class="o">();</span>
+        <span class="n">fci</span><span class="o">.</span><span class="na">f1</span> <span class="o">=</span> <span class="n">helper</span><span class="o">(</span><span class="n">ci</span><span class="o">,</span> <span class="n">ci</span><span class="o">.</span><span class="na">c1</span><span class="o">);</span>
+        <span class="n">fci</span><span class="o">.</span><span class="na">f2</span> <span class="o">=</span> <span class="n">helper</span><span class="o">(</span><span class="n">ci</span><span class="o">,</span> <span class="n">ci</span><span class="o">.</span><span class="na">c2</span><span class="o">);</span>
+        <span class="n">fci</span><span class="o">.</span><span class="na">i1</span> <span class="o">=</span> <span class="n">fci</span><span class="o">.</span><span class="na">f1</span><span class="o">.</span><span class="na">getIndex</span><span class="o">(</span><span class="n">sig1</span><span class="o">);</span><span class="c1">//重写版代理方法
+</span><span class="c1"></span>        <span class="n">fci</span><span class="o">.</span><span class="na">i2</span> <span class="o">=</span> <span class="n">fci</span><span class="o">.</span><span class="na">f2</span><span class="o">.</span><span class="na">getIndex</span><span class="o">(</span><span class="n">sig2</span><span class="o">);</span><span class="c1">//未重写版代理方法
+</span><span class="c1"></span>        <span class="n">fastClassInfo</span> <span class="o">=</span> <span class="n">fci</span><span class="o">;</span>
+        <span class="n">createInfo</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>为什么会有两个索引？</strong></p>
+<p>因为 CGLIB  通过继承实现动态代理时，使其会保留两个父类的方法版本：</p>
+<ul>
+<li>一个是方法重写增强版本，即动态代理方法；</li>
+<li>另一个是不经过拦截器的对应方法，即原方法，或者说被代理的方法；</li>
+</ul>
+<blockquote>
+<p><strong>注意事项</strong>：每一个 MethodProxy 实例都是延迟加载的，比如这里调用 <code>Proxy.sayHello(&quot;SpongeCaptain&quot;,2020)</code> 方法时才会真正地初始化 MethodProxy 实例，调用其 <code>init()</code> 方法。</p>
+</blockquote>
+<p>这两个索引分别对应着自己的 FastClass 实例，因此正如上面提到的 CGLIB 额外产生了两个 FastClass 类实例。</p>
+<p>通过 Proxyer 来初始化索引乃至执行代理方法的完成过程如下所示：</p>
+<ul>
+<li>调用 Proxyer.sayHello(&ldquo;hello&rdquo;, 2020) 中有使用 MethodProxy 的相关方法（下面会有讲到），导致此代理方法对应的 MethodProxy 实例开始初始化；</li>
+<li>在 <code>MethodProxy.init()</code> 方法的执行过程中，通过方法签名 Signature 实例（此时值为 <code>sayHello(Ljava/lang/String;)Ljava/lang/String;</code>）调用 <code>FastClass.getIndex()</code> 方法得到方法对应的索引；</li>
+<li>通过 <code>MethdProxy.invoke()</code> 方法待 <code>init()</code> 执行完毕后，通过调用 FastClas.invoke() 方法进行真正的方法调用，其中入口参数依次为：方法对应的索引、(被)代理对象、方法入口参数；</li>
+</ul>
+<p>下面是 MethodProxy 实例分别调用重写方法的 invoke() 以及调用非重写方法的 invokeSuper()：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//MethodProxy.invoke() 以及 MethodProxy.invokeSuper() 方法
+</span><span class="c1">//重写版本的方法调用，可以看到我们使用的是索引 fci.i1
+</span><span class="c1">//Object object 为(被)代理的对象，在 CGLIB 的语义中就是已经增强了的对象
+</span><span class="c1">//Object[] args 代理方法的输入参数
+</span><span class="c1"></span><span class="kd">public</span> <span class="n">Object</span> <span class="nf">invoke</span><span class="o">(</span><span class="n">Object</span> <span class="n">obj</span><span class="o">,</span> <span class="n">Object</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Throwable</span> <span class="o">{</span>
+  <span class="k">try</span> <span class="o">{</span>
+    <span class="n">init</span><span class="o">();</span><span class="c1">//延迟加载措施
+</span><span class="c1"></span>    <span class="n">FastClassInfo</span> <span class="n">fci</span> <span class="o">=</span> <span class="n">fastClassInfo</span><span class="o">;</span>
+    <span class="k">return</span> <span class="n">fci</span><span class="o">.</span><span class="na">f1</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">fci</span><span class="o">.</span><span class="na">i1</span><span class="o">,</span> <span class="n">obj</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span><span class="c1">//调用 FastClass.invoke() 方法
+</span><span class="c1"></span>  <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InvocationTargetException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">throw</span> <span class="n">e</span><span class="o">.</span><span class="na">getTargetException</span><span class="o">();</span>
+  <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalArgumentException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">fastClassInfo</span><span class="o">.</span><span class="na">i1</span> <span class="o">&lt;</span> <span class="n">0</span><span class="o">)</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">(</span><span class="s">&#34;Protected method: &#34;</span> <span class="o">+</span> <span class="n">sig1</span><span class="o">);</span>
+    <span class="k">throw</span> <span class="n">e</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">//未重写版本的方法调用，可以看到我们使用的是索引 fci.i2
+</span><span class="c1"></span><span class="kd">public</span> <span class="n">Object</span> <span class="nf">invokeSuper</span><span class="o">(</span><span class="n">Object</span> <span class="n">obj</span><span class="o">,</span> <span class="n">Object</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Throwable</span> <span class="o">{</span>
+  <span class="k">try</span> <span class="o">{</span>
+    <span class="n">init</span><span class="o">();</span><span class="c1">//延迟加载措施
+</span><span class="c1"></span>    <span class="n">FastClassInfo</span> <span class="n">fci</span> <span class="o">=</span> <span class="n">fastClassInfo</span><span class="o">;</span>
+    <span class="k">return</span> <span class="n">fci</span><span class="o">.</span><span class="na">f2</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">fci</span><span class="o">.</span><span class="na">i2</span><span class="o">,</span> <span class="n">obj</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span><span class="c1">//调用 FastClass.invoke() 方法
+</span><span class="c1"></span>  <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InvocationTargetException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">throw</span> <span class="n">e</span><span class="o">.</span><span class="na">getTargetException</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">//补充：fci 字段指向 FastClassInfo 实例，定义如下
+</span><span class="c1"></span><span class="kd">private</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">FastClassInfo</span>
+<span class="o">{</span>
+  <span class="n">FastClass</span> <span class="n">f1</span><span class="o">;</span>
+  <span class="n">FastClass</span> <span class="n">f2</span><span class="o">;</span>
+  <span class="kt">int</span> <span class="n">i1</span><span class="o">;</span>
+  <span class="kt">int</span> <span class="n">i2</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>下面为 FastClass 的匿名内部类（以重写方法的 FastClass 版本为例）：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//通过 FastClss.getIndex() 方法完成方法签名到方法索引的映射
+</span><span class="c1"></span><span class="kd">public</span> <span class="kt">int</span> <span class="nf">getIndex</span><span class="o">(</span><span class="n">Signature</span> <span class="n">var1</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">String</span> <span class="n">var10000</span> <span class="o">=</span> <span class="n">var1</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+  <span class="k">switch</span><span class="o">(</span><span class="n">var10000</span><span class="o">.</span><span class="na">hashCode</span><span class="o">())</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="o">-</span><span class="n">2055565910</span><span class="o">:</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">var10000</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&#34;CGLIB$SET_THREAD_CALLBACKS([Lnet/sf/cglib/proxy/Callback;)V&#34;</span><span class="o">))</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">20</span><span class="o">;</span>
+      <span class="o">}</span>
+      <span class="k">break</span><span class="o">;</span>
+    <span class="k">case</span> <span class="o">-</span><span class="n">1816210712</span><span class="o">:</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">var10000</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&#34;sayHello(Ljava/lang/String;)Ljava/lang/String;&#34;</span><span class="o">))</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">0</span><span class="o">;</span>
+      <span class="o">}</span>
+      <span class="k">break</span><span class="o">;</span>
+      <span class="c1">//省去其他 case 语句(因为太多了)
+</span><span class="c1"></span>  <span class="o">}</span>  
+<span class="o">}</span>
+
+<span class="c1">//通过 FastClass.invoke() 方法来执行具体的代理方法
+</span><span class="c1">//参数说明：int var1 对应于方法索引， Object var2 为(被)代理对象，Object[] var3 为代理方法入口参数
+</span><span class="c1"></span><span class="kd">public</span> <span class="n">Object</span> <span class="nf">invoke</span><span class="o">(</span><span class="kt">int</span> <span class="n">var1</span><span class="o">,</span> <span class="n">Object</span> <span class="n">var2</span><span class="o">,</span> <span class="n">Object</span><span class="o">[]</span> <span class="n">var3</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InvocationTargetException</span> <span class="o">{</span>
+  <span class="n">551d55b3</span> <span class="n">var10000</span> <span class="o">=</span> <span class="o">(</span><span class="n">551d55b3</span><span class="o">)</span><span class="n">var2</span><span class="o">;</span>
+  <span class="kt">int</span> <span class="n">var10001</span> <span class="o">=</span> <span class="n">var1</span><span class="o">;</span>
+
+  <span class="k">try</span> <span class="o">{</span>
+    <span class="k">switch</span><span class="o">(</span><span class="n">var10001</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">case</span> <span class="n">0</span><span class="o">:</span>
+        <span class="k">return</span> <span class="n">var10000</span><span class="o">.</span><span class="na">sayHello</span><span class="o">((</span><span class="n">String</span><span class="o">)</span><span class="n">var3</span><span class="o">[</span><span class="n">0</span><span class="o">]);</span>
+      <span class="k">case</span> <span class="n">1</span><span class="o">:</span>
+        <span class="k">return</span> <span class="n">var10000</span><span class="o">.</span><span class="na">year</span><span class="o">(((</span><span class="n">Number</span><span class="o">)</span><span class="n">var3</span><span class="o">[</span><span class="n">0</span><span class="o">]).</span><span class="na">intValue</span><span class="o">());</span>
+      <span class="k">case</span> <span class="n">2</span><span class="o">:</span>
+        <span class="k">return</span> <span class="n">551d55b3</span><span class="o">.</span><span class="na">CGLIB$findMethodProxy</span><span class="o">((</span><span class="n">Signature</span><span class="o">)</span><span class="n">var3</span><span class="o">[</span><span class="n">0</span><span class="o">]);</span>
+      <span class="k">case</span> <span class="n">3</span><span class="o">:</span>
+        <span class="n">var10000</span><span class="o">.</span><span class="na">setCallback</span><span class="o">(((</span><span class="n">Number</span><span class="o">)</span><span class="n">var3</span><span class="o">[</span><span class="n">0</span><span class="o">]).</span><span class="na">intValue</span><span class="o">(),</span> <span class="o">(</span><span class="n">Callback</span><span class="o">)</span><span class="n">var3</span><span class="o">[</span><span class="n">1</span><span class="o">]);</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="c1">//省去其他 case 语句 
+</span><span class="c1"></span>    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>画外音：这么多的 swith-case 太影响美观和阅读了，不过匿名内部类反正是给机器看的，也就无所谓了。</p>
+</blockquote>
+<p>对于 Java 的 Method 而言，方法签名就是方法所属类的完全限定名+方法名+入口参数类型。然而通过方法名来确定到具体的方法指针最后在执行没有直接通过方法指针来执行快。但是问题在于 Java 语法中没有指针，更别提方法指针，因此 FastClass 采用了巧妙的方式，利用索引和方法签名，这里的方法签名通过 <code>switch case</code> 语句实现。这里我们不妨就拿 <code>Proxyee$$EnhancerByCGLIB$$551d55b3$$FastClassByCGLIB$$dece6ddd</code> 类为例。</p>
+<p>现在我们可以知道通过执行一个由 CGLIB 产生的代理类的内部执行逻辑了，如下图所示：</p>
+<p><img src="../../../images/img_java/image-20200717212959198.png" alt="image-20200717212959198" style="zoom: 25%;" /></p>
+<p>其中每一个 FastClass 负责提供 <code>getIndex()</code> 将方法签名转换为索引，通过 <code>invoke()</code> 方法提供通过方法索引来执行具体的代理方法的能力。而两个 FastClass 又分别负责未重写的代理方法与重写了的代理方法。</p>
+<blockquote>
+<p><strong>注意事项</strong>：生成代理类的类名规范为：<code>被代理类名 + &quot;$$&quot; + Class Generator Name + &quot;ByCGLIB&quot; + &quot;$$&quot; + key的hashCode</code> 规则。这一点在我们 GitHub 项目上也能看到。</p>
+</blockquote>
+<p><strong>那么最后一个问题，这三个 .class 匿名内部类是如何生成的？</strong></p>
+<p>这里主要考虑的是代理类实例如何生成，因为这里的代理类生成逻辑和 JDK 不同，其对外的表现是继承了被代理类，这是理解 CGLIB 的重点。</p>
+<p>这要从 <code>Enhancer.create()</code> 方法入手，除去安全检查逻辑、缓存逻辑、工厂逻辑、创建 CGLIB 框架组件类的相关逻辑，</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//DefaultGeneratorStrategy.generate()
+</span><span class="c1"></span><span class="kd">public</span> <span class="kt">byte</span><span class="o">[]</span> <span class="nf">generate</span><span class="o">(</span><span class="n">ClassGenerator</span> <span class="n">cg</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+  <span class="n">DebuggingClassWriter</span> <span class="n">cw</span> <span class="o">=</span> <span class="n">getClassVisitor</span><span class="o">();</span><span class="c1">//得到来自 ASM 框架下的 ClassWriter 实例
+</span><span class="c1"></span>  <span class="n">transform</span><span class="o">(</span><span class="n">cg</span><span class="o">).</span><span class="na">generateClass</span><span class="o">(</span><span class="n">cw</span><span class="o">);</span><span class="c1">//初始化 Enhandler 实例的相关字段，与类的字节码相关
+</span><span class="c1"></span>  <span class="k">return</span> <span class="n">transform</span><span class="o">(</span><span class="n">cw</span><span class="o">.</span><span class="na">toByteArray</span><span class="o">());</span><span class="c1">//以 byte 数组的形式返回字节码文件内容
+</span><span class="c1"></span><span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>那么最终和代理类直接相关的方法是 <code>Enhancer.generateClass()</code>，如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// 一个 Enhancer 实例只能生产一个代理类，因此 Enhancer 是有状态的
+</span><span class="c1">// 所以 Enhancer.generateClass() 直接是在修改字段值了
+</span><span class="c1"></span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">generateClass</span><span class="o">(</span><span class="n">ClassVisitor</span> <span class="n">v</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+  <span class="n">Class</span> <span class="n">sc</span> <span class="o">=</span> <span class="o">(</span><span class="n">superclass</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">?</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span> <span class="o">:</span> <span class="n">superclass</span><span class="o">;</span>
+
+  <span class="c1">//如果被代理类是final类型的，抛出异常
+</span><span class="c1"></span>  <span class="k">if</span> <span class="o">(</span><span class="n">TypeUtils</span><span class="o">.</span><span class="na">isFinal</span><span class="o">(</span><span class="n">sc</span><span class="o">.</span><span class="na">getModifiers</span><span class="o">()))</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalArgumentException</span><span class="o">(</span><span class="s">&#34;Cannot subclass final class &#34;</span> <span class="o">+</span> <span class="n">sc</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+  <span class="c1">//以下两行代码获得被代理类的非私有构造函数
+</span><span class="c1"></span>  <span class="n">List</span> <span class="n">constructors</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">sc</span><span class="o">.</span><span class="na">getDeclaredConstructors</span><span class="o">()));</span>
+  <span class="n">filterConstructors</span><span class="o">(</span><span class="n">sc</span><span class="o">,</span> <span class="n">constructors</span><span class="o">);</span>
+
+  <span class="c1">// Order is very important: must add superclass, then
+</span><span class="c1"></span>  <span class="c1">// its superclass chain, then each interface and
+</span><span class="c1"></span>  <span class="c1">// its superinterfaces.
+</span><span class="c1"></span>  <span class="n">List</span> <span class="n">actualMethods</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">();</span>
+  <span class="n">List</span> <span class="n">interfaceMethods</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">();</span>
+  <span class="kd">final</span> <span class="n">Set</span> <span class="n">forcePublic</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">();</span>
+  <span class="c1">//得到被代理类及其父类、接口的非final、非static、非private方法。这些方法是需要代理的（在不考虑CallbackFilter的情况下）
+</span><span class="c1"></span>  <span class="n">getMethods</span><span class="o">(</span><span class="n">sc</span><span class="o">,</span> <span class="n">interfaces</span><span class="o">,</span> <span class="n">actualMethods</span><span class="o">,</span> <span class="n">interfaceMethods</span><span class="o">,</span> <span class="n">forcePublic</span><span class="o">);</span>
+
+  <span class="c1">//获得需要代理的方法的方法信息
+</span><span class="c1"></span>  <span class="n">List</span> <span class="n">methods</span> <span class="o">=</span> <span class="n">CollectionUtils</span><span class="o">.</span><span class="na">transform</span><span class="o">(</span><span class="n">actualMethods</span><span class="o">,</span> <span class="k">new</span> <span class="n">Transformer</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">Object</span> <span class="nf">transform</span><span class="o">(</span><span class="n">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">Method</span> <span class="n">method</span> <span class="o">=</span> <span class="o">(</span><span class="n">Method</span><span class="o">)</span><span class="n">value</span><span class="o">;</span>
+      <span class="kt">int</span> <span class="n">modifiers</span> <span class="o">=</span> <span class="n">Constants</span><span class="o">.</span><span class="na">ACC_FINAL</span>
+        <span class="o">|</span> <span class="o">(</span><span class="n">method</span><span class="o">.</span><span class="na">getModifiers</span><span class="o">()</span>
+           <span class="o">&amp;</span> <span class="o">~</span><span class="n">Constants</span><span class="o">.</span><span class="na">ACC_ABSTRACT</span>
+           <span class="o">&amp;</span> <span class="o">~</span><span class="n">Constants</span><span class="o">.</span><span class="na">ACC_NATIVE</span>
+           <span class="o">&amp;</span> <span class="o">~</span><span class="n">Constants</span><span class="o">.</span><span class="na">ACC_SYNCHRONIZED</span><span class="o">);</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">forcePublic</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">MethodWrapper</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">method</span><span class="o">)))</span> <span class="o">{</span>
+        <span class="n">modifiers</span> <span class="o">=</span> <span class="o">(</span><span class="n">modifiers</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">Constants</span><span class="o">.</span><span class="na">ACC_PROTECTED</span><span class="o">)</span> <span class="o">|</span> <span class="n">Constants</span><span class="o">.</span><span class="na">ACC_PUBLIC</span><span class="o">;</span>
+      <span class="o">}</span>
+      <span class="k">return</span> <span class="n">ReflectUtils</span><span class="o">.</span><span class="na">getMethodInfo</span><span class="o">(</span><span class="n">method</span><span class="o">,</span> <span class="n">modifiers</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">});</span>
+
+  <span class="n">ClassEmitter</span> <span class="n">e</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ClassEmitter</span><span class="o">(</span><span class="n">v</span><span class="o">);</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">currentData</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">//生成class文件的版本号、类的访问描述符、类名、父类名、接口，并生成SourceFile属性
+</span><span class="c1"></span>    <span class="n">e</span><span class="o">.</span><span class="na">begin_class</span><span class="o">(</span><span class="n">Constants</span><span class="o">.</span><span class="na">V1_2</span><span class="o">,</span>
+                  <span class="n">Constants</span><span class="o">.</span><span class="na">ACC_PUBLIC</span><span class="o">,</span>
+                  <span class="n">getClassName</span><span class="o">(),</span>
+                  <span class="n">Type</span><span class="o">.</span><span class="na">getType</span><span class="o">(</span><span class="n">sc</span><span class="o">),</span>
+                  <span class="o">(</span><span class="n">useFactory</span> <span class="o">?</span>
+                   <span class="n">TypeUtils</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">TypeUtils</span><span class="o">.</span><span class="na">getTypes</span><span class="o">(</span><span class="n">interfaces</span><span class="o">),</span> <span class="n">FACTORY</span><span class="o">)</span> <span class="o">:</span>
+                   <span class="n">TypeUtils</span><span class="o">.</span><span class="na">getTypes</span><span class="o">(</span><span class="n">interfaces</span><span class="o">)),</span>
+                  <span class="n">Constants</span><span class="o">.</span><span class="na">SOURCE_FILE</span><span class="o">);</span>
+  <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+    <span class="n">e</span><span class="o">.</span><span class="na">begin_class</span><span class="o">(</span><span class="n">Constants</span><span class="o">.</span><span class="na">V1_2</span><span class="o">,</span>
+                  <span class="n">Constants</span><span class="o">.</span><span class="na">ACC_PUBLIC</span><span class="o">,</span>
+                  <span class="n">getClassName</span><span class="o">(),</span>
+                  <span class="kc">null</span><span class="o">,</span>
+                  <span class="k">new</span> <span class="n">Type</span><span class="o">[]{</span><span class="n">FACTORY</span><span class="o">},</span>
+                  <span class="n">Constants</span><span class="o">.</span><span class="na">SOURCE_FILE</span><span class="o">);</span>
+  <span class="o">}</span>
+  <span class="n">List</span> <span class="n">constructorInfo</span> <span class="o">=</span> <span class="n">CollectionUtils</span><span class="o">.</span><span class="na">transform</span><span class="o">(</span><span class="n">constructors</span><span class="o">,</span> <span class="n">MethodInfoTransformer</span><span class="o">.</span><span class="na">getInstance</span><span class="o">());</span>
+
+  <span class="c1">//以下生成代理类的字段，可以对照下面的反编译结果观看
+</span><span class="c1"></span>  <span class="c1">//生成private boolean CGLIB$BOUND字段
+</span><span class="c1"></span>  <span class="n">e</span><span class="o">.</span><span class="na">declare_field</span><span class="o">(</span><span class="n">Constants</span><span class="o">.</span><span class="na">ACC_PRIVATE</span><span class="o">,</span> <span class="n">BOUND_FIELD</span><span class="o">,</span> <span class="n">Type</span><span class="o">.</span><span class="na">BOOLEAN_TYPE</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+  <span class="c1">//生成public static Object CGLIB$FACTORY_DATA字段
+</span><span class="c1"></span>  <span class="n">e</span><span class="o">.</span><span class="na">declare_field</span><span class="o">(</span><span class="n">Constants</span><span class="o">.</span><span class="na">ACC_PUBLIC</span> <span class="o">|</span> <span class="n">Constants</span><span class="o">.</span><span class="na">ACC_STATIC</span><span class="o">,</span> <span class="n">FACTORY_DATA_FIELD</span><span class="o">,</span> <span class="n">OBJECT_TYPE</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+  <span class="k">if</span> <span class="o">(!</span><span class="n">interceptDuringConstruction</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">e</span><span class="o">.</span><span class="na">declare_field</span><span class="o">(</span><span class="n">Constants</span><span class="o">.</span><span class="na">ACC_PRIVATE</span><span class="o">,</span> <span class="n">CONSTRUCTED_FIELD</span><span class="o">,</span> <span class="n">Type</span><span class="o">.</span><span class="na">BOOLEAN_TYPE</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+  <span class="o">}</span>
+  <span class="c1">//生成private static final ThreadLocal CGLIB$THREAD_CALLBACKS字段
+</span><span class="c1"></span>  <span class="n">e</span><span class="o">.</span><span class="na">declare_field</span><span class="o">(</span><span class="n">Constants</span><span class="o">.</span><span class="na">PRIVATE_FINAL_STATIC</span><span class="o">,</span> <span class="n">THREAD_CALLBACKS_FIELD</span><span class="o">,</span> <span class="n">THREAD_LOCAL</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+  <span class="c1">//生成private static final Callback[] CGLIB$STATIC_CALLBACKS字段
+</span><span class="c1"></span>  <span class="n">e</span><span class="o">.</span><span class="na">declare_field</span><span class="o">(</span><span class="n">Constants</span><span class="o">.</span><span class="na">PRIVATE_FINAL_STATIC</span><span class="o">,</span> <span class="n">STATIC_CALLBACKS_FIELD</span><span class="o">,</span> <span class="n">CALLBACK_ARRAY</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">serialVersionUID</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">e</span><span class="o">.</span><span class="na">declare_field</span><span class="o">(</span><span class="n">Constants</span><span class="o">.</span><span class="na">PRIVATE_FINAL_STATIC</span><span class="o">,</span> <span class="n">Constants</span><span class="o">.</span><span class="na">SUID_FIELD_NAME</span><span class="o">,</span> <span class="n">Type</span><span class="o">.</span><span class="na">LONG_TYPE</span><span class="o">,</span> <span class="n">serialVersionUID</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="c1">//以下是生成Callback字段，可以看到，对应每个设置的Callback，都会在代理类中生成一个对应具体类型的字段
+</span><span class="c1"></span>  <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">callbackTypes</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+    <span class="c1">//在本例中生成的是private MethodInterceptor CGLIB$CALLBACK_0字段，后缀_0代表是在Enhancer中设置的第0个Callback
+</span><span class="c1"></span>    <span class="n">e</span><span class="o">.</span><span class="na">declare_field</span><span class="o">(</span><span class="n">Constants</span><span class="o">.</span><span class="na">ACC_PRIVATE</span><span class="o">,</span> <span class="n">getCallbackField</span><span class="o">(</span><span class="n">i</span><span class="o">),</span> <span class="n">callbackTypes</span><span class="o">[</span><span class="n">i</span><span class="o">],</span> <span class="kc">null</span><span class="o">);</span>
+  <span class="o">}</span>
+  <span class="c1">// This is declared private to avoid &#34;public field&#34; pollution
+</span><span class="c1"></span>  <span class="c1">//生成private static Object CGLIB$CALLBACK_FILTER字段。如果Enhancer只设置了一个Callback并且没有设置CallbackFilter，那么会默认对该Enhancer对象添加一个指向第0个Callback的CallbackFilter
+</span><span class="c1"></span>  <span class="n">e</span><span class="o">.</span><span class="na">declare_field</span><span class="o">(</span><span class="n">Constants</span><span class="o">.</span><span class="na">ACC_PRIVATE</span> <span class="o">|</span> <span class="n">Constants</span><span class="o">.</span><span class="na">ACC_STATIC</span><span class="o">,</span> <span class="n">CALLBACK_FILTER_FIELD</span><span class="o">,</span> <span class="n">OBJECT_TYPE</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+
+  <span class="k">if</span> <span class="o">(</span><span class="n">currentData</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">//这个函数生成需要代理类的方法
+</span><span class="c1"></span>    <span class="n">emitMethods</span><span class="o">(</span><span class="n">e</span><span class="o">,</span> <span class="n">methods</span><span class="o">,</span> <span class="n">actualMethods</span><span class="o">);</span>
+    <span class="c1">//生成构造器
+</span><span class="c1"></span>    <span class="n">emitConstructors</span><span class="o">(</span><span class="n">e</span><span class="o">,</span> <span class="n">constructorInfo</span><span class="o">);</span>
+  <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+    <span class="n">emitDefaultConstructor</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+  <span class="o">}</span>
+  <span class="c1">//以下三行代码分别生成代理类的CGLIB$SET_THREAD_CALLBACKS、CGLIB$SET_STATIC_CALLBACKS和CGLIB$BIND_CALLBACKS函数
+</span><span class="c1"></span>  <span class="n">emitSetThreadCallbacks</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+  <span class="c1">// 绑定静态callback
+</span><span class="c1"></span>  <span class="n">emitSetStaticCallbacks</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+  <span class="c1">// 绑定callback
+</span><span class="c1"></span>  <span class="n">emitBindCallbacks</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+
+  <span class="k">if</span> <span class="o">(</span><span class="n">useFactory</span> <span class="o">||</span> <span class="n">currentData</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kt">int</span><span class="o">[]</span> <span class="n">keys</span> <span class="o">=</span> <span class="n">getCallbackKeys</span><span class="o">();</span>
+    <span class="c1">//如果useFactory为true就会生成几个newInstance方法，还有几个操作代理类的Callback的方法
+</span><span class="c1"></span>    <span class="n">emitNewInstanceCallbacks</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+    <span class="n">emitNewInstanceCallback</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+    <span class="n">emitNewInstanceMultiarg</span><span class="o">(</span><span class="n">e</span><span class="o">,</span> <span class="n">constructorInfo</span><span class="o">);</span>
+    <span class="n">emitGetCallback</span><span class="o">(</span><span class="n">e</span><span class="o">,</span> <span class="n">keys</span><span class="o">);</span>
+    <span class="n">emitSetCallback</span><span class="o">(</span><span class="n">e</span><span class="o">,</span> <span class="n">keys</span><span class="o">);</span>
+    <span class="n">emitGetCallbacks</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+    <span class="n">emitSetCallbacks</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="n">e</span><span class="o">.</span><span class="na">end_class</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>可见，DebuggingClassWriter 它通过封装 ClassWriter，<strong>实现了从定义的类结构到字节码 byte[] 数组的转换工作</strong>，并且如果在 CGLIB DEBUG 模式下，还会将将字节码内容写入我们前面指定的目录中，便于调试。</p>
+<p>这里使用了 ASM 提供的 API，细节并不是非常重要，但是了解 ASM 的相关 API 有助于我们理解 CGLIB：</p>
+<ul>
+<li>ClassRead：用于读取加载 .class 文件；</li>
+<li>ClassVistor：用于修改 .class 文件；</li>
+<li>ClassWriter：用于生产 .class 文件；</li>
+</ul>
+<blockquote>
+<p>这里的文件是内存中的 .class 文件对应的 byte[] 数组。上述过程就用到了上述三个类。</p>
+</blockquote>
+<p><strong>ASM 的大致机理则是先读取原来的 .class 文件，然后加入新特性后，在其 <code>toByteArray()</code> 方法中按照虚拟机规范即  ClassFile 的格式依次填入数据，最终返回新 .class 文件，即 byte[] 数组</strong>。</p>
+<blockquote>
+<p>如果想要详细裂解 ASM 机制，可以看：<a href="https://www.jianshu.com/p/26e99d39b3fb">Java 字节码处理框架 ASM 设计思想解析</a>。</p>
+</blockquote>
+<p>接着，在获取了生成的字节码文件的 byte[] 数组后，会通过 <code>ReflectUtils.defineClass(className, b, loader)</code> 使用反射得到相应的实例，源码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//AbstractClassGenerator.generate(ClassLoaderData data) 方法内部
+</span><span class="c1"></span><span class="kt">byte</span><span class="o">[]</span> <span class="n">b</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="na">generate</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+<span class="n">String</span> <span class="n">className</span> <span class="o">=</span> <span class="n">ClassNameReader</span><span class="o">.</span><span class="na">getClassName</span><span class="o">(</span><span class="k">new</span> <span class="n">ClassReader</span><span class="o">(</span><span class="n">b</span><span class="o">));</span>
+<span class="n">ProtectionDomain</span> <span class="n">protectionDomain</span> <span class="o">=</span> <span class="n">getProtectionDomain</span><span class="o">();</span>
+<span class="kd">synchronized</span> <span class="o">(</span><span class="n">classLoader</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// just in case
+</span><span class="c1"></span>  <span class="c1">//根据返回的字节码生成类
+</span><span class="c1"></span>  <span class="k">if</span> <span class="o">(</span><span class="n">protectionDomain</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">gen</span> <span class="o">=</span> <span class="n">ReflectUtils</span><span class="o">.</span><span class="na">defineClass</span><span class="o">(</span><span class="n">className</span><span class="o">,</span> <span class="n">b</span><span class="o">,</span> <span class="n">classLoader</span><span class="o">);</span>
+  <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+    <span class="n">gen</span> <span class="o">=</span> <span class="n">ReflectUtils</span><span class="o">.</span><span class="na">defineClass</span><span class="o">(</span><span class="n">className</span><span class="o">,</span> <span class="n">b</span><span class="o">,</span> <span class="n">classLoader</span><span class="o">,</span> <span class="n">protectionDomain</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>其中 <code>ReflectUtils.defineClass(String className, byte[] b, ClassLoader loader)</code> 的原理其实是通过反射调用 ClassLoader 的 <code>defineClass()</code> 方法来创建类的：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="n">Class</span> <span class="nf">defineClass</span><span class="o">(</span><span class="n">String</span> <span class="n">className</span><span class="o">,</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">b</span><span class="o">,</span> <span class="n">ClassLoader</span> <span class="n">loader</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+  <span class="n">Object</span><span class="o">[]</span> <span class="n">args</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Object</span><span class="o">[]{</span><span class="n">className</span><span class="o">,</span> <span class="n">b</span><span class="o">,</span> <span class="k">new</span> <span class="n">Integer</span><span class="o">(</span><span class="n">0</span><span class="o">),</span> <span class="k">new</span> <span class="n">Integer</span><span class="o">(</span><span class="n">b</span><span class="o">.</span><span class="na">length</span><span class="o">),</span> <span class="n">PROTECTION_DOMAIN</span> <span class="o">};</span>
+  <span class="n">Class</span> <span class="n">c</span> <span class="o">=</span> <span class="o">(</span><span class="n">Class</span><span class="o">)</span><span class="n">DEFINE_CLASS</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">loader</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+  <span class="c1">// Force static initializers to run.
+</span><span class="c1"></span>  <span class="n">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="n">className</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="n">loader</span><span class="o">);</span>
+  <span class="k">return</span> <span class="n">c</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>最终得到 Class 类对象之后，会使用 <code>firstInstance(gen)</code> 将 Class 对象传入，创建对应的实例，此处使用的 <code>firstInstance(Class)</code> 来自于 Generator 类：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// Generator类的firstInstance(Class)，调用了ReflectUtils类的newInstance(Class)方法
+</span><span class="c1"></span><span class="kd">protected</span> <span class="n">Object</span> <span class="nf">firstInstance</span><span class="o">(</span><span class="n">Class</span> <span class="n">type</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">return</span> <span class="n">ReflectUtils</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">type</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="c1">// ReflectUtils类newInstance(Class)的相关方法
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="nf">newInstance</span><span class="o">(</span><span class="n">Class</span> <span class="n">type</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">return</span> <span class="n">newInstance</span><span class="o">(</span><span class="n">type</span><span class="o">,</span> <span class="n">Constants</span><span class="o">.</span><span class="na">EMPTY_CLASS_ARRAY</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="nf">newInstance</span><span class="o">(</span><span class="n">Class</span> <span class="n">type</span><span class="o">,</span> <span class="n">Class</span><span class="o">[]</span> <span class="n">parameterTypes</span><span class="o">,</span> <span class="n">Object</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">return</span> <span class="n">newInstance</span><span class="o">(</span><span class="n">getConstructor</span><span class="o">(</span><span class="n">type</span><span class="o">,</span> <span class="n">parameterTypes</span><span class="o">),</span> <span class="n">args</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="nf">newInstance</span><span class="o">(</span><span class="kd">final</span> <span class="n">Constructor</span> <span class="n">cstruct</span><span class="o">,</span> <span class="kd">final</span> <span class="n">Object</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+
+  <span class="kt">boolean</span> <span class="n">flag</span> <span class="o">=</span> <span class="n">cstruct</span><span class="o">.</span><span class="na">isAccessible</span><span class="o">();</span>
+  <span class="k">try</span> <span class="o">{</span>
+    <span class="c1">// 设置构造方法的可见性
+</span><span class="c1"></span>    <span class="n">cstruct</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="c1">// 根据构造方法创建对象
+</span><span class="c1"></span>    <span class="n">Object</span> <span class="n">result</span> <span class="o">=</span> <span class="n">cstruct</span><span class="o">.</span><span class="na">newInstance</span><span class="o">(</span><span class="n">args</span><span class="o">);</span>
+    <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+  <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InstantiationException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="n">CodeGenerationException</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+  <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IllegalAccessException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="n">CodeGenerationException</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+  <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InvocationTargetException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="n">CodeGenerationException</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getTargetException</span><span class="o">());</span>
+  <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+    <span class="n">cstruct</span><span class="o">.</span><span class="na">setAccessible</span><span class="o">(</span><span class="n">flag</span><span class="o">);</span>
+  <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>整个过程为：</p>
+<ul>
+<li>将被代理类的 .class 文件传给 ASM 的 ClassRead 类；</li>
+<li>然后利用 ClassVistor 添加 AOP 拦截方法（我们写在 MethodInterceptor 类的 intercept() 方法）；</li>
+<li>接着利用 ClassWriter 将方法增强后的代理类生产 byte[] 字节码；</li>
+<li>然后调用 ReflectUtils 的 <code>defineClass()</code> 方法来定义代理类；</li>
+<li>最后调用 ReflectUtils 的 <code>newInstance()</code> 方法来构造匿名的代理类；</li>
+</ul>
+<p>省略其他逻辑，比如 CGLIB 的缓存机制。</p>
+<blockquote>
+<p>代码分析引用于：<a href="https://blog.coderap.com/article/136">coderap</a>，详细的源代码分析可以访问此网站。</p>
+</blockquote>
+<hr>
+<p>做一个 JDK 动态代理和 CGLIB 动态代理的区别：</p>
+<ul>
+<li>
+<p>实现逻辑上的区别：</p>
+<ul>
+<li>JDK：对基于接口静态代理的改进，即动态生成接口类；</li>
+<li>CGLIB：对静态继承的改进，即动态生产继承类；</li>
+</ul>
+</li>
+<li>
+<p>实现机理上的区别：</p>
+<ul>
+<li>JDK：利用被代理类的实例、接口 interfaces 数组动态构造代理类的字节码数组，然后利用字节码构造代理类；</li>
+<li>CGLIB：使用 ASM 框架直接对字节码进行修改，其代理类实例内部没有封装一个被代理类实例，而是选择将被代理类实例和代理类实例合二为一。</li>
+</ul>
+</li>
+<li>
+<p>效率上：</p>
+<ul>
+<li>
+<p>初始化效率（因为存在懒加载，因此可以改为首次调用的效率）：JDK 略好于 CGLIB，这是因为 CGLIB 需要额外初始化索引对应的 swtich-case 等映射逻辑；</p>
+</li>
+<li>
+<p>执行效率：JDK 比 CGLIB 差一些，因为 JDK 需要利用反射进行方法调用，而 CGLIB 利用索引相当于直接利用方法指针进行方法调用；</p>
+<blockquote>
+<p>不过注意，如果被代理类的方法体过多会导致 switch-case 语句块多余多，这可能会导致 CGLIB 性能反而不占优。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>
+<p>兼容性上：</p>
+<ul>
+<li>JDK 要求类必须实现接口，兼容性差一些；</li>
+<li>CGLIB 不要求类必须实现接口，实现与否能够进行动态代理，兼容性好一些；</li>
+</ul>
+</li>
+</ul>
+<p><strong>注意事项</strong>：正是因为 CGLIB 基于继承语法以及动态修改字节码实现，因此要求被代理类中方法一定能够被继承，换言之，final 方法不能被代理，final 类也不能被代理。</p>
+
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/java/">Java</a>
+          <a href="/tags/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/">动态代理</a>
+          <a href="/tags/cglib/">CGLIB</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/java/aspectjproxy/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">AspectJ 动态代理的实际演练</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/java/proxypattern/">
+            <span class="next-text nav-default">Java 的代理模式的实现</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+
+
+      <h3>转载申请</h3>
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/>
+        <img alt=知识共享许可协议 style=border-width:0 src=https://img.draveness.me/creative-commons.png>
+      </a>
+      <br>本作品采用
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/ target="_blank" style="text-decoration:underline;" >
+      知识共享署名 4.0 国际许可协议</a>
+      进行许可，转载时请注明作者姓名以及原文链接，图片在使用时请保留全部内容，可适当缩放并在引用处附上图片所在的文章链接。
+
+      
+    </footer>
+  </article>
+        </div>
+        <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '2020-07-22 21:03:45 \x2b0800 CST',
+        title: 'CGLIB 动态代理的实际演练',
+        clientID: 'b8e9909664fb69930809',
+        clientSecret: '847d9069c9532ab260721afb9f036cdb8f52aec4',
+        repo: 'Spongecaptain.github.io',
+        owner: 'Spongecaptain',
+        admin: ['Spongecaptain'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a></noscript>
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:wjjiang19@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/spongecaptain" class="iconfont icon-github" title="github"></a>
+  <a href="https://spongecaptain.cool/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Spongecaptain</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.d7b7ada643c9c1a983026e177f141f7363b4640d619caf01d8831a6718cd44ea.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

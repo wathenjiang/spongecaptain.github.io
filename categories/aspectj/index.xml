@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>AspectJ on Spongecaptain 的个人技术博客</title>
+    <link>https://spongecaptain.cool/categories/aspectj/</link>
+    <description>Recent content in AspectJ on Spongecaptain 的个人技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 22 Jul 2020 21:03:57 +0800</lastBuildDate>
+    
+	<atom:link href="https://spongecaptain.cool/categories/aspectj/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>AspectJ 动态代理的实际演练</title>
+      <link>https://spongecaptain.cool/post/java/aspectjproxy/</link>
+      <pubDate>Wed, 22 Jul 2020 21:03:57 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/java/aspectjproxy/</guid>
+      <description>AspectJ 动态代理的实际演练 1. AOP 的概念引入 AspectJ 从其命名就可以看出其强调面向切面编程，什么是面向切面编程？ Aspect Oriented Programming（AOP），俗称面向</description>
+    </item>
+    
+  </channel>
+</rss>

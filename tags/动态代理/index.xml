@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>动态代理 on Spongecaptain 的个人技术博客</title>
+    <link>https://spongecaptain.cool/tags/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</link>
+    <description>Recent content in 动态代理 on Spongecaptain 的个人技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 22 Jul 2020 21:03:57 +0800</lastBuildDate>
+    
+	<atom:link href="https://spongecaptain.cool/tags/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>AspectJ 动态代理的实际演练</title>
+      <link>https://spongecaptain.cool/post/java/aspectjproxy/</link>
+      <pubDate>Wed, 22 Jul 2020 21:03:57 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/java/aspectjproxy/</guid>
+      <description>AspectJ 动态代理的实际演练 1. AOP 的概念引入 AspectJ 从其命名就可以看出其强调面向切面编程，什么是面向切面编程？ Aspect Oriented Programming（AOP），俗称面向</description>
+    </item>
+    
+    <item>
+      <title>CGLIB 动态代理的实际演练</title>
+      <link>https://spongecaptain.cool/post/java/cglibproxy/</link>
+      <pubDate>Wed, 22 Jul 2020 21:03:45 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/java/cglibproxy/</guid>
+      <description>#CGLIB 动态代理的实际演练 JDK 动态代理技术最大的问题就在于其必须要求接口参与，即不是接口的方法无法进行动态代理。CGLIB 动态代理技术解决了这个问题</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on Spongecaptain 的个人技术博客</title>
-    <link>https://spongecaptain.cool/post/</link>
-    <description>Recent content in Posts on Spongecaptain 的个人技术博客</description>
+    <title>Java on Spongecaptain 的个人技术博客</title>
+    <link>https://spongecaptain.cool/tags/java/</link>
+    <description>Recent content in Java on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Wed, 22 Jul 2020 21:03:57 +0800</lastBuildDate>
     
-	<atom:link href="https://spongecaptain.cool/post/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://spongecaptain.cool/tags/java/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -36,33 +36,6 @@
       
       <guid>https://spongecaptain.cool/post/java/proxypattern/</guid>
       <description>关于 Java 的代理技术，我写了一个开源库，推荐对具体实现有兴趣的同学去看看： https://github.com/Spongecaptain/ProxyPatternInJava 1. 为类的方法添加第三方功能-朴素方式 这里提到的第三方功能类似于软件的</description>
-    </item>
-    
-    <item>
-      <title>Java 反射小总结</title>
-      <link>https://spongecaptain.cool/post/java/refelectionsummary/</link>
-      <pubDate>Fri, 17 Jul 2020 23:24:19 +0800</pubDate>
-      
-      <guid>https://spongecaptain.cool/post/java/refelectionsummary/</guid>
-      <description>Java 反射小总结 1. Java 反射能做什么？ Java 反射：在运行状态中，能够任意一个类的所有属性和方法，能够调用任意一个对象的的方法和属性； Java &amp;ldquo;正射</description>
-    </item>
-    
-    <item>
-      <title>窥探 MySQL 索引</title>
-      <link>https://spongecaptain.cool/post/mysql/mysqlindexsummary/</link>
-      <pubDate>Fri, 10 Jul 2020 23:11:12 +0800</pubDate>
-      
-      <guid>https://spongecaptain.cool/post/mysql/mysqlindexsummary/</guid>
-      <description>MySQL 索引 1. 什么是数据库索引 在关系数据库中，如果有上万甚至上亿条记录，在查找记录的时候，想要获得非常快的速度，就需要使用索引。 索引是关系数据库中</description>
-    </item>
-    
-    <item>
-      <title>Hugo 博客搭建指北</title>
-      <link>https://spongecaptain.cool/post/hugo/howtousehugo/</link>
-      <pubDate>Tue, 07 Jul 2020 11:53:47 +0800</pubDate>
-      
-      <guid>https://spongecaptain.cool/post/hugo/howtousehugo/</guid>
-      <description>Hugo 博客搭建指北 自己曾经搭建过基于 Hexo 的博客，由于诸多原因弃之，在此启用 Hugo 作为静态博客。 1. 安装 Hugo 1 2 brew install hugo # 安装 Hugo hugo version # 安装版本查询，成功则说明</description>
     </item>
     
   </channel>

@@ -6,10 +6,55 @@
     <description>Recent content in Tags on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 17 Jul 2020 23:24:19 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 22 Jul 2020 21:03:57 +0800</lastBuildDate>
     
 	<atom:link href="https://spongecaptain.cool/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>AspectJ</title>
+      <link>https://spongecaptain.cool/tags/aspectj/</link>
+      <pubDate>Wed, 22 Jul 2020 21:03:57 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/tags/aspectj/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Java</title>
+      <link>https://spongecaptain.cool/tags/java/</link>
+      <pubDate>Wed, 22 Jul 2020 21:03:57 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/tags/java/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>动态代理</title>
+      <link>https://spongecaptain.cool/tags/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</link>
+      <pubDate>Wed, 22 Jul 2020 21:03:57 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/tags/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>CGLIB</title>
+      <link>https://spongecaptain.cool/tags/cglib/</link>
+      <pubDate>Wed, 22 Jul 2020 21:03:45 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/tags/cglib/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>代理模式</title>
+      <link>https://spongecaptain.cool/tags/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Wed, 22 Jul 2020 20:56:48 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/tags/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>反射</title>

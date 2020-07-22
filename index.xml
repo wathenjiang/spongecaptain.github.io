@@ -12,6 +12,33 @@
     
     
     <item>
+      <title>AspectJ 动态代理的实际演练</title>
+      <link>https://spongecaptain.cool/post/java/aspectjproxy/</link>
+      <pubDate>Wed, 22 Jul 2020 21:03:57 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/java/aspectjproxy/</guid>
+      <description>AspectJ 动态代理的实际演练 1. AOP 的概念引入 AspectJ 从其命名就可以看出其强调面向切面编程，什么是面向切面编程？ Aspect Oriented Programming（AOP），俗称面向</description>
+    </item>
+    
+    <item>
+      <title>CGLIB 动态代理的实际演练</title>
+      <link>https://spongecaptain.cool/post/java/cglibproxy/</link>
+      <pubDate>Wed, 22 Jul 2020 21:03:45 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/java/cglibproxy/</guid>
+      <description>#CGLIB 动态代理的实际演练 JDK 动态代理技术最大的问题就在于其必须要求接口参与，即不是接口的方法无法进行动态代理。CGLIB 动态代理技术解决了这个问题</description>
+    </item>
+    
+    <item>
+      <title>Java 的代理模式的实现</title>
+      <link>https://spongecaptain.cool/post/java/proxypattern/</link>
+      <pubDate>Wed, 22 Jul 2020 20:56:48 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/java/proxypattern/</guid>
+      <description>关于 Java 的代理技术，我写了一个开源库，推荐对具体实现有兴趣的同学去看看： https://github.com/Spongecaptain/ProxyPatternInJava 1. 为类的方法添加第三方功能-朴素方式 这里提到的第三方功能类似于软件的</description>
+    </item>
+    
+    <item>
       <title>Java 反射小总结</title>
       <link>https://spongecaptain.cool/post/java/refelectionsummary/</link>
       <pubDate>Fri, 17 Jul 2020 23:24:19 +0800</pubDate>

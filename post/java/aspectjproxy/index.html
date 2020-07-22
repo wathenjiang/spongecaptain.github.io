@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>AspectJ 动态代理的实际演练 - Spongecaptain 的个人技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Spongecaptain" /><meta name="description" content="AspectJ 动态代理的实际演练 1. AOP 的概念引入 AspectJ 从其命名就可以看出其强调面向切面编程，什么是面向切面编程？ Aspect Oriented Programming（AOP），俗称面向" /><meta name="keywords" content="Java, 动态代理, AspectJ" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.67.0 with theme even" />
+
+
+<link rel="canonical" href="https://spongecaptain.cool/post/java/aspectjproxy/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.d3c0906e4826953bbecacbaae42a5a06ea7dd1d8ed9c6483ee5e2e9c94ea5a18.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="AspectJ 动态代理的实际演练" />
+<meta property="og:description" content="AspectJ 动态代理的实际演练 1. AOP 的概念引入 AspectJ 从其命名就可以看出其强调面向切面编程，什么是面向切面编程？ Aspect Oriented Programming（AOP），俗称面向" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://spongecaptain.cool/post/java/aspectjproxy/" />
+<meta property="article:published_time" content="2020-07-22T21:03:57+08:00" />
+<meta property="article:modified_time" content="2020-07-22T21:03:57+08:00" />
+<meta itemprop="name" content="AspectJ 动态代理的实际演练">
+<meta itemprop="description" content="AspectJ 动态代理的实际演练 1. AOP 的概念引入 AspectJ 从其命名就可以看出其强调面向切面编程，什么是面向切面编程？ Aspect Oriented Programming（AOP），俗称面向">
+<meta itemprop="datePublished" content="2020-07-22T21:03:57&#43;08:00" />
+<meta itemprop="dateModified" content="2020-07-22T21:03:57&#43;08:00" />
+<meta itemprop="wordCount" content="4523">
+
+
+
+<meta itemprop="keywords" content="Java,动态代理,AspectJ," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="AspectJ 动态代理的实际演练"/>
+<meta name="twitter:description" content="AspectJ 动态代理的实际演练 1. AOP 的概念引入 AspectJ 从其命名就可以看出其强调面向切面编程，什么是面向切面编程？ Aspect Oriented Programming（AOP），俗称面向"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body class = body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/about/index.html">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/index.html">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">AspectJ 动态代理的实际演练</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-07-22 </span>
+        <div class="post-category">
+            <a href="/categories/aspectj/"> AspectJ </a>
+            </div>
+          <span class="more-meta"> 约 4523 字 </span>
+          <span class="more-meta"> 预计阅读 10 分钟 </span>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-aop-的概念引入">1. AOP 的概念引入</a></li>
+    <li><a href="#2-aspectj-是什么">2. AspectJ 是什么？</a></li>
+    <li><a href="#3-aspectj-的用法">3. AspectJ 的用法</a></li>
+    <li><a href="#4-aspectj-的具体使用案例">4. AspectJ 的具体使用案例</a>
+      <ul>
+        <li><a href="#41-基于-aspectj-文件的-aspectj">4.1 基于 aspectj 文件的 AspectJ</a></li>
+        <li><a href="#42-基于-java-注解的-aspectj">4.2 基于 Java 注解的 AspectJ</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-aspectj-和-spring-aop-之间的关系">3. AspectJ 和 Spring AOP 之间的关系</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h1 id="aspectj-动态代理的实际演练">AspectJ 动态代理的实际演练</h1>
+<h2 id="1-aop-的概念引入">1. AOP 的概念引入</h2>
+<p>AspectJ 从其命名就可以看出其强调面向切面编程，什么是面向切面编程？</p>
+<p>Aspect Oriented Programming（AOP），俗称面向切面编程。切面是相对于方法栈的入栈和压栈而言的。你可以想象每一个方法都是一块面包片，而切面就是面包片之间的间隙。</p>
+<p>下图是一个方法栈：</p>
+<p><img src="../../../images/img_java/image-20200616133147181.png" alt="image-20200616133147181" style="zoom:25%;" /></p>
+<p><img src="../../../../Nutstore Files/我的坚果云/程序员的个人修养/后端知识/总结-Java 语言/1. 语言基础_常用/8. 代理/images/image-20200417181020876.png" alt="image-20200417181020876" style="zoom:25%;" /></p>
+<p>刀从吐司最前端开始切，每新切一刀，相当于程序计数器 +1。</p>
+<p>面向切面编程的含义就是将方法栈切开，然后在合适的切面上涂点苹果酱、花生酱。如果在吐司片后面涂，相当于在这个代码段执行后执行一些额外方法，如果在一片吐司片正面涂，相当于在这个代码块执行前执行一些额外的代码。</p>
+<p>AOP 涉及一些该领域的专业习惯用语，其中比较重要的有：</p>
+<ul>
+<li>通知（ Advice）：切面的工作被称为通知，换句话说，第三方功能即为通知。</li>
+<li>按照通知在切面作用顺序，分为：前置通知 Before、后置通知 After、环绕通知 Around。按功能分还有返回通知、异常通知。</li>
+<li>连接点（Join point）:描述一种能力：可能插入切点的方法栈点，比如调用的方法、抛出异常时、修改一个字段时。</li>
+<li>切点（Pointcut）：真正插入第三方功能的程序点。</li>
+<li>切面（Aspect）：通知+切点，即第三方类库干什么和在哪里做。</li>
+<li>织入（Weaving）：织入是把切面应用到目标对象并创建新的代理对象的过程。创建的代理类既可以在编译期间完成，也可以在运行期间完成。</li>
+</ul>
+<h2 id="2-aspectj-是什么">2. AspectJ 是什么？</h2>
+<p>能实现 AOP 思想的工具有很多，比如 JDK 动态代理、CGLIB 动态字节码增强技术以及 AspectJ，AspectJ 和其他技术最大的区别就在于其是在编译期进行，而另外两者都是在运行时执行。具体来说，它们的区别可以用下图表示：</p>
+<table>
+<thead>
+<tr>
+<th>技术</th>
+<th>代理逻辑</th>
+<th>内部原理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>JDK 动态代理</td>
+<td>动态代理</td>
+<td>在运行时将被代理类封装到代理类中，然后产生代理类实例</td>
+</tr>
+<tr>
+<td>CGLIB 动态代理</td>
+<td>动态代理</td>
+<td>在运行时增强被代理类的字节码，直接生成字节码增强后的代理类实例</td>
+</tr>
+<tr>
+<td>AspectJ</td>
+<td>静态代理</td>
+<td>在编译期间将切面<strong>织入</strong>被代理类中，对运行时生成代理类实例的逻辑透明</td>
+</tr>
+</tbody>
+</table>
+<p>AspectJ 有着其独特的语法特性，具体可以看 <a href="https://www.eclipse.org/aspectj/doc/released/progguide/index.html">The AspectJTM Programming Guide</a>，其提供了两套配置方式：</p>
+<ul>
+<li>基于 Java 注解的配置方式；</li>
+<li>基于  aspect 文件的切面描述方法，通常需要 IDE 安装额外的插件才能够进行语法检查；</li>
+</ul>
+<p>AspectJ 的主要作用就是作为 Java 的一个面向 AOP 的框架而存在，下一节将讲述最朴素地使用 AspectJ 的用法。</p>
+<h2 id="3-aspectj-的用法">3. AspectJ 的用法</h2>
+<p>aspectJ.jar 解压有的目录如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">bin/
+├── aj
+├── aj5
+├── ajbrowser
+├── ajc
+└── ajdoc
+lib/
+├── aspectjrt.jar
+├── aspectjtools.jar
+├── aspectjweaver.jar
+└── org.aspectj.matcher.jar
+</code></pre></td></tr></table>
+</div>
+</div><p>这当中重点的文件是四个 jar 包中的前三个，bin 文件夹中的脚本其实都是调用这些 jar 包的命令。</p>
+<ul>
+<li>aspectjrt.jar 包主要是提供<strong>运行时</strong>的一些注解，静态方法等等东西，通常我们要使用 aspectJ 的时候都要使用这个包。</li>
+<li>aspectjtools.jar 包主要是提供赫赫有名的 <strong>ajc 编译器</strong>，可以在编译期将将 java 文件或者 class 文件或者 aspect 文件定义的切面织入到业务代码中。通常这个东西会被封装进各种 IDE 插件或者自动化插件中。</li>
+<li>aspectjweaverjar 包主要是提供了一个 java agent 用于在<strong>类加载期</strong>间织入切面 (Load time weaving)。并且提供了对切面语法的相关处理等基础方法，供 ajc 使用或者供第三方开发使用。这个包一般我们不需要显式引用，除非需要使用 LTW。</li>
+</ul>
+<p>上面的说明其实也就指出了 aspectJ 的几种标准的使用方法 (参考<a href="http://www.eclipse.org/aspectj/doc/released/devguide/ltw.html#weaving-class-files-more-than-once">文档</a>)：</p>
+<ol>
+<li><strong>编译时织入</strong>，利用 ajc 编译器替代 javac 编译器，直接将源文件 (java 或者 aspect 文件) 编译成 class 文件并将切面织入进代码。</li>
+<li><strong>编译后织入</strong>，利用 ajc 编译器向 javac 编译期编译后的 class 文件或 jar 文件织入切面代码。</li>
+<li><strong>加载时织入</strong>，不使用 ajc 编译器，利用 aspectjweaver.jar 工具，使用 java agent 代理在类加载期将切面织入进代码。</li>
+</ol>
+<p>三种用法如下图所示：</p>
+<p><img src="../../../images/img_java/image-20200718105816858.png" alt="image-20200718105816858"></p>
+<blockquote>
+<p>基于 Maven 插件自动构建的 Aspect 方式实际上采用的是方式 ②，下一节会有提到。</p>
+</blockquote>
+<h2 id="4-aspectj-的具体使用案例">4. AspectJ 的具体使用案例</h2>
+<h3 id="41-基于-aspectj-文件的-aspectj">4.1 基于 aspectj 文件的 AspectJ</h3>
+<p>这种说法比较蛋疼，其实我想说明的是这种不兼容 javac 的一种切面表示形式。比如当前我们有一个业务类 App.java：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">App</span> <span class="o">{</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">say</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;App say&#34;</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">App</span> <span class="n">app</span> <span class="o">=</span> <span class="k">new</span> <span class="n">App</span><span class="o">();</span>
+    <span class="n">app</span><span class="o">.</span><span class="na">say</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>我们希望对在 say 函数里加一个切面, 那就创建一个 AjAspectj.aj 的文件:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">public aspect AjAspect {
+		//定义切面
+    pointcut say():
+            execution(* App.say(..));
+		//切面之前调用
+    before(): say() {
+        System.out.println(&#34;AjAspect before say&#34;);
+    }
+    //切面之后调用
+    after(): say() {
+        System.out.println(&#34;AjAspect after say&#34;);
+    }
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>这样我们就能实现切面的功能。可这个 aj 文件的语法虽然跟 java 很类似，但是毕竟还是不能用 javac 来编译，如果我们要用这个的话就必须使用 ajc 编译器。使用的方法大概有这几种：</p>
+<ol>
+<li><strong>调用命令</strong>直接编译 (直接使用 ajc 命令或者调用 java -jar aspectjtools.jar)；</li>
+<li>使用 <strong>IDE 集成</strong>的 ajc 编译器编译；</li>
+<li>使用<strong>自动化构建工具</strong>的插件编译；
+其实 2,3 两点的本质都是使用 asp ectjtools.jar，最简单的调用方法如下:</li>
+</ol>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="cp">#!/usr/bin/env bash
+</span><span class="cp"></span>
+<span class="nv">ASPECTJ_TOOLS</span><span class="o">=</span>/home/myths/.m2/repository/org/aspectj/aspectjtools/1.8.9/aspectjtools-1.8.9.jar
+<span class="nv">ASPECTJ_RT</span><span class="o">=</span>/home/myths/.m2/repository/org/aspectj/aspectjrt/1.8.9/aspectjrt-1.8.9.jar
+
+java -jar <span class="nv">$ASPECTJ_TOOLS</span> -cp <span class="nv">$ASPECTJ_RT</span> -sourceroots .
+</code></pre></td></tr></table>
+</div>
+</div><p>调用 aspectjtools.jar 包，指定 aspectjrt 的 classpath，以及需要编译的路径，这样就会生成 AjAspectj.aj 以及 App.java 对应的 class 文件。我们反编译一下看看：</p>
+<p>AjAspectj.class：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">java.io.PrintStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.aspectj.lang.NoAspectBoundException</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AjAspect</span>
+<span class="o">{</span>
+  <span class="kd">private</span> <span class="kd">static</span> <span class="n">Throwable</span> <span class="n">ajc$initFailureCause</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">AjAspect</span> <span class="n">ajc$perSingletonInstance</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="n">AjAspect</span> <span class="nf">aspectOf</span><span class="o">()</span>
+  <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">ajc$perSingletonInstance</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="n">NoAspectBoundException</span><span class="o">(</span><span class="s">&#34;AjAspect&#34;</span><span class="o">,</span> <span class="n">ajc$initFailureCause</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">ajc$perSingletonInstance</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">hasAspect</span><span class="o">()</span>
+  <span class="o">{</span>
+    <span class="k">return</span> <span class="n">ajc$perSingletonInstance</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">ajc$postClinit</span><span class="o">()</span>
+  <span class="o">{</span>
+    <span class="n">ajc$perSingletonInstance</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AjAspect</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="kd">static</span>
+  <span class="o">{</span>
+    <span class="k">try</span>
+    <span class="o">{</span>
+
+    <span class="o">}</span>
+    <span class="k">catch</span> <span class="o">(</span><span class="n">Throwable</span> <span class="n">localThrowable</span><span class="o">)</span>
+    <span class="o">{</span>
+      <span class="n">ajc$initFailureCause</span> <span class="o">=</span> <span class="n">localThrowable</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+	
+  <span class="c1">//切面方法的定义
+</span><span class="c1"></span>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">ajc$before$AjAspect$1$682722c</span><span class="o">()</span>
+  <span class="o">{</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;AjAspect before say&#34;</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">ajc$after$AjAspect$2$682722c</span><span class="o">()</span>
+  <span class="o">{</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;AjAspect after say&#34;</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>App.class:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">java.io.PrintStream</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">App</span>
+<span class="o">{</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">say</span><span class="o">()</span>
+  <span class="o">{</span>
+    <span class="k">try</span>
+    <span class="o">{</span>
+      <span class="n">AjAspect</span><span class="o">.</span><span class="na">aspectOf</span><span class="o">().</span><span class="na">ajc$before$AjAspect$1$682722c</span><span class="o">();</span><span class="c1">//织入了切面
+</span><span class="c1"></span>      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;App say&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">catch</span> <span class="o">(</span><span class="n">Throwable</span> <span class="n">localThrowable</span><span class="o">)</span>
+    <span class="o">{</span>
+      <span class="n">AjAspect</span><span class="o">.</span><span class="na">aspectOf</span><span class="o">().</span><span class="na">ajc$after$AjAspect$2$682722c</span><span class="o">();</span><span class="c1">//织入了切面
+</span><span class="c1"></span>      <span class="k">throw</span> <span class="n">localThrowable</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="n">AjAspect</span><span class="o">.</span><span class="na">aspectOf</span><span class="o">().</span><span class="na">ajc$after$AjAspect$2$682722c</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span>
+  <span class="o">{</span>
+    <span class="n">App</span> <span class="n">app</span> <span class="o">=</span> <span class="k">new</span> <span class="n">App</span><span class="o">();</span>
+    <span class="n">app</span><span class="o">.</span><span class="na">say</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>可以看出 AspectJ 的织入原理的特点：</p>
+<ul>
+<li>
+<p>每一个 aspect 文件(.aj 文件)通过 ajc 编译后产生的 Class 文件实际上采用的是<strong>单例模式</strong>；</p>
+<blockquote>
+<p>单例通过 <code>类名.aspectOf()</code> 方法额得到。</p>
+</blockquote>
+</li>
+<li>
+<p>AspectJ 织入后不仅仅会在方法前后织入方法，还会额外地引入 <code>try-catch</code> 语句块，此语句块的特点在于其优先执行完所有织入方法，然后再是抛出异常（不进行异常处理）；</p>
+</li>
+</ul>
+<p>不过，虽然事实上这种基于 aj 文件的切面描述方法比基于 java 注解的切面描述方法用起来要<strong>灵活的多</strong>，但是由于他无法摆脱 ajc 的支持，而且本身不兼容 java 语法导致难以统一编码规范，加上需要较多额外的学习成本，因此事实上很多项目还是不怎么用这种方式，更多的还是采用了兼容 java 语法的用注解定义切面的方式。</p>
+<h3 id="42-基于-java-注解的-aspectj">4.2 基于 Java 注解的 AspectJ</h3>
+<p>下面我们主要还是着力考虑下基于 java 注解的切面使用方法。</p>
+<p>先建一个普通的项目看看，老样子，从 maven 的 maven-archetype-quickstart 开始，pom.xm 文件里我们一般只需要加上 <a href="https://mvnrepository.com/artifact/org.aspectj/aspectjrt">AspectJ Runtime</a> 的依赖即可，但是由于后续需要利用到 AspectJ 的编译工具，因此还要引入 <a href="https://mvnrepository.com/artifact/org.aspectj/aspectjtools">AspectJ Tools</a> 依赖与 <a href="https://mvnrepository.com/artifact/org.aspectj/aspectjweaver">AspectJ Weaver</a> 依赖。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.aspectj<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>aspectjrt<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.8.9<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+
+<span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.aspectj<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>aspectjtools<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.8.9<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+
+<span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.aspectj<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>aspectjweaver<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.8.13<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>如果使用高版本，可能会遇到命令不兼容的错误。</p>
+</blockquote>
+<p>创建 Proxyee 类：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Proxyee</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">sayHello</span><span class="o">(</span><span class="n">String</span> <span class="n">str</span><span class="o">){</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;Hello &#34;</span> <span class="o">+</span> <span class="n">str</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>创建切面类 ProxyAspect 类：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Aspect</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ProxyAspect</span> <span class="o">{</span>
+    <span class="c1">//定义切点
+</span><span class="c1"></span>    <span class="nd">@Pointcut</span><span class="o">(</span><span class="s">&#34;execution(* aspectjproxy.Proxyee.sayHello(..))&#34;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">jointPoint</span><span class="o">(){}</span>
+    <span class="c1">//定义前置通知
+</span><span class="c1"></span>    <span class="nd">@Before</span><span class="o">(</span><span class="s">&#34;jointPoint()&#34;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">before</span><span class="o">(){</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;-------Log.log()-------&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="c1">//定义后置通知
+</span><span class="c1"></span>    <span class="nd">@After</span><span class="o">(</span><span class="s">&#34;jointPoint()&#34;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">after</span><span class="o">(){</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;-------Log.log()-------&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>接下来我们就来尝试下 4 种不同的编译方式。</p>
+<h4 id="421-编译时织入">4.2.1 编译时织入</h4>
+<p>编译时织入其实就是使用 ajc 来进行编译，暂时不使用自动化构建工具，我们先在项目根目录下手动写一个编译脚本 compile.sh:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="cp">#!/usr/bin/env bash
+</span><span class="cp"></span><span class="nv">ASPECTJ_WEAVER</span><span class="o">=</span>~/.m2/repository/org/aspectj/aspectjweaver/1.8.13/aspectjweaver-1.8.13.jar
+<span class="nv">ASPECTJ_RT</span><span class="o">=</span>~/.m2/repository/org/aspectj/aspectjrt/1.8.9/aspectjrt-1.8.9.jar
+<span class="nv">ASPECTJ_TOOLS</span><span class="o">=</span>~/.m2/repository/org/aspectj/aspectjtools/1.8.9/aspectjtools-1.8.9.jar
+
+java -jar <span class="nv">$ASPECTJ_TOOLS</span> -cp <span class="nv">$ASPECTJ_RT</span> -source 1.5 -sourceroots src/main/java/aspectjproxy -d target/classes
+</code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>-cp 参数指定 aspectjrt.jar 的路径；</li>
+<li>-source 1.5 参数指定支持 java1.5 以后的注解；</li>
+<li>-sourceroots 指明编译的文件夹；</li>
+<li>-d 指明输出路径；</li>
+</ul>
+<blockquote>
+<p>注意事项：这里需要你将路径修改为自己本地 Maven 项目 jar 包的存放路径。</p>
+</blockquote>
+<p>此时成的字节码为：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">aspectjproxy</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.aspectj.lang.NoAspectBoundException</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.aspectj.lang.annotation.After</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.aspectj.lang.annotation.Aspect</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.aspectj.lang.annotation.Before</span><span class="o">;</span>
+
+<span class="nd">@Aspect</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ProxyAspect</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="nf">ProxyAspect</span><span class="o">()</span> <span class="o">{</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Before</span><span class="o">(</span><span class="s">&#34;jointPoint()&#34;</span><span class="o">)</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">before</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;-------Log.log()-------&#34;</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="nd">@After</span><span class="o">(</span><span class="s">&#34;jointPoint()&#34;</span><span class="o">)</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">after</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;-------Log.log()-------&#34;</span><span class="o">);</span>
+  <span class="o">}</span>
+	<span class="c1">//单例模式
+</span><span class="c1"></span>  <span class="kd">public</span> <span class="kd">static</span> <span class="n">ProxyAspect</span> <span class="nf">aspectOf</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">ajc$perSingletonInstance</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="n">NoAspectBoundException</span><span class="o">(</span><span class="s">&#34;aspectjproxy.ProxyAspect&#34;</span><span class="o">,</span> <span class="n">ajc$initFailureCause</span><span class="o">);</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="n">ajc$perSingletonInstance</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">hasAspect</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">ajc$perSingletonInstance</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">static</span> <span class="o">{</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="n">ajc$postClinit</span><span class="o">();</span>
+    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Throwable</span> <span class="n">var1</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">ajc$initFailureCause</span> <span class="o">=</span> <span class="n">var1</span><span class="o">;</span>
+    <span class="o">}</span>
+
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>以及被代理类：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">aspectjproxy</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Proxyee</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="nf">Proxyee</span><span class="o">()</span> <span class="o">{</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">sayHello</span><span class="o">(</span><span class="n">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="n">ProxyAspect</span><span class="o">.</span><span class="na">aspectOf</span><span class="o">().</span><span class="na">before</span><span class="o">();</span><span class="c1">//前置织入
+</span><span class="c1"></span>      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;Hello &#34;</span> <span class="o">+</span> <span class="n">str</span><span class="o">);</span><span class="c1">//原方法
+</span><span class="c1"></span>    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Throwable</span> <span class="n">var3</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">ProxyAspect</span><span class="o">.</span><span class="na">aspectOf</span><span class="o">().</span><span class="na">after</span><span class="o">();</span><span class="c1">//后置织入
+</span><span class="c1"></span>      <span class="k">throw</span> <span class="n">var3</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="n">ProxyAspect</span><span class="o">.</span><span class="na">aspectOf</span><span class="o">().</span><span class="na">after</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>可见：注解版本的编译器对应的字节码可读性更好一点，但是实现的内部原理是相同的：AspectJ 注解类还是通过单例模式被代理类的调用，最终实现编译时织入。</p>
+<h4 id="422-编译后织入">4.2.2 编译后织入</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/usr/bin/env bash
+</span><span class="cp"></span><span class="c1"># 编译后织入，即使用的是 ajc 编译器间接来编译 class 文件，前置的 class 文件由 javac 编译器生成</span>
+
+<span class="c1">## 第一步使用 javac 命令先生产原始的 class 文件</span>
+javac -cp ~/.m2/repository/org/aspectj/aspectjrt/1.8.9/aspectjrt-1.8.9.jar  -d target/classes src/main/java/aspectjproxy/*.java
+
+<span class="c1">## 第二步接着使用 ajc 编译器接收上述 class 文件，然后生产新的 class 文件并覆盖原文件</span>
+<span class="nv">ASPECTJ_WEAVER</span><span class="o">=</span>~/.m2/repository/org/aspectj/aspectjweaver/1.8.13/aspectjweaver-1.8.13.jar
+<span class="nv">ASPECTJ_RT</span><span class="o">=</span>~/.m2/repository/org/aspectj/aspectjrt/1.8.9/aspectjrt-1.8.9.jar
+<span class="nv">ASPECTJ_TOOLS</span><span class="o">=</span>~/.m2/repository/org/aspectj/aspectjtools/1.8.9/aspectjtools-1.8.9.jar
+
+java -jar <span class="nv">$ASPECTJ_TOOLS</span> -cp <span class="nv">$ASPECTJ_RT</span> -source 1.5 -inpath target/classes/aspectjproxy -d target/classes
+</code></pre></td></tr></table>
+</div>
+</div><p>第一步中生成的 .class 文件实际上就是 javac 直接生成的字节码文件，没有实现 AspectJ 的方法织入，如下所示：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">aspectjproxy</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Proxyee</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nf">Proxyee</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">sayHello</span><span class="o">(</span><span class="n">String</span> <span class="n">var1</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;Hello &#34;</span> <span class="o">+</span> <span class="n">var1</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>以及</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">aspectjproxy</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.aspectj.lang.annotation.After</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.aspectj.lang.annotation.Aspect</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.aspectj.lang.annotation.Before</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.aspectj.lang.annotation.Pointcut</span><span class="o">;</span>
+
+<span class="nd">@Aspect</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ProxyAspect</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="nf">ProxyAspect</span><span class="o">()</span> <span class="o">{</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Pointcut</span><span class="o">(</span><span class="s">&#34;execution(* aspectjproxy.Proxyee.sayHello(..))&#34;</span><span class="o">)</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">jointPoint</span><span class="o">()</span> <span class="o">{</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Before</span><span class="o">(</span><span class="s">&#34;jointPoint()&#34;</span><span class="o">)</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">before</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;-------Log.log()-------&#34;</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="nd">@After</span><span class="o">(</span><span class="s">&#34;jointPoint()&#34;</span><span class="o">)</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">after</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;-------Log.log()-------&#34;</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>第二步则会生成同编译时织入方式一样的字节码文件。</p>
+<h4 id="423-加载时织入-ltw">4.2.3 加载时织入 (LTW)</h4>
+<p>LTW 的含义是：Load-time weaving，类加载时织入。</p>
+<p>前两种织入方法都依赖于 ajc 的编译工具，LTW 却通过 java agent 机制在内存中操作类文件，可以不需要 ajc 的支持做到<strong>动态织入</strong>。
+为了实现 LTW，我们需要在资源目录下配置 META-INF/aop.xml 文件，来告知类加载器我们当前注册的切面。</p>
+<p>在上面的项目中，我们其实只需要创建 src/main/resources/META-INF/aop.xml：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;aspectj&gt;</span>
+    <span class="nt">&lt;aspects&gt;</span>
+        <span class="nt">&lt;aspect</span> <span class="na">name=</span><span class="s">&#34;aspectjproxy.ProxyAspect&#34;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/aspects&gt;</span>
+<span class="nt">&lt;/aspectj&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这样，我们就可以先使用 javac 编译源文件，再使用 java agent 在运行时织入：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="cp">#!/usr/bin/env bash
+</span><span class="cp"></span><span class="c1"># 编译时织入，即使用的是 ajc 编译器直接来编译 java 文件，生产 class 文件</span>
+<span class="nv">ASPECTJ_WEAVER</span><span class="o">=</span>~/.m2/repository/org/aspectj/aspectjweaver/1.8.13/aspectjweaver-1.8.13.jar
+<span class="nv">ASPECTJ_RT</span><span class="o">=</span>~/.m2/repository/org/aspectj/aspectjrt/1.8.9/aspectjrt-1.8.9.jar
+<span class="nv">ASPECTJ_TOOLS</span><span class="o">=</span>~/.m2/repository/org/aspectj/aspectjtools/1.8.9/aspectjtools-1.8.9.jar
+
+java -javaagent:<span class="nv">$ASPECTJ_WEAVER</span> -cp <span class="nv">$ASPECTJ_RT</span>:target/classes/ aspectjproxy.Proxyee
+</code></pre></td></tr></table>
+</div>
+</div><p>控制台输出：</p>
+<blockquote>
+<p>&mdash;&mdash;-Log.log()&mdash;&mdash;-
+Hello Spongecaptain
+&mdash;&mdash;-Log.log()&mdash;&mdash;-</p>
+</blockquote>
+<p>注意事项：因为这里是加载时进行织入，因此必须要有 main 方法，因此这里手下你要对代理类加入 main 方法，如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Proxyee</span> <span class="o">{</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">sayHello</span><span class="o">(</span><span class="n">String</span> <span class="n">str</span><span class="o">){</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;Hello &#34;</span> <span class="o">+</span> <span class="n">str</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="kd">final</span> <span class="n">Proxyee</span> <span class="n">proxyee</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Proxyee</span><span class="o">();</span>
+
+    <span class="n">proxyee</span><span class="o">.</span><span class="na">sayHello</span><span class="o">(</span><span class="s">&#34;Spongecaptain&#34;</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="424-maven-自动化构建">4.2.4 maven 自动化构建</h4>
+<p>显然，自己写脚本还是比较麻烦的，如果用如 maven 这样的自动化构建工具的话就会方便很多，codehaus 提供了一个 ajc 的编译插件 aspectj-maven-plugin，我们只需要在 build/plugins 标签下加上这个插件的配置即可：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;plugin&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.codehaus.mojo<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>aspectj-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.10<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;configuration&gt;</span>
+    <span class="nt">&lt;source&gt;</span>1.8<span class="nt">&lt;/source&gt;</span>
+    <span class="nt">&lt;target&gt;</span>1.8<span class="nt">&lt;/target&gt;</span>
+    <span class="nt">&lt;complianceLevel&gt;</span>1.8<span class="nt">&lt;/complianceLevel&gt;</span>
+  <span class="nt">&lt;/configuration&gt;</span>
+  <span class="nt">&lt;executions&gt;</span>
+    <span class="nt">&lt;execution&gt;</span>
+      <span class="nt">&lt;goals&gt;</span>
+        <span class="nt">&lt;goal&gt;</span>compile<span class="nt">&lt;/goal&gt;</span>
+      <span class="nt">&lt;/goals&gt;</span>
+    <span class="nt">&lt;/execution&gt;</span>
+  <span class="nt">&lt;/executions&gt;</span>
+<span class="nt">&lt;/plugin&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这个插件会绑定到编译期，采用的应该是编译后织入的方式，在 maven-compiler-plugin 处理完之后再工作的。插件其实是对 aspectjtools.jar 的一个 mojo <strong>封装</strong>。</p>
+<p><strong>注意事项</strong>：每一种方式执行前应当将上一个方式产生的 class 文件删除掉，避免这一步执行的是上一步产生的结果。</p>
+<p>第四节主要引用于：https://blog.mythsman.com/post/5d301cf2976abc05b34546be</p>
+<h2 id="3-aspectj-和-spring-aop-之间的关系">3. AspectJ 和 Spring AOP 之间的关系</h2>
+<p>Spring AOP 底层没有使用 AspectJ 来实现，其基于 JDK 动态代理以及 CGLIB 运行时字节码增强：</p>
+<ul>
+<li>被代理的方法属于接口：使用 JDK 动态代理；</li>
+<li>被代理的方法不属于接口：使用 CGLIB 运行时字节码增强；</li>
+</ul>
+<p><strong>那么为什么 Spring AOP 依赖于 AspectJ 呢？</strong></p>
+<p>事实上 Spring AOP 仅仅使用了 AspectJ 的<strong>相关注解</strong>以及 AspectJ 的<strong>相关切面概念和语法</strong>。因此 Spring AOP 实际上仅仅依赖于 AspectJ 的 aspectjrt.jar 包，其主要是提供<strong>运行时</strong>的一些注解，静态方法等等东西。而其他两个用于产生织入代码的工具 jar 包并没有依赖。</p>
+<p>你可以在 org.springframework.aop jar 包中看到很多类都依赖于 <code>org.aspectj.lang.annotation</code> packages，而后者位于 AspectJ 的 aspectjrt.jar 包中。</p>
+
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/java/">Java</a>
+          <a href="/tags/%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/">动态代理</a>
+          <a href="/tags/aspectj/">AspectJ</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/java/cglibproxy/">
+            <span class="next-text nav-default">CGLIB 动态代理的实际演练</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+
+
+      <h3>转载申请</h3>
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/>
+        <img alt=知识共享许可协议 style=border-width:0 src=https://img.draveness.me/creative-commons.png>
+      </a>
+      <br>本作品采用
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/ target="_blank" style="text-decoration:underline;" >
+      知识共享署名 4.0 国际许可协议</a>
+      进行许可，转载时请注明作者姓名以及原文链接，图片在使用时请保留全部内容，可适当缩放并在引用处附上图片所在的文章链接。
+
+      
+    </footer>
+  </article>
+        </div>
+        <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '2020-07-22 21:03:57 \x2b0800 CST',
+        title: 'AspectJ 动态代理的实际演练',
+        clientID: 'b8e9909664fb69930809',
+        clientSecret: '847d9069c9532ab260721afb9f036cdb8f52aec4',
+        repo: 'Spongecaptain.github.io',
+        owner: 'Spongecaptain',
+        admin: ['Spongecaptain'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a></noscript>
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:wjjiang19@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/spongecaptain" class="iconfont icon-github" title="github"></a>
+  <a href="https://spongecaptain.cool/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Spongecaptain</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.d7b7ada643c9c1a983026e177f141f7363b4640d619caf01d8831a6718cd44ea.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
