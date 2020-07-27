@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 22 Jul 2020 21:03:57 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 27 Jul 2020 22:45:21 +0800</lastBuildDate>
     
 	<atom:link href="https://spongecaptain.cool/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>MapReduce 论文学习</title>
+      <link>https://spongecaptain.cool/post/paper/mapreduce_paper_read_summary/</link>
+      <pubDate>Mon, 27 Jul 2020 22:45:21 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/paper/mapreduce_paper_read_summary/</guid>
+      <description>MapReduce 论文学习 不少人说，最近 20 年互联网技术的发展就是其他公司学习谷歌的过程，MapReduce: Simpliﬁed Data Processing on Large Clusters 论文是 Google 开源后影响深</description>
+    </item>
     
     <item>
       <title>AspectJ 动态代理的实际演练</title>

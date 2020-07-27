@@ -6,10 +6,19 @@
     <description>Recent content in Categories on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 22 Jul 2020 21:03:57 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 27 Jul 2020 22:45:21 +0800</lastBuildDate>
     
 	<atom:link href="https://spongecaptain.cool/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>论文阅读</title>
+      <link>https://spongecaptain.cool/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</link>
+      <pubDate>Mon, 27 Jul 2020 22:45:21 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>AspectJ</title>
