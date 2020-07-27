@@ -49,7 +49,7 @@
 <meta itemprop="description" content="MapReduce 论文学习 不少人说，最近 20 年互联网技术的发展就是其他公司学习谷歌的过程，MapReduce: Simpliﬁed Data Processing on Large Clusters 论文是 Google 开源后影响深">
 <meta itemprop="datePublished" content="2020-07-27T22:45:21&#43;08:00" />
 <meta itemprop="dateModified" content="2020-07-27T22:45:21&#43;08:00" />
-<meta itemprop="wordCount" content="4558">
+<meta itemprop="wordCount" content="4560">
 
 
 
@@ -129,7 +129,7 @@
         <div class="post-category">
             <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
             </div>
-          <span class="more-meta"> 约 4558 字 </span>
+          <span class="more-meta"> 约 4560 字 </span>
           <span class="more-meta"> 预计阅读 10 分钟 </span>
         
       </div>
@@ -253,13 +253,7 @@ reduce(String key,Iterator values):
   Emit(AsString(results));
 </code></pre></td></tr></table>
 </div>
-</div><ul>
-<li><strong><a href="https://zhuanlan.zhihu.com/p/32172999">https://zhuanlan.zhihu.com/p/32172999</a></strong></li>
-<li><strong><a href="https://static.googleusercontent.com/media/research.google.com/zh-CN//archive/mapreduce-osdi04.pdf">MapReduce: Simplified Data Processing on Large Clusters</a></strong></li>
-<li><strong><a href="http://tinylcy.me/2017/MapReduce%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">http://tinylcy.me/2017/MapReduce%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</a></strong></li>
-</ul>
-<p><strong>引用：</strong></p>
-<p>一种通用的解决方案是在整个 <code>MapReduce</code> 计算快要结束时，<code>master</code> 对当前处于 <code>in-progress</code> 状态的 <code>task</code> 进行备份，无论是原来的 <code>task</code> 执行完毕还是备份的 <code>task</code> 执行完毕，那么就认为该 <code>task</code> 完成了。</p>
+</div><p>一种通用的解决方案是在整个 <code>MapReduce</code> 计算快要结束时，<code>master</code> 对当前处于 <code>in-progress</code> 状态的 <code>task</code> 进行备份，无论是原来的 <code>task</code> 执行完毕还是备份的 <code>task</code> 执行完毕，那么就认为该 <code>task</code> 完成了。</p>
 <p>导致整个 <code>MapReduce</code> 计算过程被延迟的原因之一是过多的时间花费在最后几个 <code>map task</code> 或 <code>reduce task</code> 上。导致这个问题的原因由很多，可能是因为 <code>task</code> 所在的节点硬盘的读写速度非常慢，同时 <code>master</code> 又有可能把新的 <code>task</code> 分配给了该节点，所以引入了更加激烈的 <code>CPU</code> 竞争、内存竞争。</p>
 <p><strong>Backup Tasks</strong></p>
 <p>通常情况下，<code>R</code> 的大小是由用户指定的，而对 <code>M</code> 的选择要保证每个 <code>task</code> 的输入数据大小，即一个输入分片在 <code>16MB～64MB</code> 之间，这样可以最大化的利用数据本地性。</p>
@@ -354,6 +348,13 @@ reduce(String key,Iterator values):
 <blockquote>
 <p>Map 做的事情就是对于每一个文章的所有单词进行创建中间键值对，比如 <code>&quot;foo bar is foo bar&quot;</code>，那么产生 5 个键值对，它们的 value 都是 1：“foo”:1、“bar”:1、“is”:1、“foo”:1、“bar”:1。</p>
 </blockquote>
+<hr>
+<p><strong>本文引用：</strong></p>
+<ul>
+<li><strong><a href="https://zhuanlan.zhihu.com/p/32172999">https://zhuanlan.zhihu.com/p/32172999</a></strong></li>
+<li><strong><a href="https://static.googleusercontent.com/media/research.google.com/zh-CN//archive/mapreduce-osdi04.pdf">MapReduce: Simplified Data Processing on Large Clusters</a></strong></li>
+<li><strong><a href="http://tinylcy.me/2017/MapReduce%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/">http://tinylcy.me/2017/MapReduce%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</a></strong></li>
+</ul>
 
     </div>
 
