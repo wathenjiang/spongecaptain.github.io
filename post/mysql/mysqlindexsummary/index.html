@@ -35,7 +35,7 @@
 
 
 
-<link href="/sass/main.min.d3c0906e4826953bbecacbaae42a5a06ea7dd1d8ed9c6483ee5e2e9c94ea5a18.css" rel="stylesheet">
+<link href="/sass/main.min.71529ac4f08cd3c7318026160ee1e8793fdfc2e71cc31bb1970f3e181897031c.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
 
 
@@ -49,7 +49,7 @@
 <meta itemprop="description" content="MySQL 索引 1. 什么是数据库索引 在关系数据库中，如果有上万甚至上亿条记录，在查找记录的时候，想要获得非常快的速度，就需要使用索引。 索引是关系数据库中">
 <meta itemprop="datePublished" content="2020-07-10T23:11:12&#43;08:00" />
 <meta itemprop="dateModified" content="2020-07-10T23:11:12&#43;08:00" />
-<meta itemprop="wordCount" content="18020">
+<meta itemprop="wordCount" content="18074">
 
 
 
@@ -129,8 +129,8 @@
         <div class="post-category">
             <a href="/categories/mysql-%E6%8A%80%E6%9C%AF%E6%96%87%E7%AB%A0/"> MySQL 技术文章 </a>
             </div>
-          <span class="more-meta"> 约 18020 字 </span>
-          <span class="more-meta"> 预计阅读 36 分钟 </span>
+          <span class="more-meta"> 约 18074 字 </span>
+          <span class="more-meta"> 预计阅读 37 分钟 </span>
         
       </div>
     </header>
@@ -181,9 +181,9 @@
 <h2 id="1-什么是数据库索引">1. 什么是数据库索引</h2>
 <p>在关系数据库中，如果有上万甚至上亿条记录，在查找记录的时候，想要获得非常快的速度，就需要使用索引。</p>
 <p>索引是关系数据库中对某一列或多个列的值进行<strong>预排序</strong>的<strong>数据结构</strong>，在 MySQL 中也被称为 Key。<strong>通过使用索引，可以让数据库系统不必扫描整个表，而是直接定位到符合条件的记录，这样就大大加快了查询速度</strong>。</p>
-<p>注意事项：有序性是因为一切二分法查找法都要求数据已经是排好顺序的。如果把索引看做 key（虽然 key 数据也是来自于表单中一行记录的某些字段值），那么 value 在 MyISAM 中就是记录的在存储文件中的地址，而在 InnoDB 中 value 直接就是对应的一行数据。</p>
+<p><strong>注意事项</strong>：有序性是因为一切二分法查找法都要求数据已经是排好顺序的。如果把索引看做 key（虽然 key 数据也是来自于表单中一行记录的某些字段值），那么 value 在 MyISAM 中就是记录的在存储文件中的地址，而在 InnoDB 中 value 直接就是对应的一行数据。</p>
 <blockquote>
-<p>比如我们将一本书中每一章的章节名作为搜索条件，那么书本最开始的目录就是索引。我们通过目录能够非常快地找到对应章节，而不必一页页翻书来查看是否是在对应目录上。</p>
+<p>比如我们将一本书中每一章的章节名作为搜索条件，那么书本最开始的目录就是索引。我们通过目录能够非常快地找到对应章节，而不必一页页翻书来查看具体是否有某个章节，具体章节的内容从哪一页开始。</p>
 </blockquote>
 <p>索引的本质实际上还是存储在磁盘上的数据结构，它可以有的存储结构：</p>
 <ul>
@@ -197,7 +197,7 @@
 </blockquote>
 <p>如果我们事先对某个列字段建立好了索引，那么 MySQL 在依靠列字段进行搜索的时候就会优先去索引中搜寻，而不必依靠在数据表中的逐行搜寻。</p>
 <blockquote>
-<p>注意事项：在一次查询中，MySQL 只能使用一个索引。</p>
+<p>注意事项：在一次查询中，MySQL 只能使用一个索引。特别注意下面会提到的联合索引，联合索引也是一个索引。</p>
 </blockquote>
 <p><img src="../../../images/img_mysql/1.png" alt="img" /></p>
 <p>比如上表左侧为数据库中的多行数据，右侧为索引（数据结构为二叉搜索树类型）：</p>
@@ -270,7 +270,7 @@
 <li>索引的优点是提高了查询效率（极大）；</li>
 <li>缺点是在插入、更新和删除记录时，需要同时修改索引，因此，索引越多，插入、更新和删除记录的速度就越慢。</li>
 </ul>
-<p>对于主键，关系数据库会自动对其创建主键索引。使用主键索引的效率是最高的，因为主键会保证绝对唯一。</p>
+<p>对于主键，关系数据库会自动对其创建主键索引。使用主键索引的效率是最高的，因为主键会保证绝对唯一，唯一性带来的索引的充分散列。</p>
 <h3 id="21-索引的查看和创建语法">2.1 索引的查看和创建语法</h3>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
