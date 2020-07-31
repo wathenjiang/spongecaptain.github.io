@@ -290,7 +290,7 @@ This is 2020
 <p>另一方面，<strong>在 CGLIB 中没有被代理对象这一个说法</strong>。和 JDK 的动态代理作比较就是：</p>
 <ul>
 <li>JDK 动态代理中，我们首先构造被代理对象实例，然后注入 InvocationHandler 实例，然后将 InvocationHandler 实例交给 <code>Proxy.newInstance()</code> 方法来构造动态代理类实例。注入被代理对象是必要的，因此如果想在代理类中调用被代理类的方法，必须通过注入的被代理类对象来执行；</li>
-<li>CGLIB 动态代理汇汇中，我们并不需要构造被代理对象实例，我们只要给予其被代理类.class 即可。其内部的执行逻辑和 JDK 动态代理不一致。</li>
+<li>CGLIB 动态代理中，我们并不需要构造被代理对象实例，我们只要给予其被代理类.class 即可。其内部的执行逻辑和 JDK 动态代理不一致。</li>
 </ul>
 <p>正是因为这个原因，MethodInterceptor 的 <code>intercept()</code> 方法的第一个入口参数的语义就是 (被)代理的对象，在 CGLIB 的语义中就是已经增强了的对象，相当于 JDK 动态代理中的 <code>InvocationHandler.invoke()</code> 方法的第一个入口参数。</p>
 <p><strong>那么 CGLIB 内部的运行逻辑又是怎么样的呢？</strong></p>
@@ -303,7 +303,7 @@ This is 2020
 <li>Factory：为 net.sf.cglib.proxy.Factory 接口类，这个类是 CGLIB 中实现代理所必要实现的接口，用于提供一些工具方法，和 Proxyee 没有关系；</li>
 </ul>
 <p>可见 CGLIB 版本的动态代理和 JDK 版本的动态代理有很大的区别，<strong>其完全不依赖于被代理类的实例</strong>，那么其是如何产生代理对象 proxyer 实例的呢？</p>
-<p>CGLIB 是高效的代码生成包，底层依靠 <a href="https://asm.ow2.io/">ASM</a>（开源的 java 字节码编辑类库）操作字节码实现。也就是说，CGLIB 的做法是对 Proxyee 类的字节码直接进行修改增强得到代理类 Proxyer，而不是通过生成引用了 Proxyee 实例的 Proxyer 类的字节码，然后再利用字节码生成 Proxyer 实例。</p>
+<p>CGLIB 是高效的代码生成包，底层依靠 <a href="https://asm.ow2.io/">ASM</a>（开源的 java 字节码编辑类库）操作字节码实现。也就是说，<strong>CGLIB 的做法是对 Proxyee 类的字节码直接进行修改增强得到代理类 Proxyer，而不是通过生成引用了 Proxyee 实例的 Proxyer 类的字节码，然后再利用字节码生成 Proxyer 实例</strong>。</p>
 <p>在开启 CGLIB 的 debug 模式后，能够得到 CGLIB 动态生成的字节码文件，开启方式很简单，在 main 方法中主动调用：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -383,7 +383,7 @@ This is 2020
 </div>
 </div><ul>
 <li>
-<p>首先，我们可以注意到，代理方法都被 <code>final</code> 声明，这说明我们不能继承动态生成的代理类，因此也不能对代理类进行再代理。</p>
+<p>首先，我们可以注意到，代理方法都被 <code>final</code> 声明，这说明我们不能继承 CGLIB 动态生成的代理类，因此也不能对代理类进行再代理。</p>
 </li>
 <li>
 <p>其次，我们可以注意到，代理方法最终是通过 MethodInterceptor 的 <code>intercept()</code> 方法来完成执行逻辑的。</p>
@@ -454,16 +454,16 @@ This is 2020
 <li>另一个是不经过拦截器的对应方法，即原方法，或者说被代理的方法；</li>
 </ul>
 <blockquote>
-<p><strong>注意事项</strong>：每一个 MethodProxy 实例都是延迟加载的，比如这里调用 <code>Proxy.sayHello(&quot;SpongeCaptain&quot;,2020)</code> 方法时才会真正地初始化 MethodProxy 实例，调用其 <code>init()</code> 方法。</p>
+<p><strong>注意事项</strong>：每一个 MethodProxy 实例都是延迟加载的，比如这里调用 <code>Proxy.sayHello(&quot;SpongeCaptain&quot;,2020)</code> 方法时才会真正地初始化 MethodProxy 实例，这时才调用其 <code>init()</code> 方法。</p>
 </blockquote>
 <p>这两个索引分别对应着自己的 FastClass 实例，因此正如上面提到的 CGLIB 额外产生了两个 FastClass 类实例。</p>
 <p>通过 Proxyer 来初始化索引乃至执行代理方法的完成过程如下所示：</p>
 <ul>
-<li>调用 Proxyer.sayHello(&ldquo;hello&rdquo;, 2020) 中有使用 MethodProxy 的相关方法（下面会有讲到），导致此代理方法对应的 MethodProxy 实例开始初始化；</li>
+<li>调用 <code>Proxyer.sayHello(&quot;hello&quot;, 2020)</code> 中有使用 MethodProxy 的相关方法（下面会有讲到），导致此代理方法对应的 MethodProxy 实例开始初始化；</li>
 <li>在 <code>MethodProxy.init()</code> 方法的执行过程中，通过方法签名 Signature 实例（此时值为 <code>sayHello(Ljava/lang/String;)Ljava/lang/String;</code>）调用 <code>FastClass.getIndex()</code> 方法得到方法对应的索引；</li>
-<li>通过 <code>MethdProxy.invoke()</code> 方法待 <code>init()</code> 执行完毕后，通过调用 FastClas.invoke() 方法进行真正的方法调用，其中入口参数依次为：方法对应的索引、(被)代理对象、方法入口参数；</li>
+<li>通过 <code>MethdProxy.invoke()</code> 方法待 <code>init()</code> 执行完毕后，通过调用 <code>FastClas.invoke()</code> 方法进行真正的方法调用，其中入口参数依次为：方法对应的索引、(被)代理对象、方法入口参数；</li>
 </ul>
-<p>下面是 MethodProxy 实例分别调用重写方法的 invoke() 以及调用非重写方法的 invokeSuper()：</p>
+<p>下面是 MethodProxy 实例分别调用重写方法的 <code>invoke()</code> 以及调用非重写方法的 <code>invokeSuper()</code>：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -633,7 +633,7 @@ This is 2020
 <p>画外音：这么多的 swith-case 太影响美观和阅读了，不过匿名内部类反正是给机器看的，也就无所谓了。</p>
 </blockquote>
 <p>对于 Java 的 Method 而言，方法签名就是方法所属类的完全限定名+方法名+入口参数类型。然而通过方法名来确定到具体的方法指针最后在执行没有直接通过方法指针来执行快。但是问题在于 Java 语法中没有指针，更别提方法指针，因此 FastClass 采用了巧妙的方式，利用索引和方法签名，这里的方法签名通过 <code>switch case</code> 语句实现。这里我们不妨就拿 <code>Proxyee$$EnhancerByCGLIB$$551d55b3$$FastClassByCGLIB$$dece6ddd</code> 类为例。</p>
-<p>现在我们可以知道通过执行一个由 CGLIB 产生的代理类的内部执行逻辑了，如下图所示：</p>
+<p>现在我们可以知道执行一个由 CGLIB 产生的代理类的内部执行逻辑了，如下图所示：</p>
 <p><img src="../../../images/img_java/image-20200717212959198.png" alt="image-20200717212959198" style="zoom: 25%;" /></p>
 <p>其中每一个 FastClass 负责提供 <code>getIndex()</code> 将方法签名转换为索引，通过 <code>invoke()</code> 方法提供通过方法索引来执行具体的代理方法的能力。而两个 FastClass 又分别负责未重写的代理方法与重写了的代理方法。</p>
 <blockquote>
@@ -777,7 +777,7 @@ This is 2020
 </span><span class="lnt">112
 </span></code></pre></td>
 <td class="lntd">
-<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// 一个 Enhancer 实例只能生产一个代理类，因此 Enhancer 是有状态的
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// Enhancer 是有状态的，因此一个 Enhancer 实例只能生产一个代理类
 </span><span class="c1">// 所以 Enhancer.generateClass() 直接是在修改字段值了
 </span><span class="c1"></span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">generateClass</span><span class="o">(</span><span class="n">ClassVisitor</span> <span class="n">v</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
   <span class="n">Class</span> <span class="n">sc</span> <span class="o">=</span> <span class="o">(</span><span class="n">superclass</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">?</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span> <span class="o">:</span> <span class="n">superclass</span><span class="o">;</span>
