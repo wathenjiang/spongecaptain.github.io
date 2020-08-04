@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>数据结构 on Spongecaptain 的个人技术博客</title>
+    <link>https://spongecaptain.cool/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</link>
+    <description>Recent content in 数据结构 on Spongecaptain 的个人技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Tue, 04 Aug 2020 16:11:01 +0800</lastBuildDate>
+    
+	<atom:link href="https://spongecaptain.cool/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>SkipList</title>
+      <link>https://spongecaptain.cool/post/datastracture/skiplist/</link>
+      <pubDate>Tue, 04 Aug 2020 16:11:01 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/datastracture/skiplist/</guid>
+      <description>跳表作为一种数据结构，由 William Pugh 在其在 1990 年发表的论文 Skip Lists: A Probabilistic Alternative to Balanced Trees 中提出。 1. 逻辑上的跳表 将跳表称为跳跃查询的链表更合适。 无论采用哪一种数据结构</description>
+    </item>
+    
+  </channel>
+</rss>

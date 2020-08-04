@@ -6,10 +6,28 @@
     <description>Recent content in Tags on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 27 Jul 2020 22:45:21 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 04 Aug 2020 16:11:01 +0800</lastBuildDate>
     
 	<atom:link href="https://spongecaptain.cool/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>skip list</title>
+      <link>https://spongecaptain.cool/tags/skip-list/</link>
+      <pubDate>Tue, 04 Aug 2020 16:11:01 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/tags/skip-list/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>跳表</title>
+      <link>https://spongecaptain.cool/tags/%E8%B7%B3%E8%A1%A8/</link>
+      <pubDate>Tue, 04 Aug 2020 16:11:01 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/tags/%E8%B7%B3%E8%A1%A8/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>mapreduce</title>
