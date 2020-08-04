@@ -49,7 +49,7 @@
 <meta itemprop="description" content="跳表作为一种数据结构，由 William Pugh 在其 1990 年发表的论文 Skip Lists: A Probabilistic Alternative to Balanced Trees 中提出。 1. 逻辑上的跳表 将跳表称为跳跃查询的链表更合适。 无论采用哪一种数据结构，">
 <meta itemprop="datePublished" content="2020-08-04T16:11:01&#43;08:00" />
 <meta itemprop="dateModified" content="2020-08-04T16:11:01&#43;08:00" />
-<meta itemprop="wordCount" content="3054">
+<meta itemprop="wordCount" content="5358">
 
 
 
@@ -129,8 +129,8 @@
         <div class="post-category">
             <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"> 数据结构 </a>
             </div>
-          <span class="more-meta"> 约 3054 字 </span>
-          <span class="more-meta"> 预计阅读 7 分钟 </span>
+          <span class="more-meta"> 约 5358 字 </span>
+          <span class="more-meta"> 预计阅读 11 分钟 </span>
         
       </div>
     </header>
@@ -143,7 +143,8 @@
     <li><a href="#1-逻辑上的跳表">1. 逻辑上的跳表</a></li>
     <li><a href="#2-实际的跳表">2. 实际的跳表</a></li>
     <li><a href="#3-跳表与其他数据结构">3. 跳表与其他数据结构</a></li>
-    <li><a href="#4-引用说明">4. 引用说明</a></li>
+    <li><a href="#4-手写一个-skip-list">4. 手写一个 Skip List</a></li>
+    <li><a href="#5-引用说明">5. 引用说明</a></li>
   </ul>
 </nav>
   </div>
@@ -268,11 +269,621 @@
 </ul>
 <p><strong>Hash 表的独有特点</strong>：skiplist 和各种平衡树（如 AVL、红黑树等）的元素是有序排列的，而哈希表不是有序的。因此，在哈希表上只能做单个 key 的查找，不适宜做范围查找。所谓范围查找，指的是查找那些大小在指定的两个值之间的所有节点。</p>
 <p><strong>查询效率的比较</strong>：查找单个 key，skiplist 和平衡树的时间复杂度都为 <code>O(logN)</code>，大体相当；而哈希表在保持较低的哈希值冲突概率的前提下，查找时间复杂度接近 O (1)，性能更高一些。所以我们平常使用的各种 Map 或 dictionary 结构，大都是基于哈希表实现的。</p>
-<h2 id="4-引用说明">4. 引用说明</h2>
+<h2 id="4-手写一个-skip-list">4. 手写一个 Skip List</h2>
+<p>首先是节点类，这里的 Skip List 模型中的节点有着上下左右四个节点的引用指针，当然在很多应用中并不需要这么多指针。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;{</span>
+  <span class="kd">public</span> <span class="kt">int</span> <span class="n">key</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="n">T</span> <span class="n">value</span><span class="o">;</span>
+  <span class="kd">public</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">up</span><span class="o">,</span> <span class="n">down</span><span class="o">,</span> <span class="n">left</span><span class="o">,</span> <span class="n">right</span><span class="o">;</span><span class="c1">// 上下左右 四个指针
+</span><span class="c1"></span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">HEAD_KEY</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">MIN_VALUE</span><span class="o">;</span> <span class="c1">// 负无穷
+</span><span class="c1"></span>  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span>  <span class="n">TAIL_KEY</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">;</span> <span class="c1">// 正无穷
+</span><span class="c1"></span>
+  <span class="kd">public</span> <span class="nf">Node</span><span class="o">(</span><span class="kt">int</span> <span class="n">key</span><span class="o">,</span> <span class="n">T</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">;</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="c1">//key 与 value 的 get/set 方法
+</span><span class="c1"></span>  <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getKey</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">key</span><span class="o">;</span>
+  <span class="o">}</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setKey</span><span class="o">(</span><span class="kt">int</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">;</span>
+  <span class="o">}</span>
+  <span class="kd">public</span> <span class="n">T</span> <span class="nf">getValue</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">value</span><span class="o">;</span>
+  <span class="o">}</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setValue</span><span class="o">(</span><span class="n">T</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+  <span class="o">}</span>
+  <span class="c1">//节点相同的逻辑是 key 与 value 都应当相同，或者直接引用地址相同
+</span><span class="c1"></span>  <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="n">Object</span> <span class="n">o</span><span class="o">)</span> <span class="o">{</span>
+
+    <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">==</span><span class="n">o</span><span class="o">)</span> <span class="o">{</span><span class="c1">//引用相同
+</span><span class="c1"></span>      <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">o</span><span class="o">==</span><span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="k">if</span> <span class="o">(!(</span><span class="n">o</span> <span class="k">instanceof</span> <span class="n">Node</span><span class="o">&lt;?&gt;))</span> <span class="o">{</span><span class="c1">//类型一定要为 Node
+</span><span class="c1"></span>      <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">ent</span><span class="o">;</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="n">ent</span> <span class="o">=</span> <span class="o">(</span><span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;)</span>  <span class="n">o</span><span class="o">;</span> <span class="c1">// 检测类型
+</span><span class="c1"></span>    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">ClassCastException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="o">(</span><span class="n">ent</span><span class="o">.</span><span class="na">getKey</span><span class="o">()</span> <span class="o">==</span> <span class="n">key</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">ent</span><span class="o">.</span><span class="na">getValue</span><span class="o">()</span> <span class="o">==</span> <span class="n">value</span><span class="o">);</span>
+  <span class="o">}</span>
+  <span class="c1">//toString
+</span><span class="c1"></span>  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="s">&#34;key-value:&#34;</span><span class="o">+</span><span class="n">key</span><span class="o">+</span><span class="s">&#34;-&#34;</span><span class="o">+</span><span class="n">value</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>在之前的章节有提到逻辑上的跳表结构存在节点数据冗余的问题，一种解决办法已经提到了，每一个节点可以使用多个向后的指针。不过这里采用另一种方式，顶层节点的 value 设置为 null，仅仅保存 key 值，这样一来在保持简单逻辑的情况下，能够减少节点数据冗余。</p>
+<blockquote>
+<p>这种思路类似于 B+ 树中只有 leaf page 存储行数据，其他节点仅仅存储指向下一层节点的指针以及索引。</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="lnt">171
+</span><span class="lnt">172
+</span><span class="lnt">173
+</span><span class="lnt">174
+</span><span class="lnt">175
+</span><span class="lnt">176
+</span><span class="lnt">177
+</span><span class="lnt">178
+</span><span class="lnt">179
+</span><span class="lnt">180
+</span><span class="lnt">181
+</span><span class="lnt">182
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SkipList</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+  <span class="c1">//在每次插入元素后，即使有新的顶层生成，head、tail 还是指向最顶层的 head、tail，此顶层的 head、tail 可以通过 down 指针得到
+</span><span class="c1"></span>  <span class="kd">private</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">head</span><span class="o">,</span> <span class="n">tail</span><span class="o">;</span><span class="c1">//head 与 tail
+</span><span class="c1"></span>  <span class="kd">private</span> <span class="kt">int</span> <span class="n">nodeNumber</span><span class="o">;</span><span class="c1">//节点总数
+</span><span class="c1"></span>  <span class="kd">private</span> <span class="kt">int</span> <span class="n">listLevel</span><span class="o">;</span><span class="c1">//层数
+</span><span class="c1"></span>  <span class="kd">private</span> <span class="n">Random</span> <span class="n">random</span><span class="o">;</span><span class="c1">// 用于投掷硬币
+</span><span class="c1"></span>  <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">double</span> <span class="n">PROBABILITY</span> <span class="o">=</span> <span class="n">0</span><span class="o">.</span><span class="na">5</span><span class="o">;</span><span class="c1">//对新插入元素向上选举的概率设定为 0.5
+</span><span class="c1"></span>
+  <span class="kd">public</span> <span class="nf">SkipList</span><span class="o">()</span> <span class="o">{</span>
+    <span class="c1">// TODO Auto-generated constructor stub
+</span><span class="c1"></span>    <span class="n">random</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Random</span><span class="o">();</span>
+    <span class="n">clear</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="cm">/**
+</span><span class="cm">     *清空跳跃表
+</span><span class="cm">     * */</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">clear</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">Node</span><span class="o">.</span><span class="na">HEAD_KEY</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+    <span class="n">tail</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">Node</span><span class="o">.</span><span class="na">TAIL_KEY</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+    <span class="n">horizontalLink</span><span class="o">(</span><span class="n">head</span><span class="o">,</span> <span class="n">tail</span><span class="o">);</span>
+    <span class="n">listLevel</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+    <span class="n">nodeNumber</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isEmpty</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">nodeNumber</span> <span class="o">==</span> <span class="n">0</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">int</span> <span class="nf">size</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">nodeNumber</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="cm">/**
+</span><span class="cm">     * 在最下面一层，找到要插入的位置前面的那个 key
+</span><span class="cm">     * */</span>
+  <span class="kd">private</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">findNode</span><span class="o">(</span><span class="kt">int</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">head</span><span class="o">;</span>
+    <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">while</span> <span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">right</span><span class="o">.</span><span class="na">key</span> <span class="o">!=</span> <span class="n">Node</span><span class="o">.</span><span class="na">TAIL_KEY</span> <span class="o">&amp;&amp;</span> <span class="n">p</span><span class="o">.</span><span class="na">right</span><span class="o">.</span><span class="na">key</span> <span class="o">&lt;=</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span><span class="c1">//先遍历顶层元素
+</span><span class="c1"></span>        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">right</span><span class="o">;</span>
+      <span class="o">}</span>
+      <span class="k">if</span> <span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">down</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span><span class="c1">//通过 p.down 得到下一层
+</span><span class="c1"></span>        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">down</span><span class="o">;</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span><span class="c1">//p.down 说明已经遍历到最后一层，此时直接选择节点插入到当前节点后即可（注意此时 p 一定不符合 while 条件）
+</span><span class="c1"></span>        <span class="k">break</span><span class="o">;</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">p</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="cm">/**
+</span><span class="cm">     * 查找是否存储key，存在则返回该节点，否则返回null
+</span><span class="cm">     * */</span>
+  <span class="kd">public</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">search</span><span class="o">(</span><span class="kt">int</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">findNode</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">key</span> <span class="o">==</span> <span class="n">p</span><span class="o">.</span><span class="na">getKey</span><span class="o">())</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="n">p</span><span class="o">;</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="cm">/**
+</span><span class="cm">     * 向跳跃表中添加key-value，这是最跳表实现最复杂的地方
+</span><span class="cm">     * */</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">put</span><span class="o">(</span><span class="kt">int</span> <span class="n">k</span><span class="o">,</span> <span class="n">T</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">//在最下面一层，找到要插入的位置前面的那个 key
+</span><span class="c1"></span>    <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">findNode</span><span class="o">(</span><span class="n">k</span><span class="o">);</span>
+    <span class="c1">//如果key值相同，替换原来的 value 即可结束
+</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">k</span> <span class="o">==</span> <span class="n">p</span><span class="o">.</span><span class="na">getKey</span><span class="o">())</span> <span class="o">{</span>
+      <span class="n">p</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">v</span><span class="o">;</span>
+      <span class="k">return</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">//如果 key 不相同，那么在最底层插入该节点，此时仅仅需要调用 backLink() 进行插入即可
+</span><span class="c1"></span>    <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">q</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">k</span><span class="o">,</span> <span class="n">v</span><span class="o">);</span>
+    <span class="n">backLink</span><span class="o">(</span><span class="n">p</span><span class="o">,</span> <span class="n">q</span><span class="o">);</span>
+    <span class="kt">int</span> <span class="n">currentLevel</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span><span class="c1">//当前所在的层级是0
+</span><span class="c1"></span>    <span class="c1">//抛硬币
+</span><span class="c1"></span>    <span class="k">while</span> <span class="o">(</span><span class="n">random</span><span class="o">.</span><span class="na">nextDouble</span><span class="o">()</span> <span class="o">&gt;=</span> <span class="n">PROBABILITY</span><span class="o">)</span> <span class="o">{</span>
+      <span class="c1">//如果超出了高度，需要重新建一个顶层，注意新的顶层与原顶层之间需要通过指针联系
+</span><span class="c1"></span>      <span class="k">if</span> <span class="o">(</span><span class="n">currentLevel</span> <span class="o">&gt;=</span> <span class="n">listLevel</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//新建顶层的初始化
+</span><span class="c1"></span>        <span class="n">listLevel</span><span class="o">++;</span>
+        <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">p1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">Node</span><span class="o">.</span><span class="na">HEAD_KEY</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+        <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">p2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">Node</span><span class="o">.</span><span class="na">TAIL_KEY</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span>
+        <span class="n">horizontalLink</span><span class="o">(</span><span class="n">p1</span><span class="o">,</span> <span class="n">p2</span><span class="o">);</span>
+        <span class="c1">//新键顶层和底层元素建立指针联系
+</span><span class="c1"></span>        <span class="n">vertiacallLink</span><span class="o">(</span><span class="n">p1</span><span class="o">,</span> <span class="n">head</span><span class="o">);</span>
+        <span class="n">vertiacallLink</span><span class="o">(</span><span class="n">p2</span><span class="o">,</span> <span class="n">tail</span><span class="o">);</span>
+        <span class="n">head</span> <span class="o">=</span> <span class="n">p1</span><span class="o">;</span>
+        <span class="n">tail</span> <span class="o">=</span> <span class="n">p2</span><span class="o">;</span>
+        <span class="c1">//新的顶层构建完毕后，顶层只有新的 head 与 tail 节点
+</span><span class="c1"></span>      <span class="o">}</span>
+      <span class="c1">//总之，通过上面的逻辑确保了下面的逻辑中层数一定是够用的
+</span><span class="c1"></span>      <span class="c1">//寻找当前层 p 后面且 p.up != null 的 p 元素，如果存在这个元素，说明 q 节点被选举为上层节点后，应当置于 p.up 后
+</span><span class="c1"></span>      <span class="k">while</span> <span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">up</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">left</span><span class="o">;</span>
+      <span class="o">}</span>
+      <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">up</span><span class="o">;</span>
+      <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">e</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">k</span><span class="o">,</span> <span class="kc">null</span><span class="o">);</span><span class="c1">//为了减少数据冗余，这里只保存 key，Value 设置为 null 的 e,key 与原 p 相同
+</span><span class="c1"></span>      <span class="n">backLink</span><span class="o">(</span><span class="n">p</span><span class="o">,</span> <span class="n">e</span><span class="o">);</span><span class="c1">//将e插入到p的后面
+</span><span class="c1"></span>      <span class="n">vertiacallLink</span><span class="o">(</span><span class="n">e</span><span class="o">,</span> <span class="n">q</span><span class="o">);</span><span class="c1">//将e和q上下连接
+</span><span class="c1"></span>      <span class="n">q</span> <span class="o">=</span> <span class="n">e</span><span class="o">;</span>
+      <span class="n">currentLevel</span><span class="o">++;</span><span class="c1">//层级数递增
+</span><span class="c1"></span>    <span class="o">}</span>
+    <span class="n">nodeNumber</span><span class="o">++;</span><span class="c1">//节点数递增
+</span><span class="c1"></span>  <span class="o">}</span>
+
+  <span class="c1">//node1后面插入node2
+</span><span class="c1"></span>  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">backLink</span><span class="o">(</span><span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">node1</span><span class="o">,</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">node2</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">node2</span><span class="o">.</span><span class="na">left</span> <span class="o">=</span> <span class="n">node1</span><span class="o">;</span>
+    <span class="n">node2</span><span class="o">.</span><span class="na">right</span> <span class="o">=</span> <span class="n">node1</span><span class="o">.</span><span class="na">right</span><span class="o">;</span>
+    <span class="n">node1</span><span class="o">.</span><span class="na">right</span><span class="o">.</span><span class="na">left</span> <span class="o">=</span> <span class="n">node2</span><span class="o">;</span>
+    <span class="n">node1</span><span class="o">.</span><span class="na">right</span> <span class="o">=</span> <span class="n">node2</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="cm">/**
+</span><span class="cm">     * 水平双向连接
+</span><span class="cm">     * */</span>
+  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">horizontalLink</span><span class="o">(</span><span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">node1</span><span class="o">,</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">node2</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">node1</span><span class="o">.</span><span class="na">right</span> <span class="o">=</span> <span class="n">node2</span><span class="o">;</span>
+    <span class="n">node2</span><span class="o">.</span><span class="na">left</span> <span class="o">=</span> <span class="n">node1</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="cm">/**
+</span><span class="cm">     * 垂直双向连接
+</span><span class="cm">     * */</span>
+  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">vertiacallLink</span><span class="o">(</span><span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">node1</span><span class="o">,</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">node2</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">node1</span><span class="o">.</span><span class="na">down</span> <span class="o">=</span> <span class="n">node2</span><span class="o">;</span>
+    <span class="n">node2</span><span class="o">.</span><span class="na">up</span> <span class="o">=</span> <span class="n">node1</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="cm">/**
+</span><span class="cm">     * 按照 key 的升序依次打印出原始数据
+</span><span class="cm">     * */</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="s">&#34;跳跃表为空！&#34;</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="n">StringBuilder</span> <span class="n">builder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuilder</span><span class="o">();</span>
+    <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">head</span><span class="o">;</span>
+    <span class="k">while</span> <span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">down</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">down</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="k">while</span> <span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">left</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">left</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">right</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">right</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="k">while</span> <span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">right</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">builder</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">p</span><span class="o">);</span>
+      <span class="n">builder</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&#34;\n&#34;</span><span class="o">);</span>
+      <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="na">right</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="k">return</span> <span class="n">builder</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="cm">/**
+</span><span class="cm">     * 按照层序依次从左到右打印出所有的节点，这可以详细地表示出具体的数据结构
+</span><span class="cm">     */</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">layerTraverse</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">headOnCurrentLayer</span> <span class="o">=</span> <span class="n">head</span><span class="o">;</span>
+    <span class="n">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">currentNode</span> <span class="o">=</span> <span class="n">head</span><span class="o">;</span>
+    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+    <span class="k">while</span> <span class="o">(</span><span class="n">headOnCurrentLayer</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">i</span><span class="o">++;</span>
+      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;第 &#34;</span> <span class="o">+</span> <span class="n">i</span> <span class="o">+</span> <span class="s">&#34; 层&#34;</span><span class="o">);</span>
+      <span class="k">while</span> <span class="o">(</span><span class="n">currentNode</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">currentNode</span><span class="o">);</span>
+        <span class="n">currentNode</span> <span class="o">=</span> <span class="n">currentNode</span><span class="o">.</span><span class="na">right</span><span class="o">;</span>
+      <span class="o">}</span>
+      <span class="n">headOnCurrentLayer</span> <span class="o">=</span> <span class="n">headOnCurrentLayer</span><span class="o">.</span><span class="na">down</span><span class="o">;</span>
+      <span class="n">currentNode</span> <span class="o">=</span> <span class="n">headOnCurrentLayer</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>测试代码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">SkipList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SkipList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
+    <span class="c1">//添加入新元素
+</span><span class="c1"></span>    <span class="n">list</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">2</span><span class="o">,</span> <span class="s">&#34;spongecaptainR_2&#34;</span><span class="o">);</span>
+    <span class="n">list</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="s">&#34;spongecaptain_1&#34;</span><span class="o">);</span>
+    <span class="n">list</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">3</span><span class="o">,</span> <span class="s">&#34;spongecaptain_3&#34;</span><span class="o">);</span>
+    <span class="n">list</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="s">&#34;spongecaptain_1_1&#34;</span><span class="o">);</span><span class="c1">//测试同一个key值
+</span><span class="c1"></span>    <span class="n">list</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">4</span><span class="o">,</span> <span class="s">&#34;spongecaptain_4&#34;</span><span class="o">);</span>
+    <span class="n">list</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">6</span><span class="o">,</span> <span class="s">&#34;spongecaptain_6&#34;</span><span class="o">);</span>
+    <span class="n">list</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">5</span><span class="o">,</span> <span class="s">&#34;spongecaptain_5&#34;</span><span class="o">);</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">list</span><span class="o">);</span><span class="c1">//跳跃表按照 key 顺序进行打印
+</span><span class="c1"></span>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;------------------------------&#34;</span><span class="o">);</span>
+    <span class="n">list</span><span class="o">.</span><span class="na">layerTraverse</span><span class="o">();</span><span class="c1">//跳跃表按照层级结构遍历，每一层的遍历都是从左到右的遍历
+</span><span class="c1"></span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>控制台打印出：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">key-value:1-spongecaptain_1_1
+key-value:2-spongecaptainR_2
+key-value:3-spongecaptain_3
+key-value:4-spongecaptain_4
+key-value:5-spongecaptain_5
+key-value:6-spongecaptain_6
+
+------------------------------
+第 1 层
+key-value:-2147483648-null
+key-value:2-null
+key-value:2147483647-null
+第 2 层
+key-value:-2147483648-null
+key-value:2-null
+key-value:4-null
+key-value:6-null
+key-value:2147483647-null
+第 3 层
+key-value:-2147483648-null
+key-value:1-null
+key-value:2-null
+key-value:4-null
+key-value:6-null
+key-value:2147483647-null
+第 4 层
+key-value:-2147483648-null
+key-value:1-spongecaptain_1_1
+key-value:2-spongecaptainR_2
+key-value:3-spongecaptain_3
+key-value:4-spongecaptain_4
+key-value:5-spongecaptain_5
+key-value:6-spongecaptain_6
+key-value:2147483647-null
+</code></pre></td></tr></table>
+</div>
+</div><p>注意：由于随机性，跳表的层数可以是 1- 4 层，每次执行的结果可能都不相同，但是特征是不变的：</p>
+<ul>
+<li>每一层都有相同 key 的 head、tail 节点，但是注意它们是不同的节点，即引用地址不同；</li>
+<li>每一层的所有节点都是按照 key 从小到大升序排序的；</li>
+<li>除了最后一层链表的节点的 value 不为 null，其余所有节点的 value 均为 null；</li>
+<li>随机性并不会影响最后一层链表有哪些节点以及节点的顺序；</li>
+</ul>
+<h2 id="5-引用说明">5. 引用说明</h2>
 <p>部分引用：</p>
 <ul>
 <li><a href="https://zhuanlan.zhihu.com/p/23370124">https://zhuanlan.zhihu.com/p/23370124</a></li>
 <li><a href="https://zhuanlan.zhihu.com/p/53975333">https://zhuanlan.zhihu.com/p/53975333</a></li>
+<li><a href="https://blog.csdn.net/brillianteagle/article/details/52206261">https://blog.csdn.net/brillianteagle/article/details/52206261</a></li>
 </ul>
 
     </div>
