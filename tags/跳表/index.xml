@@ -12,12 +12,12 @@
     
     
     <item>
-      <title>SkipList</title>
+      <title>跳表-skip list</title>
       <link>https://spongecaptain.cool/post/datastracture/skiplist/</link>
       <pubDate>Tue, 04 Aug 2020 16:11:01 +0800</pubDate>
       
       <guid>https://spongecaptain.cool/post/datastracture/skiplist/</guid>
-      <description>跳表作为一种数据结构，由 William Pugh 在其在 1990 年发表的论文 Skip Lists: A Probabilistic Alternative to Balanced Trees 中提出。 1. 逻辑上的跳表 将跳表称为跳跃查询的链表更合适。 无论采用哪一种数据结构</description>
+      <description>跳表作为一种数据结构，由 William Pugh 在其 1990 年发表的论文 Skip Lists: A Probabilistic Alternative to Balanced Trees 中提出。 1. 逻辑上的跳表 将跳表称为跳跃查询的链表更合适。 无论采用哪一种数据结构，</description>
     </item>
     
   </channel>
