@@ -6,10 +6,19 @@
     <description>Recent content in Categories on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 04 Aug 2020 16:11:01 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 05 Aug 2020 10:56:59 +0800</lastBuildDate>
     
 	<atom:link href="https://spongecaptain.cool/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>论文阅读</title>
+      <link>https://spongecaptain.cool/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</link>
+      <pubDate>Wed, 05 Aug 2020 10:56:59 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>数据结构</title>
@@ -17,15 +26,6 @@
       <pubDate>Tue, 04 Aug 2020 16:11:01 +0800</pubDate>
       
       <guid>https://spongecaptain.cool/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>论文阅读</title>
-      <link>https://spongecaptain.cool/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</link>
-      <pubDate>Mon, 27 Jul 2020 22:45:21 +0800</pubDate>
-      
-      <guid>https://spongecaptain.cool/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</guid>
       <description></description>
     </item>
     

@@ -49,7 +49,7 @@
 <meta itemprop="description" content="跳表作为一种数据结构，由 William Pugh 在其 1990 年发表的论文 Skip Lists: A Probabilistic Alternative to Balanced Trees 中提出。 1. 逻辑上的跳表 将跳表称为跳跃查询的链表更合适。 无论采用哪一种数据结构，">
 <meta itemprop="datePublished" content="2020-08-04T16:11:01&#43;08:00" />
 <meta itemprop="dateModified" content="2020-08-04T16:11:01&#43;08:00" />
-<meta itemprop="wordCount" content="5358">
+<meta itemprop="wordCount" content="5359">
 
 
 
@@ -129,7 +129,7 @@
         <div class="post-category">
             <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"> 数据结构 </a>
             </div>
-          <span class="more-meta"> 约 5358 字 </span>
+          <span class="more-meta"> 约 5359 字 </span>
           <span class="more-meta"> 预计阅读 11 分钟 </span>
         
       </div>
@@ -270,7 +270,7 @@
 <p><strong>Hash 表的独有特点</strong>：skiplist 和各种平衡树（如 AVL、红黑树等）的元素是有序排列的，而哈希表不是有序的。因此，在哈希表上只能做单个 key 的查找，不适宜做范围查找。所谓范围查找，指的是查找那些大小在指定的两个值之间的所有节点。</p>
 <p><strong>查询效率的比较</strong>：查找单个 key，skiplist 和平衡树的时间复杂度都为 <code>O(logN)</code>，大体相当；而哈希表在保持较低的哈希值冲突概率的前提下，查找时间复杂度接近 O (1)，性能更高一些。所以我们平常使用的各种 Map 或 dictionary 结构，大都是基于哈希表实现的。</p>
 <h2 id="4-手写一个-skip-list">4. 手写一个 Skip List</h2>
-<p>首先是节点类，这里的 Skip List 模型中的节点有着上下左右四个节点的引用指针，当然在很多应用中并不需要这么多指针。</p>
+<p>首先是节点类，这里 Skip List 模型中的节点有着上下左右，共四个节点的引用指针，当然在很多应用中并不需要这么多指针。</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre class="chroma"><code><span class="lnt"> 1
@@ -895,8 +895,12 @@ key-value:2147483647-null
           <a href="/tags/%E8%B7%B3%E8%A1%A8/">跳表</a>
           </div>
       <nav class="post-nav">
-        
-        <a class="next" href="/post/paper/mapreduce_paper_read_summary/">
+        <a class="prev" href="/post/paper/googlefilesystem/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Google File System-GFS 论文阅读</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/paper/mapreduce/">
             <span class="next-text nav-default">MapReduce 论文学习</span>
             <span class="next-text nav-mobile">下一篇</span>
             <i class="iconfont icon-right"></i>

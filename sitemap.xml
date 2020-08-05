@@ -3,27 +3,55 @@
   
   <url>
     <loc>https://spongecaptain.cool/categories/</loc>
-    <lastmod>2020-08-04T16:11:01+08:00</lastmod>
+    <lastmod>2020-08-05T10:56:59+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/tags/gfs/</loc>
+    <lastmod>2020-08-05T10:56:59+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/post/paper/googlefilesystem/</loc>
+    <lastmod>2020-08-05T10:56:59+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/tags/paper/</loc>
+    <lastmod>2020-08-05T10:56:59+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://spongecaptain.cool/post/</loc>
-    <lastmod>2020-08-04T16:11:01+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/tags/skip-list/</loc>
-    <lastmod>2020-08-04T16:11:01+08:00</lastmod>
+    <lastmod>2020-08-05T10:56:59+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://spongecaptain.cool/tags/</loc>
+    <lastmod>2020-08-05T10:56:59+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</loc>
+    <lastmod>2020-08-05T10:56:59+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/tags/skip-list/</loc>
     <lastmod>2020-08-04T16:11:01+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -58,21 +86,7 @@
   </url>
   
   <url>
-    <loc>https://spongecaptain.cool/post/paper/mapreduce_paper_read_summary/</loc>
-    <lastmod>2020-07-27T22:45:21+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/tags/paper/</loc>
-    <lastmod>2020-07-27T22:45:21+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</loc>
+    <loc>https://spongecaptain.cool/post/paper/mapreduce/</loc>
     <lastmod>2020-07-27T22:45:21+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
