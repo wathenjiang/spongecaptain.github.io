@@ -49,7 +49,7 @@
 <meta itemprop="description" content="MapReduce 论文学习 不少人说，最近 20 年互联网技术的发展就是其他公司学习谷歌的过程，MapReduce: Simpliﬁed Data Processing on Large Clusters 论文是 Google 开源后影响深">
 <meta itemprop="datePublished" content="2020-07-27T22:45:21&#43;08:00" />
 <meta itemprop="dateModified" content="2020-07-27T22:45:21&#43;08:00" />
-<meta itemprop="wordCount" content="4864">
+<meta itemprop="wordCount" content="4902">
 
 
 
@@ -129,7 +129,7 @@
         <div class="post-category">
             <a href="/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/"> 论文阅读 </a>
             </div>
-          <span class="more-meta"> 约 4864 字 </span>
+          <span class="more-meta"> 约 4902 字 </span>
           <span class="more-meta"> 预计阅读 10 分钟 </span>
         
       </div>
@@ -176,6 +176,9 @@
 <p>MapReduce 框架的方便之处在于作为业务程序员仅仅需要写出 Map 以及 Reduce 对应的方法即可，而无需关注于分布式系统协调工作以及如何使用  Map、Reduce 对应的方法。</p>
 </blockquote>
 <p><strong>MapReduce 的核心思想是</strong>：对于 PB 级别的数据，它们一定是分布式地存储于不同主机的磁盘上。传统单机的 &ldquo;输入 &ndash;&gt; 计算 &ndash;&gt; 输出&rdquo; 模型已经不能满足分布式计算的需求，因为传统单机的输入是本地磁盘，而分布式的输入可以是其他磁盘，因此涉及不稳定且带宽受限的网络。如果我们将数据通过网络 I/O 收集到部分主机上进行计算，那么计算的性能主要受限于网络带宽，而不是 CPU、内存。MapReduce 深刻地洞察了这个缺陷，其巧妙地避免了数据在计算时的大批量网络 I/O：既然数据是庞大的，而程序要比数据小得多，将数据输入给程序是不划算的，那么就反其道而行之，<strong>将程序分发到数据所在的地方进行计算，也就是所谓的移动计算比移动数据更划算</strong>。</p>
+<blockquote>
+<p>如果每一台 server 仅仅读取本地磁盘的数据进行计算，那么就不会受限于网络带宽的限制。</p>
+</blockquote>
 <p>另一方面 Map 和 Reduce 概念首次提出并不是在 Google 的这篇论文上，而是在 Lisp 语言中提出。Lisp 是一门古老而有先进的语言，起源于 1958 年，显得古老。但是其推崇函数式编程，到现在看起来，理念还是非常先进。Map 和 Reduce 实际上也是推荐使用函数式编程的方式进行处理，因为通常我们会面临不同结构、内容的初始数据集，但是具体处理的方法逻辑是相同的，函数式风格（functional style）就能很好地将相同的方法逻辑抽象出来。因此 Map、Reduce 只需要专注于单个处理元素，比如一份 html 文档、一个日志文件，而非 TB 级别的数据。</p>
 <h2 id="2-mapreduce-用户编程范式">2. MapReduce 用户编程范式</h2>
 <blockquote>
