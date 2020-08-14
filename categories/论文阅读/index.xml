@@ -6,10 +6,19 @@
     <description>Recent content in 论文阅读 on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Wed, 05 Aug 2020 10:56:59 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 14 Aug 2020 12:20:10 +0800</lastBuildDate>
     
 	<atom:link href="https://spongecaptain.cool/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Bigtable 论文阅读</title>
+      <link>https://spongecaptain.cool/post/paper/bigtable/</link>
+      <pubDate>Fri, 14 Aug 2020 12:20:10 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/paper/bigtable/</guid>
+      <description>1. Bigtable 是什么？ Bigtable 是一种压缩的、高性能的、高可扩展性的，基于 Google 文件系统（Google File System，GFS）的数据存储系统，用于存储大规模结构化</description>
+    </item>
     
     <item>
       <title>Google File System-GFS 论文阅读</title>

@@ -2,21 +2,21 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://spongecaptain.cool/tags/bigtable/</loc>
+    <lastmod>2020-08-05T10:52:10+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/post/paper/bigtable/</loc>
+    <lastmod>2020-08-05T10:52:10+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
     <loc>https://spongecaptain.cool/categories/</loc>
-    <lastmod>2020-08-05T10:56:59+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/tags/gfs/</loc>
-    <lastmod>2020-08-05T10:56:59+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/post/paper/googlefilesystem/</loc>
     <lastmod>2020-08-05T10:56:59+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -45,6 +45,20 @@
   
   <url>
     <loc>https://spongecaptain.cool/categories/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB/</loc>
+    <lastmod>2020-08-05T10:56:59+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/tags/gfs/</loc>
+    <lastmod>2020-08-05T10:56:59+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/post/paper/googlefilesystem/</loc>
     <lastmod>2020-08-05T10:56:59+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
