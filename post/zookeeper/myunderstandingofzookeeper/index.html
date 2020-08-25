@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-<meta name="author" content="Spongecaptain" /><meta name="description" content="1. ZAB 协议的核心是什么？ 见 xmind，Win 端不能打开 mac 端创建的 xmind 文件。 其次，如果不考虑 Zookeeper 基于分布式共识算法的实现细节，我们可以将 Zookeeper 理解为文件" /><meta name="keywords" content="ZooKeeper, 个人理解与总结" />
+<meta name="author" content="Spongecaptain" /><meta name="description" content="1. ZAB 协议的核心是什么？ 其次，如果不考虑 Zookeeper 基于分布式共识算法的实现细节，我们可以将 Zookeeper 理解为文件系统 &#43; 监听通知机制。 Zookeeper = 文件系统 &#43; 监听通知机制 Zookeeper" /><meta name="keywords" content="ZooKeeper, 个人理解与总结" />
 
 
 
@@ -40,22 +40,22 @@
 
 
 <meta property="og:title" content="ZooKeeper 的个人理解与总结" />
-<meta property="og:description" content="1. ZAB 协议的核心是什么？ 见 xmind，Win 端不能打开 mac 端创建的 xmind 文件。 其次，如果不考虑 Zookeeper 基于分布式共识算法的实现细节，我们可以将 Zookeeper 理解为文件" />
+<meta property="og:description" content="1. ZAB 协议的核心是什么？ 其次，如果不考虑 Zookeeper 基于分布式共识算法的实现细节，我们可以将 Zookeeper 理解为文件系统 &#43; 监听通知机制。 Zookeeper = 文件系统 &#43; 监听通知机制 Zookeeper" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://spongecaptain.cool/post/zookeeper/myunderstandingofzookeeper/" />
 <meta property="article:published_time" content="2020-08-25T19:56:06+08:00" />
 <meta property="article:modified_time" content="2020-08-25T19:56:06+08:00" />
 <meta itemprop="name" content="ZooKeeper 的个人理解与总结">
-<meta itemprop="description" content="1. ZAB 协议的核心是什么？ 见 xmind，Win 端不能打开 mac 端创建的 xmind 文件。 其次，如果不考虑 Zookeeper 基于分布式共识算法的实现细节，我们可以将 Zookeeper 理解为文件">
+<meta itemprop="description" content="1. ZAB 协议的核心是什么？ 其次，如果不考虑 Zookeeper 基于分布式共识算法的实现细节，我们可以将 Zookeeper 理解为文件系统 &#43; 监听通知机制。 Zookeeper = 文件系统 &#43; 监听通知机制 Zookeeper">
 <meta itemprop="datePublished" content="2020-08-25T19:56:06&#43;08:00" />
 <meta itemprop="dateModified" content="2020-08-25T19:56:06&#43;08:00" />
-<meta itemprop="wordCount" content="6285">
+<meta itemprop="wordCount" content="6261">
 
 
 
 <meta itemprop="keywords" content="ZooKeeper,分布式," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="ZooKeeper 的个人理解与总结"/>
-<meta name="twitter:description" content="1. ZAB 协议的核心是什么？ 见 xmind，Win 端不能打开 mac 端创建的 xmind 文件。 其次，如果不考虑 Zookeeper 基于分布式共识算法的实现细节，我们可以将 Zookeeper 理解为文件"/>
+<meta name="twitter:description" content="1. ZAB 协议的核心是什么？ 其次，如果不考虑 Zookeeper 基于分布式共识算法的实现细节，我们可以将 Zookeeper 理解为文件系统 &#43; 监听通知机制。 Zookeeper = 文件系统 &#43; 监听通知机制 Zookeeper"/>
 
 <!--[if lte IE 9]>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
@@ -130,7 +130,7 @@
             <a href="/categories/zookeeper/"> ZooKeeper </a>
             <a href="/categories/%E5%88%86%E5%B8%83%E5%BC%8F/"> 分布式 </a>
             </div>
-          <span class="more-meta"> 约 6285 字 </span>
+          <span class="more-meta"> 约 6261 字 </span>
           <span class="more-meta"> 预计阅读 13 分钟 </span>
         
       </div>
@@ -170,10 +170,7 @@
 </div>
     <div class="post-content">
       <h2 id="1-zab-协议的核心是什么">1. ZAB 协议的核心是什么？</h2>
-<blockquote>
-<p>见 xmind，Win 端不能打开 mac  端创建的 xmind 文件。</p>
-</blockquote>
-<p><img src="../../../images/img_zookeeper/CoreOfZAB.png" alt="CoreOfZAB" style="zoom: 33%;" /></p>
+<p><img src="../../../images/img_zookeeper/CoreOfZAB.png" alt="CoreOfZAB" style="zoom: 50%;" /></p>
 <p>其次，如果不考虑 Zookeeper 基于分布式共识算法的实现细节，我们可以将 Zookeeper 理解为文件系统 + 监听通知机制。</p>
 <p><strong>Zookeeper = 文件系统 + 监听通知机制</strong></p>
 <p>Zookeeper 的文件系统与传统的文件系统的区别是：</p>
@@ -200,7 +197,7 @@
 </li>
 </ul>
 <p>可见 ZooKeeper 与传统的 Paxos 算法（以及引申算法）最大的不同之处在于提出了 Observer 节点，<strong>那么 Observer 节点的作用是什么呢？</strong></p>
-<p>参考于 <a href="https://zookeeper.apache.org/doc/current/zookeeperObservers.html">ZooKeeper Doc</a>，我们可以知道以下的实时：</p>
+<p>参考于 <a href="https://zookeeper.apache.org/doc/current/zookeeperObservers.html">ZooKeeper Doc</a>，我们可以知道以下的事实：</p>
 <ul>
 <li><strong>增加集群节点数有利于提高集群的读性能</strong>：ZooKeeper 中的客户端可以与集群中的任意请求进行读操作的交互，因此如果集群中的节点数量提高，如果客户端的请求压力不变，那么每一台节点的读请求压力都会下降，因此我们可以得出结论：集群节点数量的提高有利于集群对读请求的性能。</li>
 <li><strong>增加集群节点的副作用-降低集群的写性能</strong>：不过，集群节点数量的提高有副作用，最终会降低写请求的性能。这是因为每一个写请求都涉及 2PC（两阶段提交），因此节点数越多，意味着需要更多的流量来进行两阶段提交。同时，Leaeder 节点需要等待更多的 Follower 节点对 Leader 的 proposal 的 ack 回复，因此客户端的同步写请求将阻塞更长的时间。</li>
@@ -214,7 +211,7 @@
 <li><strong>添加节点不会降低集群读请求的处理能力</strong>：Observer 不参与 2PC 的写请求处理，Leader 在基于过半机制的共识算法时，其只要求接收到超过 <code>sum(leader+follower)</code> 数量的 ack 回复就判断集群已经达成共识。Observer 节点数的增加不影响这个过程。Leader 节点通过异步地给 Observer 发送 commit 命令来完成同步，这个过程几乎不影响系统的写性能。我们可以认为 Observer 节点不再是两步提交，而是一步提交。</li>
 </ul>
 <h3 id="22-zookeepr-集群中节点间通信模型">2.2 ZooKeepr 集群中节点间通信模型</h3>
-<p><img src="../../../images/img_zookeeper/ZooKeeperNode.png" alt="ZooKeeperNode" style="zoom: 20%;" /></p>
+<p><img src="../../../images/img_zookeeper/ZooKeeperNode.png" alt="ZooKeeperNode" style="zoom: 33%;" /></p>
 <blockquote>
 <p>不同颜色的节点代表不同的节点状态。双端线代表双向通信模型，而单端代表是请求-回复的通信模型。服务节点之间的黑色双端线代表数据同步的网络通道，红色线双端线代表用于 Leader 节点选举的双端通道。</p>
 </blockquote>
@@ -224,7 +221,7 @@
 </blockquote>
 <h3 id="23-zookeeper-节点的消息转发模型">2.3 ZooKeeper 节点的消息转发模型</h3>
 <p>ZooKeeper 节点的消息转发模型强调对用于写请求的 2PC 处理，既不考虑 Observer 节点，也不考虑 Leader 的选举过程。</p>
-<p><img src="../../../images/img_zookeeper/ZooKeeperRequestForward.png" alt="ZooKeeperRequestForward" style="zoom:50%;" /></p>
+<p><img src="../../../images/img_zookeeper/ZooKeeperRequestForward.png" alt="ZooKeeperRequestForward" style="zoom: 67%;" /></p>
 <blockquote>
 <p>图片来源于网络（来源不明）。</p>
 </blockquote>
@@ -238,7 +235,7 @@
 <li>Leader 节点在本地 commit 成功后，其就会向 Client 回复一个写成功消息，然后将 commit 指令发送给其余所有的 Follower 节点；</li>
 </ul>
 <p>对于 Leader 的两阶段提交可以用 ZAB 协议论文中的下图表示：</p>
-<p><img src="../../../images/img_zookeeper/image-20200824112050029.png" alt="image-20200824112050029" style="zoom: 67%;" /></p>
+<p><img src="../../../images/img_zookeeper/image-20200824112050029.png" alt="image-20200824112050029"  /></p>
 <p>不过 Follower 不仅仅可以向 Leader 节点发送 request 以及 ack 消息，其还可以发送如下的消息：</p>
 <ul>
 <li>ping：心跳包消息，Follower 节点利用此消息确保其与 Leader 节点之间的网络通信是正常的；</li>
@@ -254,7 +251,7 @@
 <h2 id="3-zookeeper-中的数据模型与节点">3. ZooKeeper 中的数据模型与节点</h2>
 <h3 id="31-数据模型">3.1 数据模型</h3>
 <p>ZooKeeper 提供了一个类 Unix 文件系统的目录树作为对外的数据模型，如下图所示：</p>
-<p><img src="../../../images/img_zookeeper/image-20200821210714321.png" alt="image-20200821210714321" style="zoom: 67%;" /></p>
+<p><img src="../../../images/img_zookeeper/image-20200821210714321.png" alt="image-20200821210714321"  /></p>
 <p>在 ZooKeeper 中，每一个数据节点都被称为一个 ZNode，所有 ZNode 按层次化结构进行组织，形成一棵树。ZNode 的节点路径标识方式和 Unix 文件系统路径非常相似，都是由一系列使用斜杠(<code>/</code>)进行分割的路径表示，<strong>我们可以向这个节点中写入数据，也可以在节点下面创建子节点</strong>。</p>
 <blockquote>
 <p>事实上类 Unix 文件系统接口的设计非常常见，例如 URL 的地址栏。</p>
@@ -350,7 +347,7 @@
 <p>在 cnlog 网站上也能看到这一点。</p>
 </blockquote>
 <p>简而言之，Leader 的选举与平时写操作的提交有着不同的节点间通信模型，其执行模型如下图所示：</p>
-<p><img src="../../../images/img_zookeeper/ZooKeeper_Election.png" alt="ZooKeeper_Election" style="zoom:20%;" /></p>
+<p><img src="../../../images/img_zookeeper/ZooKeeper_Election.png" alt="ZooKeeper_Election" style="zoom: 50%;" /></p>
 <p>绿框表示 ZooKeeper 集群中的各个节点，黄框表示 ZooKeeper 各个节点用于选举维护的数据：</p>
 <ul>
 <li>zxid：表示事务 id，不过这里主要值的是当前节点已提交的最大的事务 id；</li>

@@ -17,7 +17,7 @@
       <pubDate>Tue, 25 Aug 2020 19:56:06 +0800</pubDate>
       
       <guid>https://spongecaptain.cool/post/zookeeper/myunderstandingofzookeeper/</guid>
-      <description>1. ZAB 协议的核心是什么？ 见 xmind，Win 端不能打开 mac 端创建的 xmind 文件。 其次，如果不考虑 Zookeeper 基于分布式共识算法的实现细节，我们可以将 Zookeeper 理解为文件</description>
+      <description>1. ZAB 协议的核心是什么？ 其次，如果不考虑 Zookeeper 基于分布式共识算法的实现细节，我们可以将 Zookeeper 理解为文件系统 + 监听通知机制。 Zookeeper = 文件系统 + 监听通知机制 Zookeeper</description>
     </item>
     
     <item>
