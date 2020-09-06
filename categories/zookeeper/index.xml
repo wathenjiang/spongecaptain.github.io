@@ -6,10 +6,19 @@
     <description>Recent content in ZooKeeper on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Tue, 25 Aug 2020 19:56:06 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 06 Sep 2020 22:25:56 +0800</lastBuildDate>
     
 	<atom:link href="https://spongecaptain.cool/categories/zookeeper/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ZooKeeper 服务端线程分析</title>
+      <link>https://spongecaptain.cool/post/zookeeper/zookeeperserverthreadmodel/</link>
+      <pubDate>Sun, 06 Sep 2020 22:25:56 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/zookeeper/zookeeperserverthreadmodel/</guid>
+      <description>我对 ZooKeeper release-3.6.1 的源码分析地址为：https://github.com/Spongecaptain/zookeeper Enjoy the Source Code. :) 1. 为什么从线程分析入</description>
+    </item>
     
     <item>
       <title>ZooKeeper 的个人理解与总结</title>
