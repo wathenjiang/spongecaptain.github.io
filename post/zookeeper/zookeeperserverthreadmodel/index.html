@@ -438,7 +438,7 @@
 <li>消费者线程负责从队列中取走元素，如果没有线程来负责取元素，那么队列最终会因为装满而放不下新元素；</li>
 </ul>
 <p>不管怎么样，我将 ZooKeeper 服务端用于竞选的线程模型总结如下图所示：</p>
-<p><img src="../../../../Nutstore Files/我的坚果云/ZooKeeper 服务端线程分析/images/ZooKeeperServerThread.png" alt="ZooKeeperServerThread" style="zoom:25%;" /></p>
+<p><img src="../../../images/img_zookeeper/ZooKeeperServerThread.png" alt="ZooKeeperServerThread" style="zoom:25%;" /></p>
 <blockquote>
 <p>注意事项：上图仅仅画出了一个 Socket 连接的线程模型，但实际上本机需要与其他所有参与竞选的节点都建立 Socket 连接。如果要考虑全部用于竞选的 Socket，那么需要在图中增加相应的 QuorumCnxManager.SendWorker 以及 QuorumCnxManager.RecvWorker 线程、QuorumCnxManager.queueSend&lt;Bytebuffer&gt; 实例。</p>
 </blockquote>
@@ -482,7 +482,7 @@
 <hr>
 <p><strong>那么，ServerCnxnFactory  内部的线程以及线程池的运行逻辑是什么呢？</strong></p>
 <p>首先我们需要理解 JDK NIO 的大致模型，如下图所示：</p>
-<p><img src="../../../../Nutstore Files/我的坚果云/ZooKeeper 服务端线程分析/images/JDKNIO.png" alt="JDKNIO" style="zoom:25%;" /></p>
+<p><img src="../../../images/img_zookeeper/JDKNIO.png" alt="JDKNIO" style="zoom:25%;" /></p>
 <p><strong>1.AcceptThread 线程</strong></p>
 <p>AcceptThread 负责将注册在 Selector 上的 ServerSocketChannel 实例的产生的<strong>新连接事件</strong>处理。具体来说，其有如下的特点：</p>
 <ul>
@@ -671,7 +671,7 @@
 </table>
 <p><strong>注意事项</strong>：这里是单机模式，因此完全没有涉及共识算法的实现逻辑，在集群模式下，LeaderZooKeeperServer 有着不同的异步请求处理器。</p>
 <p>最后，ZooKeeperServer 内的线程通信模型可以总结如下：</p>
-<p><img src="../../../../Nutstore Files/我的坚果云/ZooKeeper 服务端线程分析/images/ZooKeeper_ServerforClient.png" alt="ZooKeeper_ServerforClient" style="zoom:15%;" /></p>
+<p><img src="../../../images/img_zookeeper/ZooKeeper_ServerforClient.png" alt="ZooKeeper_ServerforClient" style="zoom:15%;" /></p>
 <p>注意事项：</p>
 <ul>
 <li>消费是相对于箭尾所连的队列而言的，消费操作需要由具体的线程来完成，该线程为箭头指向的线程；</li>
