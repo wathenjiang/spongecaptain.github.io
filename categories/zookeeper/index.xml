@@ -6,10 +6,19 @@
     <description>Recent content in ZooKeeper on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 06 Sep 2020 22:25:56 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 10 Sep 2020 20:07:03 +0800</lastBuildDate>
     
 	<atom:link href="https://spongecaptain.cool/categories/zookeeper/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ZooKeeper Watch 机制源码解析</title>
+      <link>https://spongecaptain.cool/post/zookeeper/zookeeperwatch/</link>
+      <pubDate>Thu, 10 Sep 2020 20:07:03 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/zookeeper/zookeeperwatch/</guid>
+      <description>1. ZooKeeper Watch 概述 ZooKeeper Watch 机制类似于 Java 设计模式中的观察者模式或者监听模式，唯一的不同是不再基于线程间通信，而是基于进程间通信。 ZooKeeper Watch 机制是指，客户端在所有</description>
+    </item>
     
     <item>
       <title>ZooKeeper 服务端线程分析</title>

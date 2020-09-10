@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>ZooKeeper Watch 机制源码解析 - Spongecaptain 的个人技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Spongecaptain" /><meta name="description" content="1. ZooKeeper Watch 概述 ZooKeeper Watch 机制类似于 Java 设计模式中的观察者模式或者监听模式，唯一的不同是不再基于线程间通信，而是基于进程间通信。 ZooKeeper Watch 机制是指，客户端在所有" /><meta name="keywords" content="ZooKeeper, Watch 机制" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.67.0 with theme even" />
+
+
+<link rel="canonical" href="https://spongecaptain.cool/post/zookeeper/zookeeperwatch/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e6549b501dbc4389b872bd7b2f32a09625027aa099dcfd924adda23a8e9b81bf.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="ZooKeeper Watch 机制源码解析" />
+<meta property="og:description" content="1. ZooKeeper Watch 概述 ZooKeeper Watch 机制类似于 Java 设计模式中的观察者模式或者监听模式，唯一的不同是不再基于线程间通信，而是基于进程间通信。 ZooKeeper Watch 机制是指，客户端在所有" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://spongecaptain.cool/post/zookeeper/zookeeperwatch/" />
+<meta property="article:published_time" content="2020-09-10T20:07:03+08:00" />
+<meta property="article:modified_time" content="2020-09-10T20:07:03+08:00" />
+<meta itemprop="name" content="ZooKeeper Watch 机制源码解析">
+<meta itemprop="description" content="1. ZooKeeper Watch 概述 ZooKeeper Watch 机制类似于 Java 设计模式中的观察者模式或者监听模式，唯一的不同是不再基于线程间通信，而是基于进程间通信。 ZooKeeper Watch 机制是指，客户端在所有">
+<meta itemprop="datePublished" content="2020-09-10T20:07:03&#43;08:00" />
+<meta itemprop="dateModified" content="2020-09-10T20:07:03&#43;08:00" />
+<meta itemprop="wordCount" content="8036">
+
+
+
+<meta itemprop="keywords" content="Zookeeper," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="ZooKeeper Watch 机制源码解析"/>
+<meta name="twitter:description" content="1. ZooKeeper Watch 概述 ZooKeeper Watch 机制类似于 Java 设计模式中的观察者模式或者监听模式，唯一的不同是不再基于线程间通信，而是基于进程间通信。 ZooKeeper Watch 机制是指，客户端在所有"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body class = body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/about/index.html">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/index.html">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">ZooKeeper Watch 机制源码解析</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-09-10 </span>
+        <div class="post-category">
+            <a href="/categories/zookeeper/"> Zookeeper </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-zookeeper-watch-概述">1. ZooKeeper Watch 概述</a></li>
+    <li><a href="#2-与-watch-机制紧密相关的若干类">2. 与 Watch 机制紧密相关的若干类</a>
+      <ul>
+        <li><a href="#21-watcher-接口">2.1 Watcher 接口</a></li>
+        <li><a href="#22-watchedevent-类">2.2 WatchedEvent 类</a></li>
+        <li><a href="#23-watcherevent-类">2.3 WatcherEvent 类</a></li>
+        <li><a href="#24-zkwatchmanager-与-watchmanager-类">2.4 ZKWatchManager 与 WatchManager 类</a></li>
+        <li><a href="#25-watchregistration-类">2.5 WatchRegistration 类</a></li>
+        <li><a href="#26-watcherseteventpair-类">2.6 WatcherSetEventPair 类</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-zookeeper-服务端的-watcher-实现">3. ZooKeeper 服务端的 Watcher 实现</a>
+      <ul>
+        <li><a href="#31-zookeeper-服务端对客户端请求中的事件注册">3.1 ZooKeeper 服务端对客户端请求中的事件注册</a></li>
+        <li><a href="#32-zookeeper-服务端的事件触发与事件通知">3.2 ZooKeeper 服务端的事件触发与事件通知</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-zookeeper-客户端的-watcher-实现">4. ZooKeeper 客户端的 Watcher 实现</a>
+      <ul>
+        <li><a href="#41-zookeeper-客户端的-watcher-消息发送">4.1 ZooKeeper 客户端的 Watcher 消息发送</a></li>
+        <li><a href="#42-zookeeper-客户端的-watcher-通知处理">4.2 ZooKeeper 客户端的 Watcher 通知处理</a></li>
+      </ul>
+    </li>
+    <li><a href="#5-zookeeper-watch-机制的特性总结">5. ZooKeeper Watch 机制的特性总结</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h2 id="1-zookeeper-watch-概述">1. ZooKeeper Watch 概述</h2>
+<p>ZooKeeper Watch 机制类似于 Java 设计模式中的观察者模式或者监听模式，唯一的不同是不再基于线程间通信，而是基于进程间通信。</p>
+<p>ZooKeeper Watch 机制是指，客户端在所有的读命令上告知服务端：这个节点或者子节点变化时通知我，具体来说，支持的写操作有：</p>
+<ul>
+<li>getData</li>
+<li>getChildren</li>
+<li>exists</li>
+</ul>
+<p>例如，我们在命令行可以输入 <code>get -w /foo</code>，其中 <code>-w</code> 参数就是用于告知 ZooKeeper 服务端，当前客户端想在 <code>/foo</code> 节点上设置一个监听器。</p>
+<p><strong>注意事项</strong>：写操作<strong>不支持</strong>任何形式的 watch 注册。</p>
+<p>另一方面，ZooKeeper 支持的事件监听类型与对应的注册方法有：</p>
+<ul>
+<li>NodeCreated 节点创建：<code>exits()</code></li>
+<li>NodeDataChanged 节点数据改变：<code>exits()</code>、<code>getData()</code></li>
+<li>NodeDeleted 节点删除：<code>exits()</code>、<code>getData()</code> 、<code>getChildren()</code></li>
+<li>NodeChildrenChanged 子节点改变：<code>getChildren()</code></li>
+</ul>
+<blockquote>
+<p>另外，ZooKeeper 在 3.6.0 版本中添加了永久递归 watch，这里先不解释。</p>
+</blockquote>
+<p><strong>注意事项</strong>：自节点数据的改变并不会引发 NodeChildrenChanged 子节点改变事件。</p>
+<p>ZooKeeper Watch 机制的两个细节：</p>
+<ul>
+<li>wactch 是一次性触发的（除了永久递归 watch），如果客户端如果在一个 watch 通知后继续收到相同节点的 watch 通知，那么必须再次注册 watch 一次；</li>
+<li>服务端发给客户端的 watch 通知并不包含具体的节点数据，其起到的作用非常存粹：告知客户端其关注的节点发生了 watch 事件；</li>
+</ul>
+<p>关于 ZooKeeper Watch 源码阅读，我们需要解决如下模型的实现：</p>
+<ul>
+<li>服务端
+<ul>
+<li>如何为带有 watch 的读请求进行事件注册；</li>
+<li>在节点的写操作发送时，如何触发事件，将事件通知发送给客户端；</li>
+</ul>
+</li>
+<li>客户端
+<ul>
+<li>命令的发送、注册用与序列化发送；</li>
+<li>事件的监听与回调；</li>
+</ul>
+</li>
+</ul>
+<p>模型如下图所示：</p>
+<p><img src="../../../images/img_zookeeper/ZooKeeper_Watcher_Register.png" alt="ZooKeeper_Watcher_Register"  /></p>
+<p>这里的要点是：无论是客户端还是服务端，只有将 Watcher 进行注册，才能在事件发送时进行回调，否则不进行回调。</p>
+<h2 id="2-与-watch-机制紧密相关的若干类">2. 与 Watch 机制紧密相关的若干类</h2>
+<p>ZooKeeper 中与 Watch 机制紧密相关的类主要有：</p>
+<ul>
+<li>Watcher 接口</li>
+<li>WatchedEvent 类</li>
+<li>WatcherEvent 类</li>
+<li>ZKWatchManager 类</li>
+<li>WatchManager 类</li>
+</ul>
+<p>下面依次展开说明。</p>
+<h3 id="21-watcher-接口">2.1 Watcher 接口</h3>
+<p>Watcher 接口主要用于表示一个标准的事件处理器（而不是事件），其仅仅定义了一个方法 <code>process()</code> 方法上，同时在内部定义了枚举类用于定义具体的事件类型。</p>
+<p>特别需要指出的时：ServerCnxn 类实现了 Watcher 接口。</p>
+<p>Watcher 接口的唯一的抽象方法，如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kt">void</span> <span class="nf">process</span><span class="o">(</span><span class="n">WatchedEvent</span> <span class="n">event</span><span class="o">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><code>process()</code> 方法通常作为一个回调方法被调用，当 ZooKeeper 向客户端发送一个 Watcher 事件通知时，客户端就会对相应的 <code>process()</code> 方法进行回调，从而实现对事件的处理。</p>
+<p>Watcher 还有内部接口与枚举，包括：</p>
+<ul>
+<li>Watcher.Event 接口；</li>
+<li>Watcher.WatcherType 枚举类；</li>
+</ul>
+<p>一个 Watcher 实例都应当实现 Watcher 接口，这里需要指出的是，一个 Watcher.Event 接口用于描述一个事件的类型，包括：</p>
+<ul>
+<li><strong>EventType</strong>：Event 的事件类型；</li>
+<li>Watcher 的类型(关于子节点、当前节点数据还是任意之一)；</li>
+<li><strong>KeeperState</strong>：此时 ZooKeeper 客户端的状态(主要是指连接状态) ；</li>
+</ul>
+<p><strong>注意事项</strong>：上述内部枚举类与接口都可以被其他类直接访问，因为它们默认为 public。这些枚举类主要被 WatcherEvent 与 WatchedEvent 使用。</p>
+<hr>
+<p>Watcher 接口实例在服务端与客户端上的作用不同：</p>
+<ul>
+<li><strong>服务端</strong>：Watcher 的类型主要是 ServerCnxn，其 <code>Watcher.process(WatchEvent event)</code>方法用于将事件通知消息序列化后发送给对其感兴趣的客户端节点；</li>
+<li><strong>客户端</strong>：Watcher 的类型通常是 default，用于处理从服务端传来的的事件通知消息；</li>
+</ul>
+<p>Watcher 接口的多态特性很容易在阅读源码时引起疑惑。</p>
+<h3 id="22-watchedevent-类">2.2 WatchedEvent 类</h3>
+<p>WatchedEvent 类是事件的类型的封装，其除了构造器、内部字段的 get 方法，主要就是如下字段：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">WatchedEvent</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="kd">final</span> <span class="n">KeeperState</span> <span class="n">keeperState</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="kd">final</span> <span class="n">EventType</span> <span class="n">eventType</span><span class="o">;</span>
+  <span class="kd">private</span> <span class="n">String</span> <span class="n">path</span><span class="o">;</span>
+  <span class="c1">//省略其他方法
+</span><span class="c1"></span><span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>可见 WatchedEvent 实例内的两个字段：keeperState 与 eventType 描述了事件类型，其值来源于 Watcher 接口内部的两个枚举类：<code>Watcher.Event.EventType</code> 与 <code>Watcher.Event.KeeperState</code> 类。</p>
+<p>常见的 <strong>KeeperState</strong> 和 <strong>EventType</strong>（使用具体某一个整型值表示）组合如下，它们一起描述了某一种具体事件：</p>
+<table>
+<thead>
+<tr>
+<th align="left">KeeperState</th>
+<th align="left">EventType</th>
+<th align="left">触发条件</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">SyncConnected</td>
+<td align="left">None(-1)</td>
+<td align="left">客户端与服务端成功建立会话</td>
+<td align="left">客户端和服务端处于连接状态</td>
+</tr>
+<tr>
+<td align="left">SyncConnected</td>
+<td align="left">NodeCreated(1)</td>
+<td align="left">Watcher 监听对应的数据节点被创建</td>
+<td align="left">客户端和服务端处于连接状态</td>
+</tr>
+<tr>
+<td align="left">SyncConnected</td>
+<td align="left">NodeDeleted(2)</td>
+<td align="left">Watcher 监听对应的数据节点被删除</td>
+<td align="left">客户端和服务端处于连接状态</td>
+</tr>
+<tr>
+<td align="left">SyncConnected</td>
+<td align="left">NodeDataChanged(3)</td>
+<td align="left">Watcher 监听对应的数据节点的内容发生变更 (<strong>数据内容和数据版本号</strong>)</td>
+<td align="left">客户端和服务端处于连接状态</td>
+</tr>
+<tr>
+<td align="left">SyncConnected</td>
+<td align="left">NodeChildrenChanged(4)</td>
+<td align="left">Watcher 监听对应的数据节点的<strong>子节点列表</strong>发生改变</td>
+<td align="left">客户端和服务端处于连接状态</td>
+</tr>
+</tbody>
+</table>
+<p>值得一提的是，其有一个特殊的方法，用于封装事件信息，得到一个 WatcherEvent 实例，如下所示：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">// WatchedEvent.getWrapper() 方法用于将 WatcherEvent 转换为 WatcherEvent 实例
+</span><span class="c1"></span><span class="kd">public</span> <span class="n">WatcherEvent</span> <span class="nf">getWrapper</span><span class="o">()</span> <span class="o">{</span>
+  <span class="k">return</span> <span class="k">new</span> <span class="n">WatcherEvent</span><span class="o">(</span><span class="n">eventType</span><span class="o">.</span><span class="na">getIntValue</span><span class="o">(),</span> <span class="n">keeperState</span><span class="o">.</span><span class="na">getIntValue</span><span class="o">(),</span> <span class="n">path</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>由此我们可以得知，WatcherEvent 类与 WatchedEvent 类之间的主要区别在于：</p>
+<ul>
+<li>WatcherEvent 用于网络传输；</li>
+<li>WatchedEvent 用于逻辑处理（通常过程中的逻辑处理）；</li>
+</ul>
+<h3 id="23-watcherevent-类">2.3 WatcherEvent 类</h3>
+<p>上面已经说过了，WatcherEvent 类的主要用途是在网络上进行事件的传播，其与 WatchedEvent 类的最主要区别在于其额外时间了 Record 接口，如下所示：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Record</span> <span class="o">{</span>
+  <span class="kt">void</span> <span class="nf">serialize</span><span class="o">(</span><span class="n">OutputArchive</span> <span class="n">archive</span><span class="o">,</span> <span class="n">String</span> <span class="n">tag</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">;</span>
+  <span class="kt">void</span> <span class="nf">deserialize</span><span class="o">(</span><span class="n">InputArchive</span> <span class="n">archive</span><span class="o">,</span> <span class="n">String</span> <span class="n">tag</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Record 接口中的两个方法恰好对应于序列化与反序列化。</p>
+<p>需要注意的一点是，无论是 WatchedEvent 还是 WatcherEvent，其对 ZooKeeper 服务端事件的封装都是极其简单的。举个例子来说，当 <code>/zk-book</code> 这个节点的数据发生变更时，服务端会发送给客户端一个 &ldquo;ZNode 数据内容变更”事件，客户端只能够接收到如下信息：</p>
+<blockquote>
+<p><strong>KeeperState</strong>: SyncConnected</p>
+<p><strong>EventType</strong>: NodeDataChanged</p>
+<p><strong>Path</strong>: /zk-book</p>
+</blockquote>
+<p>从上面展示的信息中，我们可以看到，客户端无法直接从该事件中获取到对应数据节点的原始数据内容以及变更后的新数据内容，而是需要客户端再次主动去重新获取数据。这也是 ZooKeeper Watcher 机制的一个非常重要的特性。</p>
+<h3 id="24-zkwatchmanager-与-watchmanager-类">2.4 ZKWatchManager 与 WatchManager 类</h3>
+<p>ZKWatchManager 与 WatchManager 分别为客户端上的 Watch 管理者以及服务端上的 Watch 管理者。</p>
+<p>其中 WatchManager  负责以下三件事：</p>
+<ul>
+<li>Watcher 的注册：在注册时，将 path 映射为 <code>Set&lt;Watcher&gt;</code>，将 Watcher 映射为 <code>Set&lt;String&gt;</code>，其中 String 的语义是 path；</li>
+<li>Watcher 注册的移除管理；</li>
+<li>Watcher 事件的触发（trigger）；</li>
+</ul>
+<p>ZKWatchManager 类有着类似的作用，只不过其用于为 ZooKeeper 客户端提供服务。</p>
+<p>ZKWatchManager 类与 WatchManager 类的最大区别在于其为不同类型的 Watcher 注册使用了不同的 HashMap 来存储，且存储了一个客户端默认 Watcher 通知处理器 <code>Watcher defaultWatcher</code> 字段。，如下所示：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kd">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Watcher</span><span class="o">&gt;&gt;</span> <span class="n">dataWatches</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span><span class="c1">//当前路径对应节点数据修改的 Watcher
+</span><span class="c1"></span><span class="kd">private</span> <span class="kd">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Watcher</span><span class="o">&gt;&gt;</span> <span class="n">existWatches</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span><span class="c1">//当前路径对应节点创建的 Watcher
+</span><span class="c1"></span><span class="kd">private</span> <span class="kd">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Watcher</span><span class="o">&gt;&gt;</span> <span class="n">childWatches</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span><span class="c1">//当前路径对应节点的子节点创建的 Watcher
+</span><span class="c1"></span><span class="kd">private</span> <span class="kd">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Watcher</span><span class="o">&gt;&gt;</span> <span class="n">persistentWatches</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span><span class="c1">//当前路径对应节点的永久 Watcher
+</span><span class="c1"></span><span class="kd">private</span> <span class="kd">final</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Watcher</span><span class="o">&gt;&gt;</span> <span class="n">persistentRecursiveWatches</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span><span class="c1">//当前路径对应节点的永久递归 Watcher
+</span><span class="c1"></span>
+<span class="kd">private</span> <span class="kd">volatile</span> <span class="n">Watcher</span> <span class="n">defaultWatcher</span><span class="o">;</span><span class="c1">//客户端默认 Watcher 事件处理器
+</span></code></pre></td></tr></table>
+</div>
+</div><h3 id="25-watchregistration-类">2.5 WatchRegistration 类</h3>
+<p>WatchRegistration 类是 ZooKeeper 类的内部抽象类，可见其主要为 ZooKeeper 客户端服务。</p>
+<p>WatchRegistration 类代表了一个 path 与一个 Watcher 的注册信息，其有 4 个子类，且都为 ZooKeeper 内部类：</p>
+<ul>
+<li>AddWatchRegistration</li>
+<li>ChildWatchRegistration</li>
+<li>DataWatchRegistration</li>
+<li>ExistsWatchRegistration</li>
+</ul>
+<p>这些类的区别是什么？</p>
+<ol>
+<li>AddWatchRegistration 用于在 <code>addWatch()</code> 方法中在客户端注册一个 Watcher；</li>
+<li>ChildWatchRegistration用于在 <code>getChildren()</code> 方法中在客户端注册一个 Watcher，对应子节点增加事件；</li>
+<li>DataWatchRegistration用于在 <code>getData()</code> 方法中在客户端注册一个 Watcher，对应数据修改事件；</li>
+<li>ExistsWatchRegistration用于在 <code>exists(()</code> 方法中在客户端注册一个 Watcher，对应节点创建事件；</li>
+</ol>
+<h3 id="26-watcherseteventpair-类">2.6 WatcherSetEventPair 类</h3>
+<p>WatcherSetEventPair 类服务于 ZooKeeper 客户端，其为 ClientCnxn 的内部类，其主要负责封装：</p>
+<ul>
+<li>WatcherEvent；</li>
+<li>关注于此 path 的 Watcher 容器；</li>
+</ul>
+<p>其通常在客户端的 ClientCnxn.SendThread 线程在接收到一个事件通知时，通过读取之前 Watcher 在本地的注册信息来初始化，方便 ClientCnxn.EventThread 线程处理 WatcherEvent。</p>
+<h2 id="3-zookeeper-服务端的-watcher-实现">3. ZooKeeper 服务端的 Watcher 实现</h2>
+<blockquote>
+<p>再次说明：本文基于 ZooKeeper release-3.6.1，不同版本的 ZooKeeper 在源代码上将有所不同。</p>
+</blockquote>
+<h3 id="31-zookeeper-服务端对客户端请求中的事件注册">3.1 ZooKeeper 服务端对客户端请求中的事件注册</h3>
+<p>我们以 getData 方法为例进行说明 ZooKeeper 服务端如何给带有 watch 的读请求进行注册，我们假设此时命令行执行的命令为 <code>get -w /foo</code>。</p>
+<p>我在 <a href="https://spongecaptain.cool/post/zookeeper/zookeeperserverthreadmodel">ZooKeeper 服务端线程分析</a> 一文中已经叙述过了来自客户端的请求如何被服务端接收并处理，这里不再重复说明。我们直接移步到 <code>FinalRequestProcessor.processRequest(Request request)</code> 方法中的 <code>case OpCode.getData:</code> 逻辑块，如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//我们以客户端传来的 getData 方法来学习 ZooKeeper 的 Watch 处理机制
+</span><span class="c1"></span><span class="k">case</span> <span class="n">OpCode</span><span class="o">.</span><span class="na">getData</span><span class="o">:</span>
+	<span class="c1">//handleGetDataRequest 方法用于处理客户端传来的 getData 方法
+</span><span class="c1"></span>	<span class="n">rec</span> <span class="o">=</span> <span class="n">handleGetDataRequest</span><span class="o">(</span><span class="n">readOp</span><span class="o">.</span><span class="na">toRequestRecord</span><span class="o">(),</span> <span class="n">cnxn</span><span class="o">,</span> <span class="n">request</span><span class="o">.</span><span class="na">authInfo</span><span class="o">);</span>
+	<span class="n">GetDataResponse</span> <span class="n">gdr</span> <span class="o">=</span> <span class="o">(</span><span class="n">GetDataResponse</span><span class="o">)</span> <span class="n">rec</span><span class="o">;</span>
+	<span class="n">subResult</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GetDataResult</span><span class="o">(</span><span class="n">gdr</span><span class="o">.</span><span class="na">getData</span><span class="o">(),</span> <span class="n">gdr</span><span class="o">.</span><span class="na">getStat</span><span class="o">());</span>
+	<span class="k">break</span><span class="o">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这里我并不想贴大量的代码，这里主要说明执行逻辑，具体的源码分析可以参考我的 <a href="https://github.com/Spongecaptain/zookeeper">个人 ZooKeeper 源码分析项目</a>，从 FinalRequestProcessor 类入手进行分析。</p>
+<p><code>FinalRequestProcessor.handleGetDataRequest()</code> 方法的执行逻辑为：</p>
+<ul>
+<li>得到 getData 命令中的 path；</li>
+<li>检查 path 对应的 ZNode 节点是否存在，如果不存在，那么直接抛出异常退出，否则，继续下一步；</li>
+<li>进行 ACL 检查；</li>
+<li>重新构造一个 Stat 实例 stat，用于后续从 Node 上将 metadata 数据复制到该 Node 上；</li>
+<li>检查请求是否有设置 wacth 参数，并根据是否存在来决定如何从 ZKDatabase 实例上获取 Node 数据：
+<ul>
+<li>如果有设置，那么通过向  ZKDatabase 实例的 <code>getData()</code> 方法传入：path、stat 以及当前 ServerCnxn 实例；</li>
+<li>如果没有设置，那么通过向 ZKDatabase 实例的 <code>getData()</code> 方法传入：path、stat 以及 null；</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>ServerCnxn 实例对应于当前 ZooKeeeper 服务端与客户端的连接。</p>
+</blockquote>
+<p>此时，Watcher 还没有注册，不过任务已经从 FinalRequestProcessor 转移到了 ZKDatabase 实例上。</p>
+<p><code>ZKDatabase.getData(String path, Stat stat, Watcher watcher)</code> 方法的执行逻辑为：</p>
+<ul>
+<li>检查入口参数 path 对应的节点是否存在，如果不存在，那么直接抛出异常退出，否则，继续下一步；</li>
+<li>从节点读取相关数据复制到 stat 实例；</li>
+<li>利用 <code>WatchManager.addWatch(String path, Watcher watcher)</code> 方法来完成 watch 的注册（真正是否注册取决于 watcher 是否为 null）；</li>
+<li>得到节点的数据 data；</li>
+<li>返回 data 数据；</li>
+</ul>
+<p>可见，最后 ZKDatabase 实例实际上也没有完成 Watcher 的注册工作，而是将 Watcher 注册任务交给了 WatcherManager 来实现。</p>
+<p><code>WatcherManager.addWatch(String path, Watcher watcher)</code> 方法的运行逻辑如下：</p>
+<ul>
+<li>如果存在 path 对应的 <code>Set&lt;Watcher&gt;</code> list，那么就将当前 Watcher 添加到这个 list 中去；如果没有，那么新建一个，再添加；</li>
+<li>如果存在当前 Watcher 对应的 <code>Set&lt;String&gt;</code>（String 的语义为 path）list，那么就将当前 path 加入到这个 list 中取；如果没有，那么新建一个，再添加；</li>
+<li>watcher 模式注册：如果默认模式，那么没有必要注册，我们需要确保其不在 watcherModeManager 实例的 watcherModes（hashMap）字段中注册，非默认模式则要确保注册；</li>
+</ul>
+<p><strong>特别注意</strong>：</p>
+<ol>
+<li>这里的 list 容器都基于 Set 实现，可见我们并不能重复注册，举一个例子来说就是：即使我们重复执行了 <code>get -w /foo</code> 命令，但最终也仅仅注册了一次 Watcher，在触发一次之后，只有再次注册，才能触发事件。</li>
+<li>每一个路径都可以被多个 Watcher 实例监视，每一个 Watcher（ServerCnxn 实例）实例也都可以监视多个 path；</li>
+</ol>
+<p>最后，我们总结一下 Watcher 的注册流程：</p>
+<ul>
+<li>权限以及 path 合法性校验；</li>
+<li>数据以及 stat 的获取；</li>
+<li>将 Watcher（这里时 ServerCnxn 实例）与 path 进行相互的映射</li>
+</ul>
+<p><strong>总之，Watch 注册成功后，我们达到了这样这样的效果</strong>：</p>
+<ul>
+<li>通过给 WatchManager 实例提供 path，我们能够得到所有监听此 path 的 Watcher 实例；</li>
+<li>通过给 WatchManager 实例提供 Watcher，我们能够得到该 Watcher 实例正监听着的所有节点对应的 path；</li>
+</ul>
+<h3 id="32-zookeeper-服务端的事件触发与事件通知">3.2 ZooKeeper 服务端的事件触发与事件通知</h3>
+<p>既然上面 Watcher 注册的例子使用了 <code>getData</code> 读操作时附加 Watcher，那么这里的事件的触发与通知对应地从 <code>setData</code> 方法出发，具体地，我们从 <code>DataTree.setData(String path, byte[] data, int version, long zxid, long time)</code> 方法出发。</p>
+<blockquote>
+<p>此时，写操作对应的日志已经是持久化好了的。调用此方法的线程为 SyncRequestProcessor 线程。</p>
+<p>这里还是不想贴代码，如果你先看源码，可以移步为的 <a href="https://github.com/Spongecaptain/zookeeper">ZooKeeper 个人项目</a>，根据下面的方法入口进行阅读。</p>
+</blockquote>
+<p><code>DataTree.setData(String path, byte[] data, int version, long zxid, long time)</code> 方法的执行逻辑为：</p>
+<ul>
+<li>构造一个 Stat 实例；</li>
+<li>检查 path 对应的 DataNode 节点是否存在，如果不存在那么就 path 不合法，抛出异常，否则进行下一步；</li>
+<li>修改 DataNode 实例的数据；</li>
+<li>修改 DataNode 实例内部的 Stat 属性；</li>
+<li>将更新后的 Stat 属性赋值给新构造的 Stat 实例；</li>
+<li>&hellip;</li>
+<li>通过 <code>WatchManager.triggerWatch(String path, EventType type)</code> 方法来触发 Watcher 的事件；</li>
+</ul>
+<p><code>WatchManager.triggerWatch(String path, EventType type)</code> 方法的入口参数分别为写操作对应的路径以及事件类型，其执行逻辑为：</p>
+<ul>
+<li>构造一个 WatchedEvent 实例，依次封装了：事件类型、通知状态、节点路径；</li>
+<li>构造一个新的 <code>Set&lt;Watcher&gt;</code> 容器 watchers，用于存放稍后待触发的 Watcher；</li>
+<li>通过遍历迭代器的方式来检查当前路径以及父路径是否有对此 path 感兴趣的 Watcher，如果有，那么将其加入到 watchers 容器中；</li>
+<li>遍历 watchers 容器内的所有 Watcher 实例的 <code>process(WatchedEvent event)</code> 方法，来处理 WatchedEvent 事件；</li>
+</ul>
+<p>同时，我们知道最常见的 Watcher 接口实现便是 ServerCnxn 实例，我们关注于基于 JDK NIO 的 NIOServerCnxn。</p>
+<p><code>NIOServerCnxn.process(WatchedEvent event)</code> 方法的运行逻辑如下：</p>
+<ul>
+<li>首先构造一个 ReplyHeader 实例，其封装了响应类型、响应的 zxid，以及错误码（即使完全正常也需要错误码）；</li>
+<li>将 WatchedEvent 转换为 WatcherEvent，前者用于程序内部处理，后者用于事件序列化的发送；</li>
+<li>将 ReplyHeader、WatcherEvent 序列化为 ByteBuffer 后加入到 outgoingBuffers 队列中，等待异步线程的消费与发送；</li>
+</ul>
+<p>我们做一个总结，事件的触发是 SyncRequestProcessor 线程中发生的，其负责处理写操作作用域内存以及 Watcher 触发。Watcher 触发机制主要基于通过问询 WatcherManager 内的 Watcher 注册信息完成。如果在遍历注册信息时发现有对应的 Watcher，那么最后 SyncRequestProcessor 线程会负责执行其 <code>process(WatchedEvent event)</code> 方法。</p>
+<p>从上述过程可以见得，Zookeeper 服务端给客户端发送的事件通知没有具体节点的数据信息，其为单纯的一个事件通知。</p>
+<h2 id="4-zookeeper-客户端的-watcher-实现">4. ZooKeeper 客户端的 Watcher 实现</h2>
+<h3 id="41-zookeeper-客户端的-watcher-消息发送">4.1 ZooKeeper 客户端的 Watcher 消息发送</h3>
+<p>首先我们要关注的是 ZooKeeper 构造器，其一个重载版本如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="nf">ZooKeeper</span><span class="o">(</span><span class="n">String</span> <span class="n">connectString</span><span class="o">,</span> <span class="kt">int</span> <span class="n">sessionTimeout</span><span class="o">,</span> <span class="n">Watcher</span> <span class="n">watcher</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+  <span class="c1">//省略其他逻辑
+</span><span class="c1"></span><span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>构造器入口中的 Watcher 实例作为整个 ZooKeeper 会话期间的默认 Watcher，会一直被保存在客户端 ZKWatchManager 的 defaultWatcher 中。</p>
+<p>无论是 ZooKeeeper 命令行客户端，还是 ZooKeeper 类本身，都最终通过 ZooKeeper 实例的相关方法完成注册，即：<code>getData()</code>、<code>getChildren()</code> 以及 <code>exist()</code> 方法。例如，<code>getData()</code> 有多个重载方法，如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">getData</span><span class="o">(</span><span class="n">String</span> <span class="n">path</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">watch</span><span class="o">,</span> <span class="n">DataCallback</span> <span class="n">cb</span><span class="o">,</span> <span class="n">Object</span> <span class="n">ctx</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">getData</span><span class="o">(</span><span class="n">path</span><span class="o">,</span> <span class="n">getDefaultWatcher</span><span class="o">(</span><span class="n">watch</span><span class="o">),</span> <span class="n">cb</span><span class="o">,</span> <span class="n">ctx</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="kd">public</span> <span class="kt">byte</span><span class="o">[]</span> <span class="nf">getData</span><span class="o">(</span><span class="n">String</span> <span class="n">path</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">watch</span><span class="o">,</span> <span class="n">Stat</span> <span class="n">stat</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">KeeperException</span><span class="o">,</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">getData</span><span class="o">(</span><span class="n">path</span><span class="o">,</span> <span class="n">getDefaultWatcher</span><span class="o">(</span><span class="n">watch</span><span class="o">),</span> <span class="n">stat</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">getData</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">path</span><span class="o">,</span> <span class="n">Watcher</span> <span class="n">watcher</span><span class="o">,</span> <span class="n">DataCallback</span> <span class="n">cb</span><span class="o">,</span> <span class="n">Object</span> <span class="n">ctx</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">//省略具体实现逻辑
+</span><span class="c1"></span>    <span class="o">}</span>
+
+<span class="kd">public</span> <span class="kt">byte</span><span class="o">[]</span> <span class="nf">getData</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span> <span class="n">path</span><span class="o">,</span> <span class="n">Watcher</span> <span class="n">watcher</span><span class="o">,</span> <span class="n">Stat</span> <span class="n">stat</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">KeeperException</span><span class="o">,</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+    <span class="c1">//省略具体实现逻辑
+</span><span class="c1"></span><span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>参数说明：</p>
+<ul>
+<li>String path：getData 命令作用的路径；</li>
+<li>boolean watch：如果有这个参数，那么就不会有 Watcher watcher 参数，其为 true 说明需要注册一个 Watcher，且使用默认的 Watcher，否则不注册 Watcher；</li>
+<li>Watcher watcher：如果有这个参数，那么就不会有 boolean watch 参数，其用于指定一个自定义的 Watcher 并注册；</li>
+<li>Stat stat：调用方法后，接收到的 Stat 数据为写入此 stat 指向的 Stat 实例；</li>
+</ul>
+<p>我们以方法 <code>ZooKeeper.getData(final String path, Watcher watcher, DataCallback cb, Object ctx)</code> 为例进行 Watcher 注册逻辑的分析。</p>
+<p>详细地来说，ZooKeeper 客户端注册 Watcher 的流程如下图所示：</p>
+<p><img src="../../../images/img_zookeeper/ZooKeeper_Cli_Watcher.png" alt="ZooKeeper_Cli_Watcher"  /></p>
+<ul>
+<li>客户端线程发出一个带有 Watcher  注册的查询命令，通过解析、语法检查、封装为 Packet 实例保存于 outgoingQueue 队列中。Watcher 的 Watcher 注册信息由 WatchRegistion 封装，主要为路径以及 Watcher 实例；Packet 拥有 WatchRegistion 实例的引用；</li>
+<li>ClientCnxn.SendThread 线程负责消费 outgoingQueue 队列中的 Packet 实例，通过序列化 Packet 实例发送给 ZooKeeper 服务端后，将 Packet 实例保存于 pendingQueue 队列中；</li>
+<li>ClientCnxn.SendThread 线程还负责处理 NIO 的 Channel 上的读事件，当读到来自 ZooKeeper 服务端对查询操作的响应后，首先判断响应的状态码（err）是否为 OK，如果是，那么就<strong>将其对应的 Watcher 注册到 ZKWatchManager 中</strong>（通过在 pendingQueue 队列中的 Packet 实例就能够轻松拿到 WatcherRegistion 注册信息）；如果响应带有错误状态码，那么就选择不注册此 Watcher；</li>
+<li>ClientCnxn.SendThread 线程还负责处理类型为事件通知的服务端消息，这部分属于 ZooKeeper 处理事件回调的逻辑，在下面会有讲到。</li>
+</ul>
+<p><strong>只有响应状态码为正常码（OK）的 Watcher 才会注册，否则代表请求失败</strong>，Watcher 的注册将引来复杂的问题。</p>
+<p><strong>注意事项</strong>：</p>
+<ol>
+<li>来自 ZooKeeper 服务度的消息囊括了一般请求（例如 getData）的响应、事件通知、鉴权通知等类型。只有是正常请求响应才需要将其 Watcher（如果有的话）注册到 ZKWatchManager 中，如果是事件通知，那么是没有必要注册的，因为此时需要的是通知 EventThread 线程来处理此事件，而 Watcher 的注册是在之前就完成了。</li>
+<li>另一方面，需要注意 Packet 的序列化。ZooKeeper 服务端只需要知道客户端的请求中带有 Watcher 即可，并不需要实际的 Watcher 实例，因为事件触发后的处理总是由客户端来处理的（Watcher 实例提供事件处理逻辑），服务端没必要知道具体的处理实例（它又不会负责调用相关方法）。</li>
+</ol>
+<p>总结一下，带有 Watcher 注册信息（WatcherRegistion 实例）的请求将经历两次入队与两次出队操作：</p>
+<ul>
+<li>第一次入队：ZooKeeperMain 线程负责将带有 Watcher 注册信息的读请求封装为 Package 加入到 ClientCnxn.outgoingQueue 队列中。这次的入队操作相当于从应用层向传输层写要发送的数据，需要队列的原因是传输层的异步网络传输；</li>
+<li>第一次出队与第二次入队：ClientCnxn.SendThread 线程将 outgoingQueue 队列上的 Package 取走，然后序列化发送给 ZooKeeper 服务端，发送完毕后将将序列化前的 Package 实例加入到 ClientCnxn.pendingQueue 队列中；</li>
+<li>第二次出队：当 ClientCnxn.SendThread 线程读到 SocektChannel 上的可读事件时，如果可读事件对应的内容是读操作的响应（而不是其他消息，例如事件通知），那么在判断响应状态码无误的情况下就会将 outgoingQueue 队列上对应 Package 取走，然后利用 Package 得到 Watcher，并将其注册到 ZKWatchManager 中；</li>
+</ul>
+<p>如果你要看这部分的源码，因为这是一个异步操作，因此需要两个方法入口，如下：</p>
+<ul>
+<li><code>ZooKeeper.getData(final String path, Watcher watcher, DataCallback cb, Object ctx)</code> 方法；</li>
+<li><code>ClientCnxn.SendThread.run()</code></li>
+</ul>
+<h3 id="42-zookeeper-客户端的-watcher-通知处理">4.2 ZooKeeper 客户端的 Watcher 通知处理</h3>
+<p>ZooKeeper 客户端对 Watcher 通知的处理首先依赖于 ClientCnxn.SendThread 线程，因为事件通知本身也就是服务端给客户端的一个消息。需要注意的是，SendThread 不仅仅用于发送消息，实际上其也负责接收消息（即第一时间处理 Channel 上的可读事件）。</p>
+<p><code>ClientCnxn.SendThread.readResponse(ByteBuffer incomingBuffer)</code> 方法的执行逻辑如下：</p>
+<ul>
+<li>将入口参数 ByteBuffer 实例中的字节数据序列化为一个 ReplyHeader 实例；</li>
+<li>根据 ReplyHeader 实例给的 xid 字段值来判断响应类型，这里我们仅仅说明事件通知的处理，因此这里就关注于当响应类型为事件通知时的处理；</li>
+<li>构造一个新的 WatcherEvent 实例，并利用其 <code>deserialize(InputArchive a_, String tag)</code> 方法将响应中的数据反序列化为 WatcherEvent 实例；</li>
+<li>路径的转换；</li>
+<li>将用于网络传输的 WatcherEvent 实例转换为用于逻辑操作的 WatchedEvent 实例；</li>
+<li>通过 ZKWatchManager 类实例内的注册信息来确定能够处理此事件的 Watcher 容器 <code>Set&lt;Watcher&gt; watchers</code>；</li>
+<li>将 WatchedEvent 实例、Watcher 容器以及发送事件的 path、事件类型等信息封装为 WatcherSetEventPair 实例加入到 ClientCnxn.EventThread.waitingEvents 队列中；</li>
+</ul>
+<p>总结一下，ClientCnxn.SendThread 线程完成了将事件通知消息序列化为 WatcherSetEventPair 实例，加入到异步队列中。</p>
+<p>ClientCnxn.EventThread.waitingEvents 队列中的 WatcherSetEventPair 实例被 ClientCnxn.EventThread 线程消费，其逻辑处理逻辑自然是在 EventThread 线程的 <code>run()</code> 方法中。</p>
+<ul>
+<li>从 ClientCnxn.EventThread.waitingEvents 队列中取出事件，如果队列为空，那么此时会阻塞；</li>
+<li>判断取出的事件是否已经被取消了，如果是，那么进行资源的释放，如果不是，那么进行资源的释放；</li>
+<li>通过 <code>EventThread.process(Object event)</code> 方法来处理事件，其执行逻辑为：
+<ul>
+<li>判断输入事件的类型，注意 event 实例的类型可能有非常多种，我们这里仅仅分析一种，WatcherSetEventPair 类型；</li>
+<li>得到 WatcherSetEventPair 实例内部的 WatchedEvent 事件；</li>
+<li>遍历 WatcherSetEventPair 实例内部的 Watcher 实例，对每一个 Watcher 都执行 <code>process(WatchedEvent event)</code> 方法进行调用；</li>
+</ul>
+</li>
+</ul>
+<p>此时事件处理完毕。</p>
+<p>通常，客户端的读命令并不会提供一个 Watcher 事件处理器，此时就会使用默认的 Watcher 事件处理，那么默认的处理器类型是什么呢？</p>
+<p>默认的 Watcher 事件处理器的类型为 ZooKeeperMain.MyWatcher 类，其实现非常简单，如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kd">class</span> <span class="nc">MyWatcher</span> <span class="kd">implements</span> <span class="n">Watcher</span> <span class="o">{</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">process</span><span class="o">(</span><span class="n">WatchedEvent</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+
+    <span class="k">if</span> <span class="o">(</span><span class="n">getPrintWatches</span><span class="o">())</span> <span class="o">{</span>
+      <span class="c1">//利用 System.out.println 打印出 `WATCHER::` 字符串
+</span><span class="c1"></span>      <span class="n">ZooKeeperMain</span><span class="o">.</span><span class="na">printMessage</span><span class="o">(</span><span class="s">&#34;WATCHER::&#34;</span><span class="o">);</span>
+      <span class="c1">//还是利用 System.out.println 打印出事件对应的字符串
+</span><span class="c1"></span>      <span class="n">ZooKeeperMain</span><span class="o">.</span><span class="na">printMessage</span><span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>补充：默认的 Watcher 事件处理器存放于 ZKWatchManager 类中。</p>
+<h2 id="5-zookeeper-watch-机制的特性总结">5. ZooKeeper Watch 机制的特性总结</h2>
+<blockquote>
+<p>本小节引用于：<a href="https://book.douban.com/subject/26292004/">从Paxos到Zookeeper : 分布式一致性原理与实践</a></p>
+</blockquote>
+<p>ZooKeeper 的 Watch 有如下几个特性需要注意：</p>
+<ul>
+<li>
+<p><strong>一次性</strong></p>
+<p>无论是服务端还是客户端，一旦一个 Watcher 被触发，ZooKeeper都会将其从相应的存储中移除。因此，开发人员在 Watcher 的使用上要记住的一点是需要反复注册。这样的设计有效地减轻了服务端的压力。试想，如果注册一个 Watcher 之后一直有效，那么，针对那些更新非常频繁的节点，服务端会不断地向客户端发送事件通知，这无论对于网络还是服务端性能的影响都非常大。</p>
+<p>需要注意的是：ZooKeeper 在 3.6.0 版本中引入了永久 Watcher 机制，利用这个机制可以避免反复注册 Watcher。</p>
+</li>
+<li>
+<p><strong>客户端串行执行</strong></p>
+<p>客户端 Watcher 回调的过程是一个串行同步的过程，这为我们保证了顺序，同时，需要开发人员注意的一点是，千万不要因为一个 Watcher 的处理逻辑影响了整个客户端的 Watcher 回调。</p>
+</li>
+<li>
+<p><strong>轻量</strong></p>
+<p>WatchedEvent 是 ZooKeeper 整个 Watcher 通知机制的最小通知单元，这个数据结构中只包含三部分内容:通知状态、事件类型和节点路径。也就是说，Watcher 通知非常简单，只会告诉客户端发生了事件，而不会说明事件的具体内容。例如针对 NodeDataChanged 事件，ZooKeeper 的 Watcher 只会通知客户端指定数据节点的数据内容发生了变更，而对于原始数据以及变更后的新数据都无法从这个事件中直接获取到，而是需要客户端主动重新去获取数据。这也是ZooKeeper 的 Watcher机制的一个非常重要的特性。</p>
+<p>另外，客户端向服务端注册 Watcher 的时候，并不会把客户端真实的 Watcher 对象传递到服务端，仅仅只是在客户端请求中使用 boolean 类型属性进行了标记，同时服务端也仅仅只是保存了当前连接的 ServerCnxn 对象。如此轻量的 Watcher 机制设计，在网络开销和服务端内存开销上都是非常廉价的。</p>
+</li>
+</ul>
+
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/zookeeper/">Zookeeper</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/zookeeper/zookeeperserverthreadmodel/">
+            <span class="next-text nav-default">ZooKeeper 服务端线程分析</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+
+
+      <h3>转载申请</h3>
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/>
+        <img alt=知识共享许可协议 style=border-width:0 src=https://img.draveness.me/creative-commons.png>
+      </a>
+      <br>本作品采用
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/ target="_blank" style="text-decoration:underline;" >
+      知识共享署名 4.0 国际许可协议</a>
+      进行许可，转载时请注明作者姓名以及原文链接，图片在使用时请保留全部内容，可适当缩放并在引用处附上图片所在的文章链接。
+
+      
+    </footer>
+  </article>
+        </div>
+        <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '2020-09-10 20:07:03 \x2b0800 CST',
+        title: 'ZooKeeper Watch 机制源码解析',
+        clientID: 'b8e9909664fb69930809',
+        clientSecret: '847d9069c9532ab260721afb9f036cdb8f52aec4',
+        repo: 'Spongecaptain.github.io',
+        owner: 'Spongecaptain',
+        admin: ['Spongecaptain'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a></noscript>
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:wjjiang19@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/spongecaptain" class="iconfont icon-github" title="github"></a>
+  <a href="https://spongecaptain.cool/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Spongecaptain</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.d7b7ada643c9c1a983026e177f141f7363b4640d619caf01d8831a6718cd44ea.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
