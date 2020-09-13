@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Java 网络编程 - Spongecaptain 的个人技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Spongecaptain" /><meta name="description" content="Java" /><meta name="keywords" content="Java, 网络编程" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.67.0 with theme even" />
+
+
+<link rel="canonical" href="https://spongecaptain.cool/post/java/javanet/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e6549b501dbc4389b872bd7b2f32a09625027aa099dcfd924adda23a8e9b81bf.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Java 网络编程" />
+<meta property="og:description" content="Java" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://spongecaptain.cool/post/java/javanet/" />
+<meta property="article:published_time" content="2020-09-13T22:14:03+08:00" />
+<meta property="article:modified_time" content="2020-09-13T22:14:03+08:00" />
+<meta itemprop="name" content="Java 网络编程">
+<meta itemprop="description" content="Java">
+<meta itemprop="datePublished" content="2020-09-13T22:14:03&#43;08:00" />
+<meta itemprop="dateModified" content="2020-09-13T22:14:03&#43;08:00" />
+<meta itemprop="wordCount" content="4869">
+
+
+
+<meta itemprop="keywords" content="Java,网络编程," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java 网络编程"/>
+<meta name="twitter:description" content="Java"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body class = body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/about/index.html">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/index.html">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Java 网络编程</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-09-13 </span>
+        <div class="post-category">
+            <a href="/categories/java/"> Java </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-jdk-oio-编程模型">1. JDK OIO 编程模型</a></li>
+    <li><a href="#2-jdk-nio-编程模型">2. JDK NIO 编程模型</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h1 id="java-网络编程">Java 网络编程</h1>
+<p>Java  网络编程大致可以分为三类：</p>
+<ul>
+<li>基于 OIO 的阻塞 Socket 与 ServerSocket 编程模型；</li>
+<li>基于 NIO 的非阻塞 SocketChannel 与 ServerSocketChannel 编程模型；</li>
+<li>对于 JDK NIO 进行二次封装的非阻塞编程框架：Netty；</li>
+</ul>
+<p>其中，Netty 几乎可以与 Java NIO 框架等价，不过在本节我并不打算对基于 Netty 的 NIO 编程模型进行过多的展开，主要强调前面两种。</p>
+<p>GitHub 项目地址：https://github.com/Spongecaptain/JavaNet</p>
+<h2 id="1-jdk-oio-编程模型">1. JDK OIO 编程模型</h2>
+<p>在 JDK 中，凡是基于 JDK1.0 推出的 I/O 模型都属于 OIO（old I/O），或者将其称为 BIO(Blocking I/O)。具体来说 java.io 包下的 InputStream/OutputStream 两个抽象类分别对输入/输出字节流进行了封装，不管数据源（数据去向）是磁盘上的文件，还是远端的 Socket。</p>
+<p>因为 JDK  的 Socket 基于InputStream/OutputStream，好处是 Socket 允许程序员将网络连接看作是另外一个可以读/写字节的流，坏处是这是一个 OIO，会造成线程阻塞。Socekt 的另一个好处是将 TCP 中的 Socket 概念具体化了，维护 TCP 连接的说法过于抽象，具体来说就是维护两端（服务端与客户端）的 Socket 实例的状态。Socket 实例的状态在 Java 语言中看得见，摸得着，具体地多。</p>
+<p>JDK Socket 编程有两个核心类：</p>
+<ul>
+<li>Socket 类：对应于 TCP 概念中的一个 Socket，用于维护 TCP 连接，以及发送与接收具体的字节数据；</li>
+<li>ServerSocket 类：代表服务器 Socket，每个服务器 Socket 监听服务器机器上的一个特定端口。当远程主机上的一个客户端尝试连接这个端口时，服务器就被唤醒，协商建立客户端和服务器之间的连接，并返回一个常规的 Socket 对象**，表示两台主机之间的 Socket。换句话说，**服务器 Socket 等待连接，而客户端 Socket 发起连接。一旦 **ServerSocket 建立了连接，服务器会使用一个常规的 Socket 对象向客户端发送数据。数据总是通过常规 socket 传输**。</li>
+</ul>
+<p><strong>下面代码用于证明以下 2 个说法</strong>：</p>
+<ol>
+<li>Socekt 实例在读取数据时面临阻塞问题；</li>
+<li>一旦 ServerSocket 构造出一个 Socket 实例，那么其已经处于已连接状态（已经完成三次握手、四次挥手等工作）；</li>
+</ol>
+<p>网络通信模型是实现一个简单的 echo 通信，具体如下：</p>
+<ul>
+<li>客户端在建立连接之后，阻塞 3 s 后向服务端发送消息 int 值 2；</li>
+<li>服务端在接收到消息后，阻塞 2 s 后向服务端返回 echo 通知；</li>
+</ul>
+<p>期望：</p>
+<ul>
+<li>服务端因为客户端迟迟没有发送数据而阻塞 3 s 左右；</li>
+<li>客户端也因为服务端迟迟没有恢复 echo 消息而阻塞 2 s 左右；</li>
+</ul>
+<p>服务端代码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">OIOServer</span> <span class="o">{</span>
+    <span class="c1">//线程池，用于处理已连接的 Socket，这里的线程池大小限制为 50
+</span><span class="c1"></span>    <span class="kd">final</span> <span class="kd">private</span> <span class="n">ExecutorService</span> <span class="n">pool</span> <span class="o">=</span> <span class="n">Executors</span><span class="o">.</span><span class="na">newFixedThreadPool</span><span class="o">(</span><span class="n">50</span><span class="o">);</span>
+    <span class="kd">final</span> <span class="kd">private</span> <span class="kt">int</span> <span class="n">PORT</span> <span class="o">=</span> <span class="n">2333</span><span class="o">;</span><span class="c1">//服务端监听的端口为 2333
+</span><span class="c1"></span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testOIO</span><span class="o">()</span> <span class="o">{</span>
+
+        <span class="k">try</span> <span class="o">(</span><span class="n">ServerSocket</span> <span class="n">server</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ServerSocket</span><span class="o">(</span><span class="n">PORT</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;服务端 Server 开始执行&#34;</span><span class="o">);</span>
+                <span class="c1">//1. 如果没有已连接的 Socket，那么其始终会阻塞于 ServerSocket.accept() 方法。
+</span><span class="c1"></span>                <span class="kt">long</span> <span class="n">startTime</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span><span class="c1">// 获取开始时间
+</span><span class="c1"></span>                <span class="n">Socket</span> <span class="n">connectedSocket</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="na">accept</span><span class="o">();</span>
+                <span class="kt">long</span> <span class="n">endTime</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span><span class="c1">// 获取结束时间  
+</span><span class="c1"></span>                <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;ServerSocekt.accept() 方法阻塞的时间为：&#34;</span> <span class="o">+</span> <span class="o">(</span><span class="n">endTime</span> <span class="o">-</span> <span class="n">startTime</span><span class="o">)</span> <span class="o">+</span> <span class="s">&#34; ms&#34;</span><span class="o">);</span><span class="c1">//这个阻塞时间是不固定的，取决于 OIOClient 测试方法何时运行以及网络延迟
+</span><span class="c1"></span>                <span class="c1">//2. 调用 socket.isConnected() 方法进行判断由 ServerSocket 产生的 Socket 实例是否已经处理连接状态
+</span><span class="c1"></span>                <span class="n">assertTrue</span><span class="o">(</span><span class="n">connectedSocket</span><span class="o">.</span><span class="na">isConnected</span><span class="o">());</span><span class="c1">//检查由 ServerSocket 产生的 Socket 实例是否已经处理连接状态（如果不是，那么会抛出异常）。
+</span><span class="c1"></span>
+                <span class="c1">//3. 将 TCP 已连接的 Socket 包装成 Callable 任务
+</span><span class="c1"></span>                <span class="kd">final</span> <span class="n">SocketTask</span> <span class="n">socketTask</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SocketTask</span><span class="o">(</span><span class="n">connectedSocket</span><span class="o">);</span>
+                <span class="c1">//4. 将任务交给线程池处理
+</span><span class="c1"></span>                <span class="n">pool</span><span class="o">.</span><span class="na">submit</span><span class="o">(</span><span class="n">socketTask</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">static</span> <span class="kd">class</span> <span class="nc">SocketTask</span> <span class="kd">implements</span> <span class="n">Callable</span><span class="o">&lt;</span><span class="n">Void</span><span class="o">&gt;</span> <span class="o">{</span>
+        <span class="kd">private</span> <span class="n">Socket</span> <span class="n">socket</span><span class="o">;</span>
+
+        <span class="kd">public</span> <span class="nf">SocketTask</span><span class="o">(</span><span class="n">Socket</span> <span class="n">socket</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">socket</span> <span class="o">=</span> <span class="n">socket</span><span class="o">;</span>
+        <span class="o">}</span>
+
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="n">Void</span> <span class="nf">call</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+            <span class="c1">//5. 获取 Socket 输入流
+</span><span class="c1"></span>            <span class="kd">final</span> <span class="n">InputStream</span> <span class="n">inputStream</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">();</span>
+
+            <span class="kt">long</span> <span class="n">startTime</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span><span class="c1">// 获取开始时间  
+</span><span class="c1"></span>            <span class="c1">//6. Socket 因为 TCP 数据包迟迟未到而阻塞 2 s
+</span><span class="c1"></span>            <span class="kd">final</span> <span class="kt">int</span> <span class="n">read</span> <span class="o">=</span> <span class="n">inputStream</span><span class="o">.</span><span class="na">read</span><span class="o">();</span>
+            <span class="kt">long</span> <span class="n">endTime</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span><span class="c1">// 获取结束时间  
+</span><span class="c1"></span>            <span class="c1">//7. 输出因为读取 Socekt I/O 输入流而导致的阻塞时间
+</span><span class="c1"></span>            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;服务端接收到的数字为：&#34;</span><span class="o">+</span><span class="n">read</span><span class="o">);</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;服务器处的 Socket 实例的 IO 阻塞时间：&#34;</span> <span class="o">+</span> <span class="o">(</span><span class="n">endTime</span> <span class="o">-</span> <span class="n">startTime</span><span class="o">)</span> <span class="o">+</span> <span class="s">&#34;ms&#34;</span><span class="o">);</span>
+            <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="n">2000</span><span class="o">);</span><span class="c1">//休眠 2000 ms
+</span><span class="c1"></span>            <span class="kd">final</span> <span class="n">OutputStream</span> <span class="n">outputStream</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">();</span>
+            <span class="n">outputStream</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">read</span><span class="o">);</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>客户端代码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">OIOClient</span> <span class="o">{</span>
+    <span class="kd">final</span> <span class="kd">private</span> <span class="n">String</span> <span class="n">HOST</span> <span class="o">=</span> <span class="s">&#34;localhost&#34;</span><span class="o">;</span>
+    <span class="kd">final</span> <span class="kd">private</span> <span class="kt">int</span> <span class="n">PORT</span> <span class="o">=</span> <span class="n">2333</span><span class="o">;</span><span class="c1">//服务端监听的端口为 2333
+</span><span class="c1"></span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testOIOClient</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">//1. Java 的 Socket 实例在构造过程中就会试图建立 TCP 连接
+</span><span class="c1"></span>            <span class="kd">final</span> <span class="n">Socket</span> <span class="n">socket</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Socket</span><span class="o">(</span><span class="n">HOST</span><span class="o">,</span> <span class="n">PORT</span><span class="o">);</span>
+            <span class="c1">//2. 在建立连接后故意休眠 3 s,然后在发送 TCP 数据
+</span><span class="c1"></span>            <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="n">3000</span><span class="o">);</span>
+            <span class="kd">final</span> <span class="n">OutputStream</span> <span class="n">outputStream</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">();</span>
+            <span class="n">outputStream</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">1</span><span class="o">);</span>
+            <span class="kd">final</span> <span class="n">InputStream</span> <span class="n">inputStream</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="na">getInputStream</span><span class="o">();</span>
+            <span class="kt">long</span> <span class="n">startTime</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span><span class="c1">// 获取开始时间
+</span><span class="c1"></span>            <span class="kt">int</span> <span class="n">echo</span> <span class="o">=</span> <span class="n">inputStream</span><span class="o">.</span><span class="na">read</span><span class="o">();</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;echo:&#34;</span><span class="o">+</span><span class="n">echo</span><span class="o">);</span>
+            <span class="kt">long</span> <span class="n">endTime</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span><span class="c1">// 获取结束时间  
+</span><span class="c1"></span>            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;客户端的 Socket 实例的 IO 阻塞时间：&#34;</span><span class="o">+</span> <span class="o">(</span><span class="n">endTime</span> <span class="o">-</span> <span class="n">startTime</span><span class="o">)</span> <span class="o">+</span> <span class="s">&#34;ms&#34;</span><span class="o">);</span>
+            <span class="n">socket</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="o">|</span> <span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>测试需要先运行服务端的测试方法，然后再运行客户端的测试方法。</p>
+<p>服务端控制台输出：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">服务端 Server 开始执行
+ServerSocekt.accept() 方法阻塞的时间为：9334 ms(备注，这个阻塞时间不一定，取决于你何时启动客户端)
+服务端 Server 开始执行
+服务端接收到的数字为：1
+服务器处的 Socket 实例的 IO 阻塞时间：3008ms
+</code></pre></td></tr></table>
+</div>
+</div><p>客户端控制台输出：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">echo:1
+客户端的 Socket 实例的 IO 阻塞时间：2001ms
+</code></pre></td></tr></table>
+</div>
+</div><p>我们利用代码证明了以上关于 JDK Socket 的两个说法。</p>
+<p><strong>为什么会阻塞？</strong></p>
+<p>因为 InputStream 在其内部没有字节数据的情况下企图进行数据读取就会导致线程阻塞，下面是 java.io.InputStream 类 <code>read()</code> 方法的 javadoc：</p>
+<blockquote>
+<p>Reads the next byte of data from the input stream. The value byte is returned as an int in the range 0 to 255. If no byte is available because the end of the stream has been reached, the value -1 is returned. This method blocks until input data is available, the end of the stream is detected, or an exception is thrown.</p>
+<p>方法返回 -1 表示数据读取完毕，方法在数据不可用（未准备好）时阻塞。</p>
+<p>注：OutputStream 类有着类似的阻塞性质。</p>
+</blockquote>
+<h2 id="2-jdk-nio-编程模型">2. JDK NIO 编程模型</h2>
+<p>JDK OIO 模型存在阻塞线程的情况，而且我们也知道了 JDK Socket 阻塞的原因是因为其基于 InputStream/OutputStream 进行数据的读写。JDK NIO 则采用了另一种数据读取方式，并且实现了 NoBlocking I/O。</p>
+<p>首先，为了实现非阻塞式读取，我们不能再使用 InputStream/OutputStream 作为 Socket 来完成通信，NIO 使用了另一个接口完成输入输出流的抽象：Channel。Channel 我们可以理解为对应于 BIO 中的 Socket，也可以理解为 Scoket.inputStream/SocketOutputStream。如果认为是流，那么我们做一个比较：</p>
+<ul>
+<li>传统 Socket：我们调用 Socket 的 <code>getInputStream()</code> 以及 <code>getOutputStream()</code> 进行数据的读和写。</li>
+<li>Channel（这里指的是 SocketChannel类）：我们不再需要得到输入输出流进行读和写，而是通过 Channel 的 <code>read(ByteBuffer dst)</code> 以及 <code>write(ByteBuffer src)</code> 方法进行读和写。我们可以认为 Channel 同时起到了 InputStream/OutputStream 的作用。</li>
+</ul>
+<p>另一方面，Channel 不像 OutputStream/InputStream 能够处理字节数组 <code>byte[]</code>，而是仅仅能够处理 ByteBuffer 实例。ByteBuffer 继承于 Buffer 抽象类，后者本质是一块缓存区，内部使用字节数组存储数据，并维护几个特殊变量，实现数据的反复利用。ByteBuffer 起到了 BIO 中 byte[] 的作用，但额外具有更强的功能。</p>
+<p>于此同时，异步编程通常需要利用阻塞队列与轮询线程，这里起到阻塞队列的角色就是 Selector。在我们的线程中不断轮询 Selector 实例，查询是否有新事件产生，如果没有，那么当前线程阻塞，否则当前线程停止阻塞。一旦停止阻塞，我们便消费 Selector 实例内部的可读可写事件。</p>
+<p>最后，在理解网络模型上，我们可以将 ServerSocketChannel 理解为 SocketChannel，将 SocketChannel 理解为 Socket。从异步事件驱动模型上来理解，ServerSocektChannel 对 TCP 新连接事件感兴趣，而 SocektChannel 对可读/可写事件感兴趣。</p>
+<p>以上，就是对 JDK NIO 编程中的 Channel（ServerSocketChannel、SocketChannel）、ByteBuffer、Selector 的最简单理解，下面我们来实现一个基于 JDK NIO 的线程模型。</p>
+<blockquote>
+<p>与 JDK Socket 中的类进行类比，很容易理解 JDK NIO 中的相关类能提供什么功能，起到什么角色。</p>
+</blockquote>
+<p>重点理解：</p>
+<ul>
+<li>JDK NIO 的异步事件编程模型；</li>
+<li>JDK NIO 的尽力读取；</li>
+</ul>
+<p>首先，我们的客户端可以选择还是基于 OIO 来实现，仅仅实现基于 NIO 的服务端。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">NIOServer</span> <span class="o">{</span>
+    <span class="c1">//这个 map 用于存储分批尽力读取的字节数据
+</span><span class="c1"></span>    <span class="kd">final</span> <span class="kd">static</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">SelectionKey</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">hashMap</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">();</span>
+
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testNIO</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">Selector</span> <span class="n">selector</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">ServerSocketChannel</span> <span class="n">serverSocket</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">ByteBuffer</span> <span class="n">byteBuffer</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">//1. 创建 Selector 实例(典型的工厂方法来构造，Selector 类的构造器是 protected 的，因此不能直接构造)
+</span><span class="c1"></span>            <span class="n">selector</span> <span class="o">=</span> <span class="n">Selector</span><span class="o">.</span><span class="na">open</span><span class="o">();</span>
+            <span class="c1">//2. 创建 ServerSocketChannel 实例
+</span><span class="c1"></span>            <span class="n">serverSocket</span> <span class="o">=</span> <span class="n">ServerSocketChannel</span><span class="o">.</span><span class="na">open</span><span class="o">();</span>
+            <span class="c1">//3. 初始化 ServerSocketChannel 内部的 serverSocket 实例确定绑定的本地端口
+</span><span class="c1"></span>            <span class="n">serverSocket</span><span class="o">.</span><span class="na">bind</span><span class="o">(</span><span class="k">new</span> <span class="n">InetSocketAddress</span><span class="o">(</span><span class="s">&#34;localhost&#34;</span><span class="o">,</span> <span class="n">2333</span><span class="o">));</span>
+            <span class="c1">//4. 将 ServerSocketChannel 配置成非阻塞模式，这是必要的，
+</span><span class="c1"></span>            <span class="c1">//注意事项：ServerSocketChannel 实例默认是阻塞模式，可以通过配置修改为非阻塞模式
+</span><span class="c1"></span>            <span class="n">serverSocket</span><span class="o">.</span><span class="na">configureBlocking</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+            <span class="c1">//5. 将 ServerSocketChannel 注册到 Selector 中，事件是 OP_ACCEPT，一旦有 HTTP 请求就会触发
+</span><span class="c1"></span>            <span class="n">serverSocket</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="n">selector</span><span class="o">,</span> <span class="n">SelectionKey</span><span class="o">.</span><span class="na">OP_ACCEPT</span><span class="o">);</span>
+            <span class="c1">//6. 创建 ByteBuffer 用于从 SocketChannel 中读取字节数据
+</span><span class="c1"></span>            <span class="n">byteBuffer</span> <span class="o">=</span> <span class="n">ByteBuffer</span><span class="o">.</span><span class="na">allocate</span><span class="o">(</span><span class="n">100</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="c1">//Main Loop，基于事件驱动模式进行循环处理
+</span><span class="c1"></span>        <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="n">selector</span><span class="o">.</span><span class="na">select</span><span class="o">();</span><span class="c1">//Selector 实例倘若没有事件，则阻塞，直到发生事件
+</span><span class="c1"></span>            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="c1">// 8. 阻塞结束，说明 selector 中有事件触发，所以获得其迭代器进行处理
+</span><span class="c1"></span>            <span class="n">Set</span><span class="o">&lt;</span><span class="n">SelectionKey</span><span class="o">&gt;</span> <span class="n">selectedKeys</span> <span class="o">=</span> <span class="n">selector</span><span class="o">.</span><span class="na">selectedKeys</span><span class="o">();</span>
+            <span class="n">Iterator</span><span class="o">&lt;</span><span class="n">SelectionKey</span><span class="o">&gt;</span> <span class="n">iter</span> <span class="o">=</span> <span class="n">selectedKeys</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span>
+            <span class="c1">//9. 迭代器中全体元素的循环（注意事项：并非所有元素都有对应的事件发生）
+</span><span class="c1"></span>            <span class="k">while</span> <span class="o">(</span><span class="n">iter</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+                <span class="n">SelectionKey</span> <span class="n">key</span> <span class="o">=</span> <span class="n">iter</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+                <span class="c1">//10. SelectionKey.isAcceptable() 返回 true 代表发生了 TCP 新连接事件，如果是这样，那么就将新连接对应的 SocketChannel 进行注册处理
+</span><span class="c1"></span>                <span class="k">if</span> <span class="o">(</span><span class="n">key</span><span class="o">.</span><span class="na">isAcceptable</span><span class="o">())</span> <span class="o">{</span>
+                    <span class="k">try</span> <span class="o">{</span>
+                        <span class="n">register</span><span class="o">(</span><span class="n">selector</span><span class="o">,</span> <span class="n">serverSocket</span><span class="o">);</span>
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+                <span class="c1">//11. SelectionKey.isReadable() 返回 true 代表发生了可读事件，即接收到来自客户端的写字节数据
+</span><span class="c1"></span>                <span class="k">if</span> <span class="o">(</span><span class="n">key</span><span class="o">.</span><span class="na">isReadable</span><span class="o">())</span> <span class="o">{</span>
+                    <span class="k">try</span> <span class="o">{</span>
+                        <span class="c1">//read 方法定义在下面，用于读取 SocketChannel 实例内的字节数据到入口参数的 ByteBuffer 实例
+</span><span class="c1"></span>                        <span class="n">read</span><span class="o">(</span><span class="n">byteBuffer</span><span class="o">,</span> <span class="n">key</span><span class="o">);</span>
+                    <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                        <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+                <span class="c1">//12. 将此 SelectableChannel 移出迭代器（实际上是 SelectionKeys 容器）是必要的，否则会进行没有必要的事件是否准备好的询问
+</span><span class="c1"></span>                <span class="n">iter</span><span class="o">.</span><span class="na">remove</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">read</span><span class="o">(</span><span class="n">ByteBuffer</span> <span class="n">buffer</span><span class="o">,</span> <span class="n">SelectionKey</span> <span class="n">key</span><span class="o">)</span>
+            <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="c1">//1. 得到 SelectionKey 实例内部的 SocketChannel 实例，因为可读状态下需要利用 Channel 进行读取字节数据
+</span><span class="c1"></span>        <span class="n">SocketChannel</span> <span class="n">socketChannel</span> <span class="o">=</span> <span class="o">(</span><span class="n">SocketChannel</span><span class="o">)</span> <span class="n">key</span><span class="o">.</span><span class="na">channel</span><span class="o">();</span>
+        <span class="c1">//2. 构造一组键值对，key 为 SelectionKey 实例，value 为 List，用于存储多次尽力读取的字节数组
+</span><span class="c1"></span>        <span class="k">if</span> <span class="o">(!</span><span class="n">hashMap</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">key</span><span class="o">))</span>
+            <span class="n">hashMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;());</span>
+        <span class="c1">//3. 此标志用于判断：
+</span><span class="c1"></span>        <span class="c1">//0： UNIX 底层的缓冲字节数组被读完了或者 ByteBuffer 没有写一个字节，这里指的是前者，因为每次读取后都 clear 了；
+</span><span class="c1"></span>        <span class="c1">//-1: 意味这 EOF，即 HTTP 请求数据已经全部传输到服务端 Socket 了。
+</span><span class="c1"></span>        <span class="c1">//其他大于 0 的数字：意味着这里从底层 UNIX 缓冲字节数组读取了几个字节
+</span><span class="c1"></span>        <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+        <span class="k">while</span> <span class="o">(</span><span class="n">buffer</span><span class="o">.</span><span class="na">hasRemaining</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">count</span> <span class="o">=</span> <span class="n">socketChannel</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">buffer</span><span class="o">))</span> <span class="o">&gt;</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">//使 Buffer 变成可读
+</span><span class="c1"></span>            <span class="n">buffer</span><span class="o">.</span><span class="na">flip</span><span class="o">();</span>
+            <span class="n">ArrayList</span> <span class="n">list</span> <span class="o">=</span> <span class="o">(</span><span class="n">ArrayList</span><span class="o">)</span> <span class="n">hashMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+
+            <span class="kt">byte</span><span class="o">[]</span> <span class="n">arr</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">buffer</span><span class="o">.</span><span class="na">remaining</span><span class="o">()];</span>
+            <span class="n">buffer</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">arr</span><span class="o">);</span>
+            <span class="n">buffer</span><span class="o">.</span><span class="na">rewind</span><span class="o">();</span>
+            <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">arr</span><span class="o">);</span>
+            <span class="n">buffer</span><span class="o">.</span><span class="na">clear</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="c1">//当 socketChannel.read(buffer) 返回 -1 时，意味着此时彼通道数据传输已经完成，因为遇到了流传输中的 EOF 标志
+</span><span class="c1"></span>        <span class="c1">// 如果没有读到字节流末尾，那么选择不关闭，因为下一次还是要继续读取
+</span><span class="c1"></span>        <span class="k">if</span> <span class="o">(</span><span class="n">count</span> <span class="o">==</span> <span class="o">-</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">print</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">socketChannel</span><span class="o">);</span>
+        <span class="o">}</span>
+
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">register</span><span class="o">(</span><span class="n">Selector</span> <span class="n">selector</span><span class="o">,</span> <span class="n">ServerSocketChannel</span> <span class="n">serverSocket</span><span class="o">)</span>
+            <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="c1">//1. 利用 ServerSocketChannel accept 方法能够得到一个此次连接请求对应的 SocketChannel 实例
+</span><span class="c1"></span>        <span class="n">SocketChannel</span> <span class="n">client</span> <span class="o">=</span> <span class="n">serverSocket</span><span class="o">.</span><span class="na">accept</span><span class="o">();</span>
+        <span class="c1">//2. 将此 SocketChannel 实例设置为非阻塞模式
+</span><span class="c1"></span>        <span class="n">client</span><span class="o">.</span><span class="na">configureBlocking</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+        <span class="c1">//3. 将此 SocketChannel 注册到 Selector 中，事件为 OP_READ，即可读事件，此方法返回的 SelectionKey 并不需要保存并引用起来
+</span><span class="c1"></span>        <span class="n">client</span><span class="o">.</span><span class="na">register</span><span class="o">(</span><span class="n">selector</span><span class="o">,</span> <span class="n">SelectionKey</span><span class="o">.</span><span class="na">OP_READ</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="c1">//遍历 SelectionKey 实例对应的 ArrayList 内的 byte[] 数组，打印出每一个数组的大小
+</span><span class="c1"></span>    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">print</span><span class="o">(</span><span class="n">SelectionKey</span> <span class="n">key</span><span class="o">,</span> <span class="n">SocketChannel</span> <span class="n">socketChannel</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+<span class="c1">//这些代码用于验证一次次的 Buffer 工作是否正确地转换为 byte 数组保存起来。
+</span><span class="c1"></span>        <span class="n">ArrayList</span> <span class="n">list</span> <span class="o">=</span> <span class="o">(</span><span class="n">ArrayList</span><span class="o">)</span> <span class="n">hashMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+
+        <span class="kd">final</span> <span class="n">Iterator</span> <span class="n">iterator</span> <span class="o">=</span> <span class="n">list</span><span class="o">.</span><span class="na">iterator</span><span class="o">();</span>
+
+        <span class="k">while</span> <span class="o">(</span><span class="n">iterator</span><span class="o">.</span><span class="na">hasNext</span><span class="o">())</span> <span class="o">{</span>
+            <span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">next</span> <span class="o">=</span> <span class="o">(</span><span class="kt">byte</span><span class="o">[])</span> <span class="n">iterator</span><span class="o">.</span><span class="na">next</span><span class="o">();</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">next</span><span class="o">.</span><span class="na">length</span><span class="o">+</span> <span class="s">&#34; &#34;</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+        <span class="n">socketChannel</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>客户端：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">NIOClient</span> <span class="o">{</span>
+    <span class="nd">@Test</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">test</span><span class="o">(){</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="kd">final</span> <span class="n">Socket</span> <span class="n">socket</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Socket</span><span class="o">(</span><span class="s">&#34;localhost&#34;</span><span class="o">,</span><span class="n">2333</span><span class="o">);</span>
+            <span class="kd">final</span> <span class="n">OutputStream</span> <span class="n">outputStream</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">();</span>
+
+            <span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes1</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">256</span><span class="o">];</span>
+            <span class="kd">final</span> <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes2</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">1024</span><span class="o">];</span>
+
+            <span class="n">outputStream</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">bytes1</span><span class="o">);</span>
+            <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="n">5000</span><span class="o">);</span>
+            <span class="n">outputStream</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">bytes2</span><span class="o">);</span>
+
+            <span class="n">outputStream</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>代码测试先运行服务端，在运行客户端，测试中服务端的控制台打印出如下结果：</p>
+<blockquote>
+<p>100 100 56 100 100 100 100 100 100 100 100 100 100 24</p>
+</blockquote>
+<p>首先，基于事件轮询的异步通信已经写在 NIOServer 类的代码中。</p>
+<p>其次，JDK NIO ByteBufer 的尽力读指的是：</p>
+<p>这里客户端程序间隔 5 s 进行了两次不同字节大小的输出，这是为了模拟网络 I/O 中出现阻塞时，一个 HTTP 请求可能会间隔很久才能够接收完毕。SocketChannel 的非阻塞读写时尽力而为，其既会受制于网络环境的影响，又会受制于 ByteBuffer 能够接收多少字节数的影响。</p>
+<ul>
+<li>第一次：可以认为 256 字节数据没有达到底层 UNIX 缓冲数组的阈值，但是由于很久没能够补上，所以还是将字节数据交给了 Java 程序。但是读取时，由于 ByteBuffer 仅仅设置成 100 byte 大小，所以此时 SocketChannel 受制于 ByteBuffer 的大小，其尽力将 ByteBuffer 填满。每次填满 100 字节，<code>socketChannel.read(buffer)</code> 就返回。所以对于 256 字节数据分了 3 词尽力读取：100、100、56。</li>
+<li>第二次：由于第二次间隔于第一次 5s 后才向服务器程序发送，这好比同一个 HTTP 请求因为网络延迟分批到达服务端。但是 SocketChannel 是非阻塞的，所以服务端线程并不会等待阻塞 5 s 等待这些数据的到来。这里 SocketChannel 的非阻塞尽力读体现在，其只会读取已经接收到的字节数据，读取完了就返回了，不会受到网络的影响而阻塞。</li>
+</ul>
+
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/java/">Java</a>
+          <a href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/">网络编程</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/zookeeper/zookeeperwatch/">
+            <span class="next-text nav-default">ZooKeeper Watch 机制源码解析</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+
+
+      <h3>转载申请</h3>
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/>
+        <img alt=知识共享许可协议 style=border-width:0 src=https://img.draveness.me/creative-commons.png>
+      </a>
+      <br>本作品采用
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/ target="_blank" style="text-decoration:underline;" >
+      知识共享署名 4.0 国际许可协议</a>
+      进行许可，转载时请注明作者姓名以及原文链接，图片在使用时请保留全部内容，可适当缩放并在引用处附上图片所在的文章链接。
+
+      
+    </footer>
+  </article>
+        </div>
+        <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '2020-09-13 22:14:03 \x2b0800 CST',
+        title: 'Java 网络编程',
+        clientID: 'b8e9909664fb69930809',
+        clientSecret: '847d9069c9532ab260721afb9f036cdb8f52aec4',
+        repo: 'Spongecaptain.github.io',
+        owner: 'Spongecaptain',
+        admin: ['Spongecaptain'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a></noscript>
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:wjjiang19@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/spongecaptain" class="iconfont icon-github" title="github"></a>
+  <a href="https://spongecaptain.cool/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Spongecaptain</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.d7b7ada643c9c1a983026e177f141f7363b4640d619caf01d8831a6718cd44ea.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
