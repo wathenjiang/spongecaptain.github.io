@@ -6,10 +6,19 @@
     <description>Recent content in Categories on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 13 Sep 2020 22:14:03 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 02 Oct 2020 20:59:57 +0800</lastBuildDate>
     
 	<atom:link href="https://spongecaptain.cool/categories/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>life</title>
+      <link>https://spongecaptain.cool/categories/life/</link>
+      <pubDate>Fri, 02 Oct 2020 20:59:57 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/categories/life/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Java</title>

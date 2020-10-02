@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>GitLab on Spongecaptain 的个人技术博客</title>
+    <link>https://spongecaptain.cool/tags/gitlab/</link>
+    <description>Recent content in GitLab on Spongecaptain 的个人技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 02 Oct 2020 20:59:57 +0800</lastBuildDate>
+    
+	<atom:link href="https://spongecaptain.cool/tags/gitlab/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>DeployGitLab</title>
+      <link>https://spongecaptain.cool/post/life/deploygitlab/</link>
+      <pubDate>Fri, 02 Oct 2020 20:59:57 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/life/deploygitlab/</guid>
+      <description>在实验室服务器部署 GitLab 1. 起因 我为什么觉得实验室代码管理很重要？ 我是北京邮电大学的一名研究生，所处实验室在代码开发上的人数有 10 人左右（主要是部分</description>
+    </item>
+    
+  </channel>
+</rss>
