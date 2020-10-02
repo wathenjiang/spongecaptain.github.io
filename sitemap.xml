@@ -9,13 +9,6 @@
   </url>
   
   <url>
-    <loc>https://spongecaptain.cool/post/life/deploygitlab/</loc>
-    <lastmod>2020-10-02T20:59:57+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
     <loc>https://spongecaptain.cool/tags/gitlab/</loc>
     <lastmod>2020-10-02T20:59:57+08:00</lastmod>
     <changefreq>weekly</changefreq>
@@ -45,6 +38,13 @@
   
   <url>
     <loc>https://spongecaptain.cool/tags/</loc>
+    <lastmod>2020-10-02T20:59:57+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/post/life/deploygitlab/</loc>
     <lastmod>2020-10-02T20:59:57+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
