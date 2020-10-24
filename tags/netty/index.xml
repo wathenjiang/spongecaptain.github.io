@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Netty on Spongecaptain 的个人技术博客</title>
+    <link>https://spongecaptain.cool/tags/netty/</link>
+    <description>Recent content in Netty on Spongecaptain 的个人技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 24 Oct 2020 22:11:20 +0800</lastBuildDate>
+    
+	<atom:link href="https://spongecaptain.cool/tags/netty/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Netty 如何实现自己的解码器与解码器</title>
+      <link>https://spongecaptain.cool/post/netty/howtowriteadecoderandencoder/</link>
+      <pubDate>Sat, 24 Oct 2020 22:11:20 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/netty/howtowriteadecoderandencoder/</guid>
+      <description>Netty 如何实现自己的解码器与解码器 建议首先理解 Netty 的 ChannelPipeline 管道执行模型。代码案例来自于：https://github.com/Snailclimb/g</description>
+    </item>
+    
+  </channel>
+</rss>

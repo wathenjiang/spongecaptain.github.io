@@ -12,6 +12,15 @@
     
     
     <item>
+      <title>Netty 如何实现自己的解码器与解码器</title>
+      <link>https://spongecaptain.cool/post/netty/howtowriteadecoderandencoder/</link>
+      <pubDate>Sat, 24 Oct 2020 22:11:20 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/netty/howtowriteadecoderandencoder/</guid>
+      <description>Netty 如何实现自己的解码器与解码器 建议首先理解 Netty 的 ChannelPipeline 管道执行模型。代码案例来自于：https://github.com/Snailclimb/g</description>
+    </item>
+    
+    <item>
       <title>在实验室服务器部署 GitLab</title>
       <link>https://spongecaptain.cool/post/life/deploygitlab/</link>
       <pubDate>Fri, 02 Oct 2020 20:59:57 +0800</pubDate>
