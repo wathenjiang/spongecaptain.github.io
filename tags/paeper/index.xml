@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Life on Spongecaptain 的个人技术博客</title>
-    <link>https://spongecaptain.cool/categories/life/</link>
-    <description>Recent content in Life on Spongecaptain 的个人技术博客</description>
+    <title>paeper on Spongecaptain 的个人技术博客</title>
+    <link>https://spongecaptain.cool/tags/paeper/</link>
+    <description>Recent content in paeper on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Sun, 25 Oct 2020 15:18:00 +0800</lastBuildDate>
     
-	<atom:link href="https://spongecaptain.cool/categories/life/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://spongecaptain.cool/tags/paeper/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -18,15 +18,6 @@
       
       <guid>https://spongecaptain.cool/post/life/thevalueofaitocompany/</guid>
       <description>我为什么会写这篇文章？ 我的人工智能水平局限于看过周志华的西瓜书，甚至连书本的基础知识都还没有掌握完全。万幸，我至少知道 AI 是怎么一回事。 另一方</description>
-    </item>
-    
-    <item>
-      <title>在实验室服务器部署 GitLab</title>
-      <link>https://spongecaptain.cool/post/life/deploygitlab/</link>
-      <pubDate>Fri, 02 Oct 2020 20:59:57 +0800</pubDate>
-      
-      <guid>https://spongecaptain.cool/post/life/deploygitlab/</guid>
-      <description>在实验室服务器部署 GitLab 1. 起因 我为什么觉得实验室代码管理很重要？ 我是北京邮电大学的一名研究生，所处实验室在代码开发上的人数有 10 人左右（主要是部分</description>
     </item>
     
   </channel>

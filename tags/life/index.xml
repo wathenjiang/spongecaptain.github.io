@@ -6,10 +6,19 @@
     <description>Recent content in Life on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 02 Oct 2020 20:59:57 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 25 Oct 2020 15:18:00 +0800</lastBuildDate>
     
 	<atom:link href="https://spongecaptain.cool/tags/life/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>人工智能的魔力-AI 真的有如此大的价值吗？</title>
+      <link>https://spongecaptain.cool/post/life/thevalueofaitocompany/</link>
+      <pubDate>Sun, 25 Oct 2020 15:18:00 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/life/thevalueofaitocompany/</guid>
+      <description>我为什么会写这篇文章？ 我的人工智能水平局限于看过周志华的西瓜书，甚至连书本的基础知识都还没有掌握完全。万幸，我至少知道 AI 是怎么一回事。 另一方</description>
+    </item>
     
     <item>
       <title>在实验室服务器部署 GitLab</title>
