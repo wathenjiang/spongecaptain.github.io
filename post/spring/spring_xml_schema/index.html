@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Spring XML schema 扩展机制 - Spongecaptain 的个人技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Spongecaptain" /><meta name="description" content="1. 基于 Spring 容器的 Dubbo Dubbo 采用 Spring 的方式进行组件的管理，支持 XML 以及注解式的配置。在使用时，我们仅仅需要通过 beanName 向 IoC 容器索要组件，IoC 容器就能够返回封装" /><meta name="keywords" content="Spring, XML schema, Dubbo" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.67.0 with theme even" />
+
+
+<link rel="canonical" href="https://spongecaptain.cool/post/spring/spring_xml_schema/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e6549b501dbc4389b872bd7b2f32a09625027aa099dcfd924adda23a8e9b81bf.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Spring XML schema 扩展机制" />
+<meta property="og:description" content="1. 基于 Spring 容器的 Dubbo Dubbo 采用 Spring 的方式进行组件的管理，支持 XML 以及注解式的配置。在使用时，我们仅仅需要通过 beanName 向 IoC 容器索要组件，IoC 容器就能够返回封装" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://spongecaptain.cool/post/spring/spring_xml_schema/" />
+<meta property="article:published_time" content="2020-10-29T22:17:32+08:00" />
+<meta property="article:modified_time" content="2020-10-29T22:17:32+08:00" />
+<meta itemprop="name" content="Spring XML schema 扩展机制">
+<meta itemprop="description" content="1. 基于 Spring 容器的 Dubbo Dubbo 采用 Spring 的方式进行组件的管理，支持 XML 以及注解式的配置。在使用时，我们仅仅需要通过 beanName 向 IoC 容器索要组件，IoC 容器就能够返回封装">
+<meta itemprop="datePublished" content="2020-10-29T22:17:32&#43;08:00" />
+<meta itemprop="dateModified" content="2020-10-29T22:17:32&#43;08:00" />
+<meta itemprop="wordCount" content="5098">
+
+
+
+<meta itemprop="keywords" content="Spring,Dubbo," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Spring XML schema 扩展机制"/>
+<meta name="twitter:description" content="1. 基于 Spring 容器的 Dubbo Dubbo 采用 Spring 的方式进行组件的管理，支持 XML 以及注解式的配置。在使用时，我们仅仅需要通过 beanName 向 IoC 容器索要组件，IoC 容器就能够返回封装"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body class = body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/about/index.html">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/index.html">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Spring XML schema 扩展机制</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-10-29 </span>
+        <div class="post-category">
+            <a href="/categories/spring/"> Spring </a>
+            <a href="/categories/dubbo/"> Dubbo </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-基于-spring-容器的-dubbo">1. 基于 Spring 容器的 Dubbo</a></li>
+    <li><a href="#2-dubbo-如何告知-spring-ioc-容器来管理-bean">2. Dubbo 如何告知 Spring IoC 容器来管理 Bean</a>
+      <ul>
+        <li><a href="#21-什么是-xsd-文件">2.1 什么是 xsd 文件</a></li>
+        <li><a href="#22-meta-infspringhandlers-配置文件">2.2 META-INF/spring.handlers 配置文件</a></li>
+        <li><a href="#23-namespacehandler">2.3 NamespaceHandler</a></li>
+        <li><a href="#24-beandefinitionparser-接口">2.4 BeanDefinitionParser 接口</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-源码解析">3. 源码解析</a>
+      <ul>
+        <li><a href="#31-dubbo-的配置文件">3.1 Dubbo 的配置文件</a></li>
+        <li><a href="#32-spring-的源码入口">3.2 Spring 的源码入口</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-完成一个自己的的-spring-xml-扩展">4. 完成一个自己的的 Spring XML 扩展</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h2 id="1-基于-spring-容器的-dubbo">1. 基于 Spring 容器的 Dubbo</h2>
+<p>Dubbo 采用 Spring 的方式进行组件的管理，支持 XML 以及注解式的配置。在使用时，我们仅仅需要通过 beanName 向 IoC 容器索要组件，IoC 容器就能够返回封装了 RPC 的代理类实例。</p>
+<p>并且，我们可以发现，Dubbo 使用的就是原生的 Spring IoC  容器类（没有进行继承重写），下面分别是基于 XML 配置的 Dubbo 客户端以及基于注解的 Dubbo 客户端：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//基于 XML 的 Dubbo 客户端
+</span><span class="c1">//1. 指定 XML 配置文件来创建 ClassPathXmlApplicationContext 实例
+</span><span class="c1"></span><span class="n">ClassPathXmlApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ClassPathXmlApplicationContext</span><span class="o">(</span><span class="s">&#34;spring/dubbo-demo-consumer.xml&#34;</span><span class="o">);</span>
+<span class="c1">//2. 启动容器
+</span><span class="c1"></span><span class="n">context</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+<span class="c1">//3. 通过 beanName 来得到具体的代理类实例
+</span><span class="c1"></span><span class="n">DemoService</span> <span class="n">demoService</span> <span class="o">=</span> <span class="o">(</span><span class="n">DemoService</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">&#34;demoService&#34;</span><span class="o">);</span>
+<span class="c1">//基于注解的 Dubbo 客户端
+</span><span class="c1">//1. 指定配置类 class 来创建 AnnotationConfigApplicationContext 实例
+</span><span class="c1"></span> <span class="n">AnnotationConfigApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AnnotationConfigApplicationContext</span><span class="o">(</span><span class="n">ConsumerConfiguration</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="c1">//2. 启动容器
+</span><span class="c1"></span><span class="n">context</span><span class="o">.</span><span class="na">start</span><span class="o">();</span>
+<span class="c1">//3. 通过 beanName 来得到具体的代理类实例
+</span><span class="c1"></span><span class="kd">final</span> <span class="n">AnnotationAction</span> <span class="n">annotationAction</span> <span class="o">=</span> <span class="o">(</span><span class="n">AnnotationAction</span><span class="o">)</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">&#34;annotationAction&#34;</span><span class="o">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这里的 Spring 相关的完整类名为：</p>
+<ul>
+<li>org.springframework.context.annotation.AnnotationConfigApplicationContext</li>
+<li>org.springframework.context.support.ClassPathXmlApplicationContext</li>
+</ul>
+<p>这一切仿佛如魔法一般，我们在运行时完全不需要告诉 Spring 如何来解析 XML（或者注解）配置，也无需告诉 Spring 容器在通过 beanName 时需要返回的实例为 RPC 调用代理类实例。<strong>我们就是使用原生的 Spring 容器</strong>，那么其中的原理是什么呢？</p>
+<h2 id="2-dubbo-如何告知-spring-ioc-容器来管理-bean">2. Dubbo 如何告知 Spring IoC 容器来管理 Bean</h2>
+<p>类似于 SPI 机制，Spring 提供 XML schema 扩展机制来实现让 Spring 的 IoC 容器管理 Dubbo 中的 Bean 逻辑。这可以参考 <a href="https://docs.spring.io/spring-framework/docs/4.2.x/spring-framework-reference/html/xsd-configuration.html">Spring 官方文档</a>。</p>
+<p>Dubbo 框架的做法是：</p>
+<ul>
+<li>
+<p>在项目根目录下的 /META-INF 目录下存放一个配置文件：spring.handlers，配置的具体内容如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">http\://dubbo.apache.org/schema/dubbo=org.apache.dubbo.config.spring.schema.DubboNamespaceHandler
+http\://code.alibabatech.com/schema/dubbo=org.apache.dubbo.config.spring.schema.DubboNamespaceHandler
+</code></pre></td></tr></table>
+</div>
+</div><p>上述配置显然引用了一个类：DubboNamespaceHandler</p>
+</li>
+<li>
+<p>实现 NamespaceHandler 接口的具体实现类 NamespaceHandler；</p>
+</li>
+<li>
+<p>实现多个 BeanDefinitionParser 接口的实现类，并通过 NamespaceHandler#init 方法进行注册；</p>
+</li>
+<li>
+<p>在项目根目录下的 /META-INF 目录下存放一个配置文件：dubbo.xsd；</p>
+</li>
+</ul>
+<h3 id="21-什么是-xsd-文件">2.1 什么是 xsd 文件</h3>
+<p>引用于 <a href="https://zh.wikipedia.org/wiki/XML_Schema">wikipedia</a>，XSD (XML Schema Definition)是W3C于2001年5月发布的推荐标准，<strong>指出如何形式描述XML文档的元素。XSD是许多XML Schema 语言中的一支</strong>。XSD是首先分离于XML本身的schema语言，故获取W3C的推荐地位。</p>
+<p>换言之，xsd 文件主要用于规定 XML 文件的格式，在现代编辑器中，例如 IntelliJ，会根据 XSD 文件在配置 Bean 时进行格式检查以及提示。</p>
+<p>以 Dubbo 的 dubbo.xsd 文件例子如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34; standalone=&#34;no&#34;?&gt;</span>
+<span class="nt">&lt;xsd:schema</span> <span class="na">xmlns:xsd=</span><span class="s">&#34;http://www.w3.org/2001/XMLSchema&#34;</span>
+            <span class="na">xmlns:beans=</span><span class="s">&#34;http://www.springframework.org/schema/beans&#34;</span>
+            <span class="na">xmlns:tool=</span><span class="s">&#34;http://www.springframework.org/schema/tool&#34;</span>
+            <span class="na">xmlns=</span><span class="s">&#34;http://dubbo.apache.org/schema/dubbo&#34;</span>
+            <span class="na">targetNamespace=</span><span class="s">&#34;http://dubbo.apache.org/schema/dubbo&#34;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;xsd:import</span> <span class="na">namespace=</span><span class="s">&#34;http://www.w3.org/XML/1998/namespace&#34;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;xsd:import</span> <span class="na">namespace=</span><span class="s">&#34;http://www.springframework.org/schema/beans&#34;</span> <span class="na">schemaLocation=</span><span class="s">&#34;http://www.springframework.org/schema/beans/spring-beans.xsd&#34;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;xsd:import</span> <span class="na">namespace=</span><span class="s">&#34;http://www.springframework.org/schema/tool&#34;</span><span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;xsd:annotation&gt;</span>
+        <span class="nt">&lt;xsd:documentation&gt;</span>
+            <span class="cp">&lt;![CDATA[ Namespace support for the dubbo services provided by dubbo framework. ]]&gt;</span><span class="nt">&lt;/xsd:documentation&gt;</span>
+    <span class="nt">&lt;/xsd:annotation&gt;</span>
+<span class="c">&lt;!--限于篇幅，省略其他标签--&gt;</span>
+<span class="nt">&lt;/xsd:schema&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>注意：<code>xsd:schema</code> 标签的 targetNamespace 属性很重要，2.3 小节会提到，其属性值必须与 META-INF/spring.handlers 配置文件中的属性名（key）保持一致。</p>
+<h3 id="22-meta-infspringhandlers-配置文件">2.2 META-INF/spring.handlers 配置文件</h3>
+<p>参考 <a href="https://docs.spring.io/spring-framework/docs/4.2.x/spring-framework-reference/html/xml-custom.html#extensible-xml-registration-spring-handlers">Spring 官方文档</a>，我们可以知道 <code>META-INF/spring.handlers</code> 配置文件主要提供了一对映射关系：将 XML Schema URLs 映射为 namespace handler class。我们还是以 Dubbo 为例，如下所示：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">http\://dubbo.apache.org/schema/dubbo=org.apache.dubbo.config.spring.schema.DubboNamespaceHandler
+http\://code.alibabatech.com/schema/dubbo=org.apache.dubbo.config.spring.schema.DubboNamespaceHandler
+</code></pre></td></tr></table>
+</div>
+</div><p>其中，由于 <code>:</code> 符号在 .properties 文件中属于一个有效的分隔符，因此我们需要使用一个额外的右折号 <code>\</code>  来进行转义。</p>
+<p>上述每一对等号就是一副 key-value 对，其中 key 为 URL，必须与你自定义的 namespcace extension 相一致，具体来说，这个值必须与 xsd 文件中的 targetNamespace 属性保持一致。我们也将上述 url 称作 namespace url。</p>
+<h3 id="23-namespacehandler">2.3 NamespaceHandler</h3>
+<p>NamespaceHandler 是一个接口，用于引入命令空间。通过我们会使用 NamespaceHandler 的抽象实现类 NamespaceHandlerSupport，后者提供了一些默认的实现逻辑，因此，事实上，DubboNamespaceHandler 的继承以及实现关系如下图所示：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DubboNamespaceHandler</span> <span class="kd">extends</span> <span class="n">NamespaceHandlerSupport</span> <span class="kd">implements</span> <span class="n">ConfigurableSourceBeanMetadataElement</span> <span class="o">{</span>
+    <span class="c1">//省略其他代码
+</span><span class="c1"></span><span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>DubboNamespaceHandler#init 方法负责注册相关命名空间解析器，代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java">    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">registerBeanDefinitionParser</span><span class="o">(</span><span class="s">&#34;application&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">DubboBeanDefinitionParser</span><span class="o">(</span><span class="n">ApplicationConfig</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kc">true</span><span class="o">));</span>
+        <span class="n">registerBeanDefinitionParser</span><span class="o">(</span><span class="s">&#34;module&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">DubboBeanDefinitionParser</span><span class="o">(</span><span class="n">ModuleConfig</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kc">true</span><span class="o">));</span>
+        <span class="n">registerBeanDefinitionParser</span><span class="o">(</span><span class="s">&#34;registry&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">DubboBeanDefinitionParser</span><span class="o">(</span><span class="n">RegistryConfig</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kc">true</span><span class="o">));</span>
+        <span class="n">registerBeanDefinitionParser</span><span class="o">(</span><span class="s">&#34;config-center&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">DubboBeanDefinitionParser</span><span class="o">(</span><span class="n">ConfigCenterBean</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kc">true</span><span class="o">));</span>
+        <span class="n">registerBeanDefinitionParser</span><span class="o">(</span><span class="s">&#34;metadata-report&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">DubboBeanDefinitionParser</span><span class="o">(</span><span class="n">MetadataReportConfig</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kc">true</span><span class="o">));</span>
+        <span class="n">registerBeanDefinitionParser</span><span class="o">(</span><span class="s">&#34;monitor&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">DubboBeanDefinitionParser</span><span class="o">(</span><span class="n">MonitorConfig</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kc">true</span><span class="o">));</span>
+        <span class="n">registerBeanDefinitionParser</span><span class="o">(</span><span class="s">&#34;metrics&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">DubboBeanDefinitionParser</span><span class="o">(</span><span class="n">MetricsConfig</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kc">true</span><span class="o">));</span>
+        <span class="n">registerBeanDefinitionParser</span><span class="o">(</span><span class="s">&#34;ssl&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">DubboBeanDefinitionParser</span><span class="o">(</span><span class="n">SslConfig</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kc">true</span><span class="o">));</span>
+        <span class="n">registerBeanDefinitionParser</span><span class="o">(</span><span class="s">&#34;provider&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">DubboBeanDefinitionParser</span><span class="o">(</span><span class="n">ProviderConfig</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kc">true</span><span class="o">));</span>
+        <span class="n">registerBeanDefinitionParser</span><span class="o">(</span><span class="s">&#34;consumer&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">DubboBeanDefinitionParser</span><span class="o">(</span><span class="n">ConsumerConfig</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kc">true</span><span class="o">));</span>
+        <span class="n">registerBeanDefinitionParser</span><span class="o">(</span><span class="s">&#34;protocol&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">DubboBeanDefinitionParser</span><span class="o">(</span><span class="n">ProtocolConfig</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kc">true</span><span class="o">));</span>
+        <span class="n">registerBeanDefinitionParser</span><span class="o">(</span><span class="s">&#34;service&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">DubboBeanDefinitionParser</span><span class="o">(</span><span class="n">ServiceBean</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kc">true</span><span class="o">));</span>
+        <span class="n">registerBeanDefinitionParser</span><span class="o">(</span><span class="s">&#34;reference&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">DubboBeanDefinitionParser</span><span class="o">(</span><span class="n">ReferenceBean</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kc">false</span><span class="o">));</span>
+        <span class="n">registerBeanDefinitionParser</span><span class="o">(</span><span class="s">&#34;annotation&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">AnnotationBeanDefinitionParser</span><span class="o">());</span>
+    <span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这里完成的功能是为每一个命名空间指定一个解析器实例（因为都是重新 new 出来的，因此每个命令空间的解析器各部相同），然后为每一个命令空间指定对应的配置实例，例如：application 命令空间下的配置应当解析为 ApplicationConfig 类型实例。</p>
+<blockquote>
+<p>为什么需要在不同的命名空间下使用独立的 BeanDefinitionParser 实例？</p>
+<p>这是因为一个 DubboBeanDefinitionParser 只能满足将一类命令空间下的配置转换为一类 AbstractConfig 实例（这个类为 ApplicationConfig、ModuleConfig 等类的共同父类），因此不同命名空间无法共用一个 BeanDefinitionParser  实例。</p>
+</blockquote>
+<p>这样说可能不太容易懂，下面举一个例子。</p>
+<p>在 XML 配置如下内容：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml">## application
+<span class="nt">&lt;dubbo:application</span> <span class="na">id=</span><span class="s">&#34;applicationBean&#34;</span> <span class="na">name=</span><span class="s">&#34;dubbo-demo-application&#34;</span> <span class="na">port=</span><span class="s">&#34;1099&#34;</span> <span class="nt">/&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>实际上等价于如下配置：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Bean</span><span class="o">(</span><span class="s">&#34;applicationBean&#34;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="n">ApplicationConfig</span> <span class="nf">applicationBean</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">ApplicationConfig</span> <span class="n">applicationConfig</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ApplicationConfig</span><span class="o">();</span>
+    <span class="n">applicationConfig</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">&#34;dubbo-demo-application&#34;</span><span class="o">);</span>
+    <span class="k">return</span> <span class="n">applicationConfig</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>可见，每一个 application 命令空间下的配置在被配置解析器解析后，会转换为 ApplicationConfig 类实例。我们在 DubboNamespaceHandler#init 方法中需要规定在具体的一个命名空间下，使用哪一个配置解析器以及将一行行配置转换为哪一种配置类实例。</p>
+<h3 id="24-beandefinitionparser-接口">2.4 BeanDefinitionParser 接口</h3>
+<p>BeanDefinitionParser 接口负责 XML 配置文件的解析，例如 Dubbo 框架提供了一个具体实现类 DubboBeanDefinitionParser 来完成 XML 配置文件的解析。</p>
+<p>DubboBeanDefinitionParser 中的代码比较多，而且我目前并没有非常熟悉 Dubbo 的 XML 配置，因此并不能完全看懂。这里就说一个大概。</p>
+<p>DubboBeanDefinitionParser 类通过暴露 DubboBeanDefinitionParser#parse 方法（这是一个具有多个重载版本的方法）完成配置类的解析：</p>
+<ul>
+<li>首先构造一个 BeanDefinition 实例；</li>
+<li>如果入口参数有指定 beanClass，那么使用入口参数的，如果没有，那么使用实例的 beanClass 字段，DubboBeanDefinitionParser  类构造器会接收一个 <code>Class&lt;?&gt;  beanClass</code> 参数，例如上面的：ApplicationConfig.class、ModuleConfig.class 等类型；</li>
+<li>得到 element（这里可以认为这是配置文件中的一项配置）元素的各个属性；</li>
+<li>然后进行复杂的 BeanDefinition 实例初始化配置；</li>
+</ul>
+<h2 id="3-源码解析">3. 源码解析</h2>
+<h3 id="31-dubbo-的配置文件">3.1 Dubbo 的配置文件</h3>
+<p>我们可以直接参考 Dubbo 在 GitHub 上的项目的 dubbo-config 模块：</p>
+<p><a href="https://github.com/apache/dubbo/tree/master/dubbo-config/dubbo-config-spring/src/main/resources/META-INF">https://github.com/apache/dubbo/tree/master/dubbo-config/dubbo-config-spring/src/main/resources/META-INF</a></p>
+<p>可以看到我们在前面两节提到的配置文件：</p>
+<p><img src="../../../images/img_spring/image-20201028221232524.png" alt="image-20201028221232524"></p>
+<h3 id="32-spring-的源码入口">3.2 Spring 的源码入口</h3>
+<p><a href="https://juejin.im/post/6844903866593460231">https://juejin.im/post/6844903866593460231</a></p>
+<p>Spring 源码的入口是 BeanDefinitionParserDelegate#parseCustomElement 方法来解析我们自定义的 XML 元素，其源码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//BeanDefinitionParserDelegate#parseCustomElement 方法
+</span><span class="c1"></span><span class="kd">public</span> <span class="n">BeanDefinition</span> <span class="nf">parseCustomElement</span><span class="o">(</span><span class="n">Element</span> <span class="n">ele</span><span class="o">,</span> <span class="n">BeanDefinition</span> <span class="n">containingBd</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">//获取元素指定的 namespaceUri,例如：http://dubbo.apache.org/schema/dubbo/application
+</span><span class="c1"></span>    <span class="n">String</span> <span class="n">namespaceUri</span> <span class="o">=</span> <span class="n">getNnamespaceUriamespaceURI</span><span class="o">(</span><span class="n">ele</span><span class="o">);</span>
+   	<span class="c1">//根据 namespaceUri 获得指定的 NamespaceHandler 实例（这对应于 DubboNamespaceHandler#init 方法的注册逻辑）
+</span><span class="c1"></span>    <span class="n">NamespaceHandler</span> <span class="n">handler</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">readerContext</span><span class="o">.</span><span class="na">getNamespaceHandlerResolver</span><span class="o">().</span><span class="na">resolve</span><span class="o">(</span><span class="n">namespaceUri</span><span class="o">);</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">handler</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">error</span><span class="o">(</span><span class="s">&#34;Unable to locate Spring NamespaceHandler for XML schema namespace [&#34;</span> <span class="o">+</span> <span class="n">namespaceUri</span> <span class="o">+</span> <span class="s">&#34;]&#34;</span><span class="o">,</span> <span class="n">ele</span><span class="o">);</span>
+        <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">//然后调用 NamespaceHandler#parse 方法来完成元素的解析
+</span><span class="c1"></span>    <span class="k">return</span> <span class="n">handler</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">ele</span><span class="o">,</span> <span class="k">new</span> <span class="n">ParserContext</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">readerContext</span><span class="o">,</span> <span class="k">this</span><span class="o">,</span> <span class="n">containingBd</span><span class="o">));</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>而 NamespaceHandler#parse 方法最终会依赖 DubboBeanDefinitionParser#parse 方法完成元素的解析。</p>
+<p>我们再来看看 DefaultNamespaceHandlerResolver#resolve 方法是如何将 namespaceUri 映射为 NamespaceHandler 实例的，下面是其源码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//DefaultNamespaceHandlerResolver#resolve
+</span><span class="c1"></span><span class="kd">public</span> <span class="n">NamespaceHandler</span> <span class="nf">resolve</span><span class="o">(</span><span class="n">String</span> <span class="n">namespaceUri</span><span class="o">)</span> <span class="o">{</span>
+  <span class="c1">//这里将 namespaceUri 作为 key，得到 NamespaceHandler 
+</span><span class="c1"></span>  <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">handlerMappings</span> <span class="o">=</span> <span class="n">getHandlerMappings</span><span class="o">();</span>
+  <span class="n">Object</span> <span class="n">handlerOrClassName</span> <span class="o">=</span> <span class="n">handlerMappings</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">namespaceUri</span><span class="o">);</span>
+  <span class="c1">//1. null 检查
+</span><span class="c1"></span>  <span class="k">if</span> <span class="o">(</span><span class="n">handlerOrClassName</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+  <span class="o">}</span>
+  <span class="c1">//2. 如果 handlerOrClassName 类型就是 NamespaceHandler，那么直接返回
+</span><span class="c1"></span>  <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">handlerOrClassName</span> <span class="k">instanceof</span> <span class="n">NamespaceHandler</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="o">(</span><span class="n">NamespaceHandler</span><span class="o">)</span> <span class="n">handlerOrClassName</span><span class="o">;</span>
+  <span class="o">}</span>
+  <span class="c1">//3. 如果 handlerOrClassName 为 NamespaceHandler 子类的完整类名
+</span><span class="c1"></span>  <span class="k">else</span> <span class="o">{</span>
+    <span class="n">String</span> <span class="n">className</span> <span class="o">=</span> <span class="o">(</span><span class="n">String</span><span class="o">)</span> <span class="n">handlerOrClassName</span><span class="o">;</span>
+    <span class="k">try</span> <span class="o">{</span>
+      <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">handlerClass</span> <span class="o">=</span> <span class="n">ClassUtils</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="n">className</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">classLoader</span><span class="o">);</span>
+      <span class="k">if</span> <span class="o">(!</span><span class="n">NamespaceHandler</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">isAssignableFrom</span><span class="o">(</span><span class="n">handlerClass</span><span class="o">))</span> <span class="o">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="n">FatalBeanException</span><span class="o">(</span><span class="s">&#34;Class [&#34;</span> <span class="o">+</span> <span class="n">className</span> <span class="o">+</span> <span class="s">&#34;] for namespace [&#34;</span> <span class="o">+</span> <span class="n">namespaceUri</span> <span class="o">+</span>
+                                     <span class="s">&#34;] does not implement the [&#34;</span> <span class="o">+</span> <span class="n">NamespaceHandler</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;] interface&#34;</span><span class="o">);</span>
+      <span class="o">}</span>
+      <span class="n">NamespaceHandler</span> <span class="n">namespaceHandler</span> <span class="o">=</span> <span class="o">(</span><span class="n">NamespaceHandler</span><span class="o">)</span> <span class="n">BeanUtils</span><span class="o">.</span><span class="na">instantiateClass</span><span class="o">(</span><span class="n">handlerClass</span><span class="o">);</span>
+      <span class="c1">//调用 NamespaceHandler#init 方法，对于 DubboNamespaceHandler 来说就是注册一大堆 BeanDefinitionParser 实例
+</span><span class="c1"></span>      <span class="n">namespaceHandler</span><span class="o">.</span><span class="na">init</span><span class="o">();</span>
+      <span class="c1">//暂存起来
+</span><span class="c1"></span>      <span class="n">handlerMappings</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">namespaceUri</span><span class="o">,</span> <span class="n">namespaceHandler</span><span class="o">);</span>
+      <span class="k">return</span> <span class="n">namespaceHandler</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="k">catch</span> <span class="o">(</span><span class="n">ClassNotFoundException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="n">FatalBeanException</span><span class="o">(</span><span class="s">&#34;NamespaceHandler class [&#34;</span> <span class="o">+</span> <span class="n">className</span> <span class="o">+</span> <span class="s">&#34;] for namespace [&#34;</span> <span class="o">+</span>
+                                   <span class="n">namespaceUri</span> <span class="o">+</span> <span class="s">&#34;] not found&#34;</span><span class="o">,</span> <span class="n">ex</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="k">catch</span> <span class="o">(</span><span class="n">LinkageError</span> <span class="n">err</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="n">FatalBeanException</span><span class="o">(</span><span class="s">&#34;Invalid NamespaceHandler class [&#34;</span> <span class="o">+</span> <span class="n">className</span> <span class="o">+</span> <span class="s">&#34;] for namespace [&#34;</span> <span class="o">+</span>
+                                   <span class="n">namespaceUri</span> <span class="o">+</span> <span class="s">&#34;]: problem with handler class file or dependent class&#34;</span><span class="o">,</span> <span class="n">err</span><span class="o">);</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>最后，我们再来看看 spring.handlers 是如何被 Spring 加载的，首先我们在 DefaultNamespaceHandlerResolver 类中定义了如下字段：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">DEFAULT_HANDLER_MAPPINGS_LOCATION</span> <span class="o">=</span> <span class="s">&#34;META-INF/spring.handlers&#34;</span><span class="o">;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这个字段指明了默认的 Handler 映射定位文件的位置。</p>
+<p>其次，此字段会作为 DefaultNamespaceHandlerResolver 的 handlerMappingsLocation 字段的默认值进行初始化，如下所示：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//DefaultNamespaceHandlerResolver 的无参构造器会默认使用 DEFAULT_HANDLER_MAPPINGS_LOCATION
+</span><span class="c1"></span><span class="kd">public</span> <span class="nf">DefaultNamespaceHandlerResolver</span><span class="o">()</span> <span class="o">{</span>
+  <span class="k">this</span><span class="o">(</span><span class="kc">null</span><span class="o">,</span> <span class="n">DEFAULT_HANDLER_MAPPINGS_LOCATION</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>最后，DefaultNamespaceHandlerResolver#getHandlerMappings 方法会返回所有框架中的 spring.handlers 配置文件指定的映射关系，源代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java">	<span class="kd">private</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="nf">getHandlerMappings</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">handlerMappings</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+			<span class="kd">synchronized</span> <span class="o">(</span><span class="k">this</span><span class="o">)</span> <span class="o">{</span>
+				<span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">handlerMappings</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+					<span class="k">try</span> <span class="o">{</span>
+            <span class="c1">//这个步骤就是进行加载映射关系，这里的入口参数 handlerMappingsLocation 的值
+</span><span class="c1"></span>            <span class="c1">//就是 DEFAULT_HANDLER_MAPPINGS_LOCATION 的值
+</span><span class="c1"></span>						<span class="n">Properties</span> <span class="n">mappings</span> <span class="o">=</span>
+								<span class="n">PropertiesLoaderUtils</span><span class="o">.</span><span class="na">loadAllProperties</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">handlerMappingsLocation</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">classLoader</span><span class="o">);</span>
+						<span class="k">if</span> <span class="o">(</span><span class="n">logger</span><span class="o">.</span><span class="na">isDebugEnabled</span><span class="o">())</span> <span class="o">{</span>
+							<span class="n">logger</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">&#34;Loaded NamespaceHandler mappings: &#34;</span> <span class="o">+</span> <span class="n">mappings</span><span class="o">);</span>
+						<span class="o">}</span>
+						<span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;</span> <span class="n">handlerMappings</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ConcurrentHashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;(</span><span class="n">mappings</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+						<span class="n">CollectionUtils</span><span class="o">.</span><span class="na">mergePropertiesIntoMap</span><span class="o">(</span><span class="n">mappings</span><span class="o">,</span> <span class="n">handlerMappings</span><span class="o">);</span>
+						<span class="k">this</span><span class="o">.</span><span class="na">handlerMappings</span> <span class="o">=</span> <span class="n">handlerMappings</span><span class="o">;</span>
+					<span class="o">}</span>
+					<span class="k">catch</span> <span class="o">(</span><span class="n">IOException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+						<span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalStateException</span><span class="o">(</span>
+								<span class="s">&#34;Unable to load NamespaceHandler mappings from location [&#34;</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">handlerMappingsLocation</span> <span class="o">+</span> <span class="s">&#34;]&#34;</span><span class="o">,</span> <span class="n">ex</span><span class="o">);</span>
+					<span class="o">}</span>
+				<span class="o">}</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+		<span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">handlerMappings</span><span class="o">;</span>
+	<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>例如，我们单单使用 Dubbo，在上述方法上进行打点，最终返回的 Map 有如下图所示的 key-value 键值对：</p>
+<p><img src="../../../images/img_spring/image-20201029203247878.png" alt="image-20201029203247878"></p>
+<blockquote>
+<p>此时 key 以及 value 的类型都是字符串类型。</p>
+</blockquote>
+<p>到这里，我们已经知道了为什么 Spring 容器能够支持加载 Dubbo 自定义的 XML 标签为 BeanDefinition，简单来说就是一句话：Spring 提供 XML 扩展机制，只要第三方架构在指定位置放置规定的配置文件、提供规定的配置文件解析器，那么 Spring 容器在启动时就会知道如何解析第三方框架配置文件为 BeanDefinition 实例。</p>
+<p><strong>但是，RPC 代理又在什么时候完成的呢？</strong></p>
+<p>这里以我自己的 <a href="https://github.com/Spongecaptain/dubbo-samples">Dubbo samples</a> 项目为例（克隆来自于 <a href="https://github.com/apache/dubbo-samples">apache/dubbo-samples</a>）。我们进入 dubbo-samples-basic 模块。</p>
+<ul>
+<li>先启动 BasicProvider#main 方法；</li>
+<li>然后在 BasicConsumer#main 方法的 <code>DemoService demoService = (DemoService) context.getBean(&quot;demoService&quot;);</code> 语句下的 for 循环上打上断点（这样的目的是为了使 demoService 实例在 IoC 容器中得到初始化）；</li>
+</ul>
+<p>我们可以发现，demoService 实例的实际类型为：class org.apache.dubbo.common.bytecode.proxy0，整个结果如下图所示：</p>
+<p><img src="../../../images/img_spring/image-20201029204551925.png" alt="image-20201029204551925"></p>
+<p>我们可以发现，点击类型上的 Navigate 并不能如平常一般跳转到类定，<strong>这是为什么？</strong></p>
+<p>这是因为：Dubbo 依赖于 javassist 实现动态代理，其动态代理是通过直接操作字节码来生成代理对象，因此其在动态生成了 org.apache.dubbo.common.bytecode.proxy.proxy0 类的字节码。不过，既然 demoService 实例能够通过强制类型转换，因此这个实例自然是接口 DemoService 的具体实现类。</p>
+<p><strong>但是，代理实例究竟是在什么时候生成的呢？</strong></p>
+<p>通过之前的介绍，我们已经知道了在通过 Spring XML schema 扩展机制，我们可以使用自定义的：XML 标签、BeanDefinitionParser 实例来完成将 XML 配置转换为 BeanDefinition 的原理。RPC 代理的生成则发生于 BeanDefition 生成完毕后。</p>
+<p>Spring 容器获取到 BeanDefinition 后，BeanDefinition 会被注册到容器中，然后 Spring 容器会通过 BeanDefinition生成 Bean。</p>
+<p>我们可以通过在 ReferenceConfig#createProxy 方法上打上断点，然后以 debug 运行 BasicProvider#main 方法一切都会变得明了，如下图所示：</p>
+<p><img src="../../../images/img_spring/image-20201029215001403.png" alt="image-20201029215001403"></p>
+<p>其中 <code>&lt;dubbo:reference/&gt;</code> 标签用于创建一个远程服务代理，一个引用可以指向多个注册中心，例如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="c">&lt;!--指定要消费的服务--&gt;</span>
+<span class="nt">&lt;dubbo:reference</span> <span class="na">id=</span><span class="s">&#34;demoService&#34;</span> <span class="na">check=</span><span class="s">&#34;true&#34;</span> <span class="na">interface=</span><span class="s">&#34;org.apache.dubbo.samples.basic.api.DemoService&#34;</span><span class="nt">/&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>可以见得，<code>&lt;dubbo:reference/&gt;</code> 标签最终会被 Spring IoC  容器转换为 ReferenceConfig 实例，事实上我们也已经接触过此类的实例了，在 DubboNamespaceHandler 中，我们已经初始化了 <code>&lt;dubbo:reference&gt;</code> 标签的解析器：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//DubboNamespaceHandler#init 方法
+</span><span class="c1"></span><span class="nd">@Override</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+  <span class="n">registerBeanDefinitionParser</span><span class="o">(</span><span class="s">&#34;reference&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">DubboBeanDefinitionParser</span><span class="o">(</span><span class="n">ReferenceBean</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kc">false</span><span class="o">));</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>其中，ReferenceBean 实际上就是 ReferenceConfig 的子类。</p>
+<hr>
+<p>另一方面，ReferenceBean 类实际上又是 FactoryBean 的子类，因此在 DubboNamespaceHandler#init 方法中就已经向 Spring 容器告知：如果其他方法向 IoC 容器索要在 <code>&lt;dubbo:reference/&gt;</code> 标签中的定义的 bean，那么 Spring 容易会将 ReferenceBean 作为具体的 FactoryBean 来生产对应的 Bean 实例。ReferenceBean 会在 ReferenceConfig#createProxy 方法中利用 javassist 进行代理逻辑的注入，创建一个具体的 <code>&lt;dubbo:reference/&gt;</code> 标签对应接口的具体实现类实例。</p>
+<h2 id="4-完成一个自己的的-spring-xml-扩展">4. 完成一个自己的的 Spring XML 扩展</h2>
+<p>本小节参考于：https://juejin.im/post/6844903866593460231，这主要因为我对于 XML 配置并不是很熟悉，主要用于验证可行性。</p>
+<blockquote>
+<p>本项目的开源地址为：https://github.com/Spongecaptain/springxmlsample</p>
+<p>通过运行 cool.spongecaptain.springxmlsample.run.Bootstrap#main 方法进行测试。</p>
+</blockquote>
+<hr>
+<p><strong>1.依赖部分</strong></p>
+<p>首先创建一个自己的模块，例如 cool.spongecaptain.springxmlsample，并引入 Spring Boot 依赖，如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>spring-boot<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.3.1.RELEASE<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+
+<span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>spring-boot-autoconfigure<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.3.1.RELEASE<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><hr>
+<p><strong>2.配置文件部分</strong></p>
+<p>然后在 /META-INF 目录下创建 3 个配置文件，如下：</p>
+<ul>
+<li>
+<p>resources/META-INF/spongecaptain.handlers：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">http\://www.spongecaptain.cool/schema/spongecaptain=cool.spongecaptain.springxmlsample.handler.SpongecaptainNamespaceHandler
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>resources/META-INF/spongecaptain.xsd</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span class="nt">&lt;xsd:schema</span> <span class="na">xmlns=</span><span class="s">&#34;http://www.spongecaptain.cool/schema/spongecaptain&#34;</span>
+            <span class="na">xmlns:xsd=</span><span class="s">&#34;http://www.w3.org/2001/XMLSchema&#34;</span>
+            <span class="na">xmlns:beans=</span><span class="s">&#34;http://www.springframework.org/schema/beans&#34;</span>
+            <span class="na">targetNamespace=</span><span class="s">&#34;http://www.spongecaptain.cool/schema/spongecaptain&#34;</span><span class="nt">&gt;</span>
+  
+    <span class="nt">&lt;xsd:import</span> <span class="na">namespace=</span><span class="s">&#34;http://www.springframework.org/schema/beans&#34;</span><span class="nt">/&gt;</span>
+  
+    <span class="nt">&lt;xsd:element</span> <span class="na">name=</span><span class="s">&#34;myapplication&#34;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;xsd:complexType&gt;</span>
+            <span class="nt">&lt;xsd:complexContent&gt;</span>
+                <span class="nt">&lt;xsd:extension</span> <span class="na">base=</span><span class="s">&#34;beans:identifiedType&#34;</span><span class="nt">&gt;</span>
+                    <span class="nt">&lt;xsd:attribute</span> <span class="na">name=</span><span class="s">&#34;name&#34;</span> <span class="na">type=</span><span class="s">&#34;xsd:string&#34;</span> <span class="na">use=</span><span class="s">&#34;required&#34;</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;/xsd:extension&gt;</span>
+            <span class="nt">&lt;/xsd:complexContent&gt;</span>
+        <span class="nt">&lt;/xsd:complexType&gt;</span>
+    <span class="nt">&lt;/xsd:element&gt;</span>
+  
+    <span class="nt">&lt;xsd:element</span> <span class="na">name=</span><span class="s">&#34;myservice&#34;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;xsd:complexType&gt;</span>
+            <span class="nt">&lt;xsd:complexContent&gt;</span>
+                <span class="nt">&lt;xsd:extension</span> <span class="na">base=</span><span class="s">&#34;beans:identifiedType&#34;</span><span class="nt">&gt;</span>
+                    <span class="nt">&lt;xsd:attribute</span> <span class="na">name=</span><span class="s">&#34;name&#34;</span> <span class="na">type=</span><span class="s">&#34;xsd:string&#34;</span> <span class="na">use=</span><span class="s">&#34;required&#34;</span><span class="nt">/&gt;</span>
+                <span class="nt">&lt;/xsd:extension&gt;</span>
+            <span class="nt">&lt;/xsd:complexContent&gt;</span>
+        <span class="nt">&lt;/xsd:complexType&gt;</span>
+    <span class="nt">&lt;/xsd:element&gt;</span>
+<span class="nt">&lt;/xsd:schema&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>resources/META-INF/spring.schemas</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">http\://www.spongecaptain.cool/schema/spongecaptain/spongecaptain.xsd=META-INF/spongecaptain.xsd
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<hr>
+<p><strong>3.代码部分</strong></p>
+<p>首先，我们注册两个简单的 Java POJO：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyApplicationConfig</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">value</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getValue</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">value</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setValue</span><span class="o">(</span><span class="n">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&#34; &#34;</span> <span class="o">+</span> <span class="n">value</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>以及</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyServiceBean</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">value</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getValue</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">value</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setValue</span><span class="o">(</span><span class="n">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&#34; &#34;</span> <span class="o">+</span> <span class="n">value</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>接着，我们实现一个 SpongecaptainBeanDefinitionParser 实现类：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">org.springframework.beans.factory.config.BeanDefinition</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.beans.factory.support.RootBeanDefinition</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.beans.factory.xml.BeanDefinitionParser</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.beans.factory.xml.ParserContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.w3c.dom.Element</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SpongecaptainBeanDefinitionParser</span> <span class="kd">implements</span> <span class="n">BeanDefinitionParser</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">beanClass</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">SpongecaptainBeanDefinitionParser</span><span class="o">(</span><span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">beanClass</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">beanClass</span> <span class="o">=</span> <span class="n">beanClass</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">BeanDefinition</span> <span class="nf">parse</span><span class="o">(</span><span class="n">Element</span> <span class="n">element</span><span class="o">,</span> <span class="n">ParserContext</span> <span class="n">parserContext</span><span class="o">,</span> <span class="n">Class</span><span class="o">&lt;?&gt;</span> <span class="n">beanClass</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">RootBeanDefinition</span> <span class="n">beanDefinition</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RootBeanDefinition</span><span class="o">();</span>
+        <span class="n">beanDefinition</span><span class="o">.</span><span class="na">setBeanClass</span><span class="o">(</span><span class="n">beanClass</span><span class="o">);</span>
+        <span class="n">beanDefinition</span><span class="o">.</span><span class="na">setLazyInit</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+        <span class="n">String</span> <span class="n">name</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">&#34;name&#34;</span><span class="o">);</span>
+        <span class="n">beanDefinition</span><span class="o">.</span><span class="na">getPropertyValues</span><span class="o">().</span><span class="na">addPropertyValue</span><span class="o">(</span><span class="s">&#34;name&#34;</span><span class="o">,</span> <span class="n">name</span><span class="o">);</span>
+        <span class="n">parserContext</span><span class="o">.</span><span class="na">getRegistry</span><span class="o">().</span><span class="na">registerBeanDefinition</span><span class="o">(</span><span class="n">name</span><span class="o">,</span> <span class="n">beanDefinition</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">beanDefinition</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">BeanDefinition</span> <span class="nf">parse</span><span class="o">(</span><span class="n">Element</span> <span class="n">element</span><span class="o">,</span> <span class="n">ParserContext</span> <span class="n">parserContext</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">parse</span><span class="o">(</span><span class="n">element</span><span class="o">,</span> <span class="n">parserContext</span><span class="o">,</span> <span class="n">beanClass</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>最后，我们定义一个 NamespaceHandler 具体实现类，如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">cool.spongecaptain.springxmlsample.config.MyApplicationConfig</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">cool.spongecaptain.springxmlsample.config.MyServiceBean</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">cool.spongecaptain.springxmlsample.parser.SpongecaptainBeanDefinitionParser</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.beans.factory.xml.NamespaceHandlerSupport</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SpongecaptainNamespaceHandler</span> <span class="kd">extends</span> <span class="n">NamespaceHandlerSupport</span> <span class="o">{</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">//注意，我们这里使用自己的配置类
+</span><span class="c1"></span>        <span class="kd">super</span><span class="o">.</span><span class="na">registerBeanDefinitionParser</span><span class="o">(</span><span class="s">&#34;myapplication&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">SpongecaptainBeanDefinitionParser</span><span class="o">(</span><span class="n">MyApplicationConfig</span><span class="o">.</span><span class="na">class</span><span class="o">));</span>
+        <span class="kd">super</span><span class="o">.</span><span class="na">registerBeanDefinitionParser</span><span class="o">(</span><span class="s">&#34;myservice&#34;</span><span class="o">,</span> <span class="k">new</span> <span class="n">SpongecaptainBeanDefinitionParser</span><span class="o">(</span><span class="n">MyServiceBean</span><span class="o">.</span><span class="na">class</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><hr>
+<p><strong>4.测试运行部分</strong></p>
+<p>首先我们创建 XML 配置文件：resources/springcaptain（命名可以是任意的），声明需要注册的两个 bean，如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+
+<span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">&#34;http://www.springframework.org/schema/beans&#34;</span>
+       <span class="na">xmlns:xsi=</span><span class="s">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+       <span class="na">xmlns:spongecaptain=</span><span class="s">&#34;http://www.spongecaptain.cool/schema/spongecaptain&#34;</span>
+       <span class="na">xsi:schemaLocation=</span><span class="s">&#34;http://www.springframework.org/schema/beans
+</span><span class="s">       https://www.springframework.org/schema/beans/spring-beans.xsd
+</span><span class="s">       http://www.spongecaptain.cool/schema/spongecaptain
+</span><span class="s">       http://www.spongecaptain.cool/schema/spongecaptain/spongecaptain.xsd&#34;</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;spongecaptain:myapplication</span> <span class="na">name=</span><span class="s">&#34;spongecaptain-sample-application&#34;</span> <span class="na">value =</span> <span class="s">&#34;bean 1&#34;</span><span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;spongecaptain:myservice</span> <span class="na">name=</span><span class="s">&#34;spongecaptain-sample-service&#34;</span> <span class="na">value =</span> <span class="s">&#34;bean 2&#34;</span><span class="nt">/&gt;</span>
+
+<span class="nt">&lt;/beans&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>然后，创建一个测试，如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">cool.spongecaptain.springxmlsample.config.MyApplicationConfig</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">cool.spongecaptain.springxmlsample.config.MyServiceBean</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.SpringApplication</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.autoconfigure.SpringBootApplication</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.ConfigurableApplicationContext</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.context.annotation.ImportResource</span><span class="o">;</span>
+
+<span class="nd">@ImportResource</span><span class="o">(</span><span class="n">locations</span> <span class="o">=</span> <span class="o">{</span><span class="s">&#34;classpath:spongecaptain.xml&#34;</span><span class="o">})</span>
+<span class="nd">@SpringBootApplication</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Bootstrap</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">ConfigurableApplicationContext</span> <span class="n">applicationContext</span> <span class="o">=</span> <span class="n">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">Bootstrap</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+        <span class="n">MyServiceBean</span> <span class="n">serviceBean</span> <span class="o">=</span> <span class="n">applicationContext</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">MyServiceBean</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">serviceBean</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+        <span class="n">MyApplicationConfig</span> <span class="n">applicationConfig</span> <span class="o">=</span> <span class="n">applicationContext</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="n">MyApplicationConfig</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">applicationConfig</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>控制台会输出：</p>
+<blockquote>
+<p>spongecaptai n-sample-service
+spongecaptain-sample-application</p>
+</blockquote>
+<p>可见我们的 XML 配置方案已经被 Spring IoC 容器所识别，可以使用了。</p>
+
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/spring/">Spring</a>
+          <a href="/tags/dubbo/">Dubbo</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/life/thevalueofaitocompany/">
+            <span class="next-text nav-default">人工智能的魔力-AI 真的有如此大的价值吗？</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+
+
+      <h3>转载申请</h3>
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/>
+        <img alt=知识共享许可协议 style=border-width:0 src=https://img.draveness.me/creative-commons.png>
+      </a>
+      <br>本作品采用
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/ target="_blank" style="text-decoration:underline;" >
+      知识共享署名 4.0 国际许可协议</a>
+      进行许可，转载时请注明作者姓名以及原文链接，图片在使用时请保留全部内容，可适当缩放并在引用处附上图片所在的文章链接。
+
+      
+    </footer>
+  </article>
+        </div>
+        <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '2020-10-29 22:17:32 \x2b0800 CST',
+        title: 'Spring XML schema 扩展机制',
+        clientID: 'b8e9909664fb69930809',
+        clientSecret: '847d9069c9532ab260721afb9f036cdb8f52aec4',
+        repo: 'Spongecaptain.github.io',
+        owner: 'Spongecaptain',
+        admin: ['Spongecaptain'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a></noscript>
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:wjjiang19@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/spongecaptain" class="iconfont icon-github" title="github"></a>
+  <a href="https://spongecaptain.cool/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Spongecaptain</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.d7b7ada643c9c1a983026e177f141f7363b4640d619caf01d8831a6718cd44ea.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

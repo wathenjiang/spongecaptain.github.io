@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 25 Oct 2020 15:18:00 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 29 Oct 2020 22:17:32 +0800</lastBuildDate>
     
 	<atom:link href="https://spongecaptain.cool/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Spring XML schema 扩展机制</title>
+      <link>https://spongecaptain.cool/post/spring/spring_xml_schema/</link>
+      <pubDate>Thu, 29 Oct 2020 22:17:32 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/spring/spring_xml_schema/</guid>
+      <description>1. 基于 Spring 容器的 Dubbo Dubbo 采用 Spring 的方式进行组件的管理，支持 XML 以及注解式的配置。在使用时，我们仅仅需要通过 beanName 向 IoC 容器索要组件，IoC 容器就能够返回封装</description>
+    </item>
     
     <item>
       <title>人工智能的魔力-AI 真的有如此大的价值吗？</title>

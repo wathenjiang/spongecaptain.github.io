@@ -3,7 +3,56 @@
   
   <url>
     <loc>https://spongecaptain.cool/categories/</loc>
-    <lastmod>2020-10-25T15:18:00+08:00</lastmod>
+    <lastmod>2020-10-29T22:17:32+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/tags/dubbo/</loc>
+    <lastmod>2020-10-29T22:17:32+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/categories/dubbo/</loc>
+    <lastmod>2020-10-29T22:17:32+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/post/</loc>
+    <lastmod>2020-10-29T22:17:32+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/tags/spring/</loc>
+    <lastmod>2020-10-29T22:17:32+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/categories/spring/</loc>
+    <lastmod>2020-10-29T22:17:32+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/post/spring/spring_xml_schema/</loc>
+    <lastmod>2020-10-29T22:17:32+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/tags/</loc>
+    <lastmod>2020-10-29T22:17:32+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -24,20 +73,6 @@
   
   <url>
     <loc>https://spongecaptain.cool/tags/paeper/</loc>
-    <lastmod>2020-10-25T15:18:00+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/post/</loc>
-    <lastmod>2020-10-25T15:18:00+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/tags/</loc>
     <lastmod>2020-10-25T15:18:00+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
