@@ -182,5 +182,23 @@
       <description>About Me _______..______ ______ .__ __. _______ _______ / || _ \ / __ \ | \ | | / _____|| ____| | (----`| |_) | | | | | | \| | | | __ | |__ \ \ | ___/ | | | | | . ` | | | |_ | | __| .----) | | | | `--&#39; | | |\ | | |__| | |</description>
     </item>
     
+    <item>
+      <title></title>
+      <link>https://spongecaptain.cool/books/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://spongecaptain.cool/books/</guid>
+      <description>我阅读的书籍 以下是 2020 的书籍阅读。
+  《Java网络编程(第4版)》：比较基础，主要针对于 OIO 式的 Java Socket 编程；
+  《Maven 实战》：用于理解基于 Meven 的 Java 项目依赖、多模块、打包、测试、部署；
+  《Tomcat与Java Web开发技术详解（第3版）》：孙卫琴老师写得还是浅显易懂，非常适合初学者掌握 Tomcat 容器；
+  《MyBatis 从入门到精通》：主要是掌握 MyBatis 的 API，一个简单的 MyBatis+ Spring Boot 的个人项目地址为：https://github.com/Spongecaptain/mybatisDemo
+  《MySQL 必知必会》：主要学习 MySQL 的脚本，意义不大，直接选择学习菜鸟教程即可；
+  《MySQL 技术内幕》：用于理解 MySQL 执行引擎的内部机制；
+  《高性能mysql第三版》：这本书翻译水平一般，不过内容非常好，也是讲解 MySQL 核心知识；
+  《从 Paxos 到 Zookeeper》：学习这本书之前，最好先看 Google 的 3 篇 paper：mapreduce、GFS、bigtable，这样容易理解 ZooKeeper 推出的目的；
+  《剑指offer_第二版》：为 ByteDance 日常实习准备的算法书，仅仅刷了一遍；</description>
+    </item>
+    
   </channel>
 </rss>
