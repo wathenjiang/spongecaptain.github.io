@@ -188,7 +188,7 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://spongecaptain.cool/books/</guid>
-      <description>Books and Paper I Read 读书原本是一件私事，仅仅分享读了什么书，可能意义不大。但是通过一个人阅读的书籍，确实能够方便快速地了解他拥有的技术栈。除此之外，对于分享好书，我乐此不疲。
+      <description>Books and Papers I Read 读书原本是一件私事，仅仅分享读了什么书，可能意义不大。但是通过一个人阅读的书籍，确实能够方便快速地了解他拥有的技术栈。除此之外，对于分享好书，我乐此不疲。
 这里仅仅分享个人对一本书的看法，但是人与人的口味不尽相同，因此如果你有不同的意见，请见谅。
 Books 以下是 2020 的书籍阅读。
   《Java网络编程(第4版)》：比较基础，主要针对于 OIO 式的 Java Socket 编程；
