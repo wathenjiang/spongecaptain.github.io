@@ -35,7 +35,7 @@
       <pubDate>Sat, 24 Oct 2020 22:11:20 +0800</pubDate>
       
       <guid>https://spongecaptain.cool/post/netty/howtowriteadecoderandencoder/</guid>
-      <description>Netty 如何实现自己的解码器与解码器 建议首先理解 Netty 的 ChannelPipeline 管道执行模型。代码案例来自于：https://github.com/Snailclimb/g</description>
+      <description>Netty 如何实现自己的解码器与解码器 建议首先理解 Netty 的 ChannelPipeline 管道执行模型。 本文的部分代码案例来自于如下开源项目：https://github.com/S</description>
     </item>
     
     <item>
