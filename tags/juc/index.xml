@@ -17,7 +17,7 @@
       <pubDate>Tue, 10 Nov 2020 21:38:28 +0800</pubDate>
       
       <guid>https://spongecaptain.cool/post/java/frameworkofjuc/</guid>
-      <description>1. Java concurrent 包概述 在针对并发编程中，Doug Lea 大师为我们提供了大量实用，高性能的工具类，针对这些代码进行研究会让我们队并发编程的掌握更加透彻也会大</description>
+      <description>事实上，理解 J.U.C 包的难点之一在于理解包的设计结构以及依赖关系，然而却鲜有此类文章，故写此文。不过需要注意，本文限于篇幅，并不会对某一个细节知识</description>
     </item>
     
   </channel>
