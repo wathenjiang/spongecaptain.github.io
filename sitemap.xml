@@ -3,7 +3,42 @@
   
   <url>
     <loc>https://spongecaptain.cool/categories/</loc>
-    <lastmod>2020-10-29T22:17:32+08:00</lastmod>
+    <lastmod>2020-11-10T21:38:28+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/post/java/frameworkofjuc/</loc>
+    <lastmod>2020-11-10T21:38:28+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/tags/juc/</loc>
+    <lastmod>2020-11-10T21:38:28+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/categories/juc/</loc>
+    <lastmod>2020-11-10T21:38:28+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/post/</loc>
+    <lastmod>2020-11-10T21:38:28+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/tags/</loc>
+    <lastmod>2020-11-10T21:38:28+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -17,13 +52,6 @@
   
   <url>
     <loc>https://spongecaptain.cool/categories/dubbo/</loc>
-    <lastmod>2020-10-29T22:17:32+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/post/</loc>
     <lastmod>2020-10-29T22:17:32+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -45,13 +73,6 @@
   
   <url>
     <loc>https://spongecaptain.cool/post/spring/spring_xml_schema/</loc>
-    <lastmod>2020-10-29T22:17:32+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/tags/</loc>
     <lastmod>2020-10-29T22:17:32+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
