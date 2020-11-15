@@ -140,7 +140,7 @@
     <nav id="TableOfContents">
   <ul>
     <li><a href="#1-什么是-rpc-框架">1. 什么是 RPC 框架？</a></li>
-    <li><a href="#2-一个-rpc-框架需要什么">2. 一个 RPC 框架需要什么？</a>
+    <li><a href="#2-rpc-框架的组件设计">2. RPC 框架的组件设计</a>
       <ul>
         <li><a href="#21-代理层">2.1 代理层</a></li>
         <li><a href="#22-序列化层">2.2 序列化层</a></li>
@@ -155,7 +155,7 @@
   </div>
 </div>
     <div class="post-content">
-      <p>个人项目地址：https://github.com/Spongecaptain/RPCFramework，欢迎 star&amp;fork。</p>
+      <p>个人项目地址：<a href="https://github.com/Spongecaptain/RPCFramework">https://github.com/Spongecaptain/RPCFramework</a>，欢迎 star&amp;fork。</p>
 <h2 id="1-什么是-rpc-框架">1. 什么是 RPC 框架？</h2>
 <p>现代后端系统需要向上提供众多 API，为了简化系统、去耦合，提出了分布式应用。然而，分布式应用的各个子系统并不是完全独立的，它们需要进行相互通信。为了实现系统间通信，我们有两种手段：</p>
 <ul>
@@ -171,8 +171,8 @@
 <p>RPC 与 REST 最大的区别就在于 RPC 提供了更好的抽象，RPC 甚至将网络传输细节彻底隐藏了，而 REST 没有。具体来说，REST 至少要求用于提供 URL 以及请求参数，而 RPC 隐藏了与网络传输的相关实现细节。另一方面，RPC 可以基于任何网络通信协议，而 REST 通常基于 HTTP（或者 HTTPS）协议。RPC 调用者并不会关心具体的协议是：HTTP、TCP 还是其他任何自定义协议。</p>
 <p>RPC 内部结构如下图所示：</p>
 <p><img src="../../../images/img_rpc/rpc_framework.png" alt="rpc_framework"></p>
-<h2 id="2-一个-rpc-框架需要什么">2. 一个 RPC 框架需要什么？</h2>
-<p>RPC 框架可以很复杂，例如 <a href="http://dubbo.apache.org/">Apache Dubbo</a>，其提供了非常多的功能，不过 RPC 框架的核心为如下几个：</p>
+<h2 id="2-rpc-框架的组件设计">2. RPC 框架的组件设计</h2>
+<p>RPC 框架可以很复杂，例如 <a href="http://dubbo.apache.org/">Apache Dubbo</a>，其提供了非常多的功能，不过 RPC 框架的核心为如下几个组件：</p>
 <ul>
 <li><strong>代理层</strong>：RPC 接口向上暴露一个普通的方法调用，但是其内部却隐藏了复杂的序列化、协议解析、网络传输等过程。代理层就可以完成这样一件事：隐藏复杂实现细节，对外暴露一个简单的 API；</li>
 <li><strong>序列化层</strong>：RPC 中通过网络来完成消息传递，例如调用具体哪个接口的哪个方法，方法入口参数是什么。我们无法直接传输面向对象世界中的类与对象，因此需要序列化层将它们转换为字节数据来进行传输；</li>
