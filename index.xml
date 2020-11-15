@@ -12,6 +12,15 @@
     
     
     <item>
+      <title>我的 RPC 框架设计</title>
+      <link>https://spongecaptain.cool/post/rpc/myrpcframework/</link>
+      <pubDate>Sun, 15 Nov 2020 15:53:59 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/rpc/myrpcframework/</guid>
+      <description>个人项目地址：https://github.com/Spongecaptain/RPCFramework，欢迎 star&amp;amp;fork。 1.</description>
+    </item>
+    
+    <item>
       <title>Java 并发包的设计框架</title>
       <link>https://spongecaptain.cool/post/java/frameworkofjuc/</link>
       <pubDate>Tue, 10 Nov 2020 21:38:28 +0800</pubDate>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>我的 RPC 框架设计 - Spongecaptain 的个人技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Spongecaptain" /><meta name="description" content="个人项目地址：https://github.com/Spongecaptain/RPCFramework，欢迎 star&amp;amp;fork。 1." /><meta name="keywords" content="项目, RPC" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.67.0 with theme even" />
+
+
+<link rel="canonical" href="https://spongecaptain.cool/post/rpc/myrpcframework/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e6549b501dbc4389b872bd7b2f32a09625027aa099dcfd924adda23a8e9b81bf.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="我的 RPC 框架设计" />
+<meta property="og:description" content="个人项目地址：https://github.com/Spongecaptain/RPCFramework，欢迎 star&amp;fork。 1." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://spongecaptain.cool/post/rpc/myrpcframework/" />
+<meta property="article:published_time" content="2020-11-15T15:53:59+08:00" />
+<meta property="article:modified_time" content="2020-11-15T15:53:59+08:00" />
+<meta itemprop="name" content="我的 RPC 框架设计">
+<meta itemprop="description" content="个人项目地址：https://github.com/Spongecaptain/RPCFramework，欢迎 star&amp;fork。 1.">
+<meta itemprop="datePublished" content="2020-11-15T15:53:59&#43;08:00" />
+<meta itemprop="dateModified" content="2020-11-15T15:53:59&#43;08:00" />
+<meta itemprop="wordCount" content="3194">
+
+
+
+<meta itemprop="keywords" content="个人项目,RPC," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="我的 RPC 框架设计"/>
+<meta name="twitter:description" content="个人项目地址：https://github.com/Spongecaptain/RPCFramework，欢迎 star&amp;fork。 1."/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body class = body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/about/index.html">
+        <li class="mobile-menu-item">About</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a><a href="/books/index.html">
+        <li class="mobile-menu-item">Books</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/index.html">About</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/books/index.html">Books</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">我的 RPC 框架设计</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2020-11-15 </span>
+        <div class="post-category">
+            <a href="/categories/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/"> 个人项目 </a>
+            <a href="/categories/rpc/"> RPC </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-什么是-rpc-框架">1. 什么是 RPC 框架？</a></li>
+    <li><a href="#2-一个-rpc-框架需要什么">2. 一个 RPC 框架需要什么？</a>
+      <ul>
+        <li><a href="#21-代理层">2.1 代理层</a></li>
+        <li><a href="#22-序列化层">2.2 序列化层</a></li>
+        <li><a href="#23-协议层">2.3 协议层</a></li>
+        <li><a href="#24-服务注册层">2.4 服务注册层</a></li>
+        <li><a href="#25-网络传输层">2.5 网络传输层</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-展望">3. 展望</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>个人项目地址：https://github.com/Spongecaptain/RPCFramework，欢迎 star&amp;fork。</p>
+<h2 id="1-什么是-rpc-框架">1. 什么是 RPC 框架？</h2>
+<p>现代后端系统需要向上提供众多 API，为了简化系统、去耦合，提出了分布式应用。然而，分布式应用的各个子系统并不是完全独立的，它们需要进行相互通信。为了实现系统间通信，我们有两种手段：</p>
+<ul>
+<li>RPC</li>
+<li>Message Queue</li>
+</ul>
+<p>当我们讨论 RPC 时，通常会强调其如下几个特性：</p>
+<ul>
+<li><strong>隐藏网络通信过程（或者将其称为良好的封装性）</strong>：RPC 需要将方法调用对应的消息包从一个主机传递到另一个主机，因此涉及到了网络通信过程。然而，RPC 暴露的接口需要完全隐藏网络传输过程，即在调用者看来，RPC 调用与普通方法调用没有区别。</li>
+<li><strong>同步性</strong>：在面向对象语言中，方法调用栈通常时同步入栈出栈的，即直到方法通过 return 返回指向结果，方法才会出栈。虽然没有任何标准要求 RPC 一定要实现同步性，但最常见的 RPC 就是同步调用的；</li>
+</ul>
+<p><strong>RPC 与 REST 的区别？</strong></p>
+<p>RPC 与 REST 最大的区别就在于 RPC 提供了更好的抽象，RPC 甚至将网络传输细节彻底隐藏了，而 REST 没有。具体来说，REST 至少要求用于提供 URL 以及请求参数，而 RPC 隐藏了与网络传输的相关实现细节。另一方面，RPC 可以基于任何网络通信协议，而 REST 通常基于 HTTP（或者 HTTPS）协议。RPC 调用者并不会关心具体的协议是：HTTP、TCP 还是其他任何自定义协议。</p>
+<p>RPC 内部结构如下图所示：</p>
+<p><img src="../../../images/img_rpc/rpc_framework.png" alt="rpc_framework"></p>
+<h2 id="2-一个-rpc-框架需要什么">2. 一个 RPC 框架需要什么？</h2>
+<p>RPC 框架可以很复杂，例如 <a href="http://dubbo.apache.org/">Apache Dubbo</a>，其提供了非常多的功能，不过 RPC 框架的核心为如下几个：</p>
+<ul>
+<li><strong>代理层</strong>：RPC 接口向上暴露一个普通的方法调用，但是其内部却隐藏了复杂的序列化、协议解析、网络传输等过程。代理层就可以完成这样一件事：隐藏复杂实现细节，对外暴露一个简单的 API；</li>
+<li><strong>序列化层</strong>：RPC 中通过网络来完成消息传递，例如调用具体哪个接口的哪个方法，方法入口参数是什么。我们无法直接传输面向对象世界中的类与对象，因此需要序列化层将它们转换为字节数据来进行传输；</li>
+<li><strong>协议层</strong>：协议层的存在是基于 TCP 层开发自定义通信协议的内在要求。由于 TCP 协议不一定按照应用层的数据分包来传递，存在所谓的&quot;TCP 粘包&rdquo;、&ldquo;TCP 拆包&rdquo; 现象，而自定义协议的目的就是为了解决 TCP 的这些问题；总之，协议层主要为 TCP 传输的数据包提供元数据；</li>
+<li><strong>服务注册层</strong>：当分布式应用的主机数达到一定规模后，主机的下线以及上线将非常频繁。服务注册层能够很好地起到集群元数据信息中转站的作用，当客户端通过代理层进行 RPC 调用时，能够通过读取服务注册层的注册信息来得知哪个服务器能够提供此 RPC 调用对应的服务；</li>
+<li><strong>网络传输层</strong>：网络传输层对应于第一节 RPC 内部结构图的 sockets 层，其负责网络数据的传输，其需要负责 TCP 连接的管理、TCP 数据包的编解码等工作；</li>
+</ul>
+<p>下面将按照框架各个层进行展开说明。</p>
+<h3 id="21-代理层">2.1 代理层</h3>
+<p>代理层的实现策略有多种方式，例如 Dubbo 基于 Spring 容器在加载 Bean 时为接口实例织入网络传输 RPC 调用请求包的逻辑。当然，不借助于 Spring 容器，我们也能够实现代理逻辑，例如借助于 CGLIB、Javassist 等代理框架实现动态代理。</p>
+<p>本项目基于 CGLIB 实现动态代理逻辑，代理层完成如下逻辑：</p>
+<ul>
+<li>将接口的方法调用抽象为：接口完全限定名、方法名、方法入口参数类型、方法实际的入口参数，并将这些数据封装为 RpcRequest 实例；</li>
+<li>将 RpcRequest  通过 NettyRpcClient 进行网络传输；</li>
+</ul>
+<h3 id="22-序列化层">2.2 序列化层</h3>
+<p>Java 的序列化框架有非常多的选择，甚至你可以使用自定义的序列化框架。良好的 RPC 框架对序列化框架需要考虑非常多的因素，例如：</p>
+<ul>
+<li>序列化效率；</li>
+<li>序列化协议的向前以及向后兼容性；</li>
+<li>跨语言性：各个语言的方法栈不同，如果分布式集群涉及由不同语言写成的组件，那么跨语言将是非常重要的一个特性；</li>
+</ul>
+<p>出于简单易用的目的，本项目选择 <a href="https://github.com/EsotericSoftware/kryo">Kryo</a>，而没有详细考虑上述因素。</p>
+<p>关于 Kryo 的序列化实现，不妨直接查看本项目 cool.spongecaptain.serialize.kyro 包下的 KryoSerialization 类的具体实现。</p>
+<h3 id="23-协议层">2.3 协议层</h3>
+<p>协议层是必要的，试想这样一个问题：客户端连续发送了两个 RpcRequest 消息，而且在接收端同时接收到了这两个 RpcRequest 实例对应的序列化后的字节数据，那么：接收端如何将该字节数组数据解析为两个 RpcRequest 实例呢？如果没有协议层，接收端将无法完成此任务。当然，对于服务端向客户端回复的响应 RpcReponse 实例也有着完全一样的道理。</p>
+<p>关于协议层起到的作用，我们可以用下图来表示（以 RpcRequest 为例）：</p>
+<p><img src="../../../images/img_rpc/theWorkOfProtocol.png" alt="theWorkOfProtocol" style="zoom:25%;" /></p>
+<p>metaData 是 TCP 数据包的元数据，本项目中设计为由如下字段组成：</p>
+<ul>
+<li>Magic Number：魔数，用于说明此 TCP 数据包为 RPC 请求，用于向消息接收方说明消息类型；</li>
+<li>versionNumber：协议版本号；</li>
+<li>serializaitonID：序列化号，用于支持序列化协议扩展；</li>
+<li>commandID：命令号 ID，用于支持多命令扩展；</li>
+<li>dataLength：数据长度，用于说明 RpcRequest 或者 RequestResponse 序列化后的字节数据长度，以解决所谓 &ldquo;TCP 分包&rdquo;、&ldquo;TCP 粘包&rdquo; 问题；</li>
+</ul>
+<p>协议层基于 Netty 框架实现，其涉及到的类为：cool.spongecaptain.transport.codec 包下的 ByteDecoder 以及 MessageEncoder 类。</p>
+<h3 id="24-服务注册层">2.4 服务注册层</h3>
+<p>Dubbo 中使用 ZooKeeper 服务中心如下图所示：</p>
+<p><img src="../../../images/img_rpc/dubbo_zookeeper.jpg" alt="dubbo_zookeeper"></p>
+<p>我将上述注册中心模型进行简化（我们没有必要如此复杂），如下图所示：</p>
+<p><img src="../../../images/img_rpc/myZookeeper.png" alt="myZookeeper"></p>
+<p>在根节点 <code>/rpc</code> 下的每一个节点都是服务节点：</p>
+<ul>
+<li>节点的 path：一个接口的完全限定名，例如图中的 cool.spongecaptain.Foo 接口；</li>
+<li>节点的 data：能够提供此接口的服务的服务器地址，例如 localhost:2222，如果有多个，那么使用逗号 <code>,</code> 隔开；</li>
+</ul>
+<p>注册中心能够提供的功能有：</p>
+<ul>
+<li>Provider 能够向注册、更新、删除中心注册其能够提供的服务；</li>
+<li>Consumer 能够从注册中心获取其所需的服务，并在服务被增删改时得到提醒；</li>
+</ul>
+<p>本项目服务注册中心的具体实现可以参考：cool.spongecaptain.registry.zk 包下的若干类：CuratorUtil、ZKServiceDiscovery、ZKServiceRegistry。</p>
+<h3 id="25-网络传输层">2.5 网络传输层</h3>
+<p>网络传输层非常关键，因为网络 I/O 的设计最大程度上影响 RPC 调用效率。</p>
+<p>本项目将 Netty 作为网络传输层的底层框架，具体实现类集中于 cool.spongecaptain.transport 包下。理解 Netty 编程的重点之一便是理解其事件管道驱动模型。本项目的 Netty 管道模型如下图所示：</p>
+<p><img src="../../../images/img_rpc/RpcNettyPipeline.png" alt="RpcNettyPipeline"></p>
+<p>注意，无论是 Netty 客户端，还是 Netty 服务端，它们的管道都如上图所示地设计，只不过具体 ChannelHandler 的类型有所区别：</p>
+<p>Netty 客户端：</p>
+<ul>
+<li>in1/out1：IdleStateHandler 用于长时间未通信后的 TCP 关闭；</li>
+<li>in2：ByteDecoder 负责将 ByteBuf 转换为 RPCResponse 实例；</li>
+<li>in3：RpcResponseHandler 负责 RpcResponse 的处理，包括服务端对 request 中指定方法的调用；</li>
+<li>out1：MessageEncoder RPCRequest 转为 ByteBuf 后向前传播；</li>
+</ul>
+<p>Netty 服务端：</p>
+<ul>
+<li>in1/out1：用于长时间未通信后的 TCP 关闭；</li>
+<li>in2：Decoder 负责将 ByteBuf 的字节数据转换为 RpcRequest 实例；</li>
+<li>in3：RPCRequestHandler 负责处理 RpcRequest 对应的 RPC 方法，执行后产生对应的 RPCResponse 实例返回；</li>
+<li>out1：Encoder 负责将 RPCResponse 转换为 ByteBuf，然后再向前传播；</li>
+</ul>
+<p>值得一提的是：Netty 服务端在 I/O 线程中调用 RPC 消息指定的方法，因此其拥有一个默认假设：方法执行并不会导致阻塞或者长耗时。否则，应当使用一个异步线程池专门负责 RPC 对应方法的执行。</p>
+<p>而对于 Netty 客户端也有一点需要注意：由于 Netty 的异步网络 I/O，但 RPC 接口试图向上暴露一个同步调用逻辑，所以其利用 CompletableFuture 来完成将异步网络传输转换为同步调用。</p>
+<h2 id="3-展望">3. 展望</h2>
+<p><strong>1.使用 Spring 容器来完成代理逻辑的封装</strong></p>
+<p>本项目目前使用 CGLIB 代理的方式向 Consumer 提供 RPC 调用服务。如果想要更彻底的抽象（即想把代理逻辑也封装掉），那么可以使用 Spring 容器来完成这件事，具体来说可以参考自己的博文 <a href="https://spongecaptain.cool/post/spring/spring_xml_schema/">Spring XML schema 扩展机制</a> 来完成这一实现。另一方面，Spring 容器在框架组件有非常多可选项时，能够提供非常方便的依赖注入功能。</p>
+<p><strong>2.添加负载均衡层</strong></p>
+<p>通常，一个 RPC 调用对应服务能够由多个服务器提供，因此需要提供负载均衡来负责实现每一个服务器处理相同规模的 RPC 请求处理。</p>
+<p>负载均衡的策略有多种形式：完全随机、权重随机、轮询、最少活跃数优先以及一致性 Hash。</p>
+
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/%E4%B8%AA%E4%BA%BA%E9%A1%B9%E7%9B%AE/">个人项目</a>
+          <a href="/tags/rpc/">RPC</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/java/frameworkofjuc/">
+            <span class="next-text nav-default">Java 并发包的设计框架</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+
+
+      <h3>转载申请</h3>
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/>
+        <img alt=知识共享许可协议 style=border-width:0 src=https://img.draveness.me/creative-commons.png>
+      </a>
+      <br>本作品采用
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/ target="_blank" style="text-decoration:underline;" >
+      知识共享署名 4.0 国际许可协议</a>
+      进行许可，转载时请注明作者姓名以及原文链接，图片在使用时请保留全部内容，可适当缩放并在引用处附上图片所在的文章链接。
+
+      
+    </footer>
+  </article>
+        </div>
+        <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '2020-11-15 15:53:59 \x2b0800 CST',
+        title: '我的 RPC 框架设计',
+        clientID: 'b8e9909664fb69930809',
+        clientSecret: '847d9069c9532ab260721afb9f036cdb8f52aec4',
+        repo: 'Spongecaptain.github.io',
+        owner: 'Spongecaptain',
+        admin: ['Spongecaptain'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a></noscript>
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:wjjiang19@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/spongecaptain" class="iconfont icon-github" title="github"></a>
+  <a href="https://spongecaptain.cool/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2020
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Spongecaptain</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.d7b7ada643c9c1a983026e177f141f7363b4640d619caf01d8831a6718cd44ea.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>
