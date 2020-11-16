@@ -200,20 +200,5 @@
       <description>About Me _______..______ ______ .__ __. _______ _______ / || _ \ / __ \ | \ | | / _____|| ____| | (----`| |_) | | | | | | \| | | | __ | |__ \ \ | ___/ | | | | | . ` | | | |_ | | __| .----) | | | | `--&#39; | | |\ | | |__| | |</description>
     </item>
     
-    <item>
-      <title></title>
-      <link>https://spongecaptain.cool/books/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://spongecaptain.cool/books/</guid>
-      <description>Books and Papers I Read 读书原本是一件私事，仅仅分享字节读了什么书，意义也许并不大。但好在有细心的朋友会发现此处，如果你能在这儿发现有几本你感兴趣的书，那么此文便有存在的价值。
-Books 个人阅读书目：
-Java：
- 《Java 编程思想（中文第四版）》：事实上我看到 15 章左右便没有看完，比较晦涩，但是讲述了很多 Java 语言设计的核心思路； 《Jeff Friesen (auth.) - Java I_O, NIO and NIO.2 (2015, Apress)》：用于学习 Java IO API 是非常好的选择； 《Maven 实战》：用于理解基于 Meven 的 Java 项目依赖、多模块、打包、测试、部署； 《Java 并发编程实战》：主要用于学习 Java 并发编程的相关知识。不过，并发编程可能需要接触到项目底层的并发性模型，才能更好地理解；  网络：
- 《Netty 实战》：这并不是一本好书，因为翻译实在粗制滥造，不过可以参考其目录进行 Netty API 的学习； 《Java网络编程(第4版)》：比较基础，主要针对于 OIO 式的 Java Socket 编程；  Web 开发：
-  《Tomcat与Java Web开发技术详解（第3版）》：孙卫琴老师写得还是浅显易懂，非常适合初学者掌握 Tomcat 容器；
-  《Java™ Servlet 规范-版本 3.1（最终版）》：结合中文版以及英文版一起看，可以轻松地理解什么是 Servlet 规范；</description>
-    </item>
-    
   </channel>
 </rss>
