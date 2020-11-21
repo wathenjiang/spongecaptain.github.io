@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Logger on Spongecaptain 的个人技术博客</title>
+    <link>https://spongecaptain.cool/categories/logger/</link>
+    <description>Recent content in Logger on Spongecaptain 的个人技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 21 Nov 2020 23:27:47 +0800</lastBuildDate>
+    
+	<atom:link href="https://spongecaptain.cool/categories/logger/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>日志开源项目 FLogger 的设计思路解析</title>
+      <link>https://spongecaptain.cool/post/opensource/designofflogger/</link>
+      <pubDate>Sat, 21 Nov 2020 23:27:47 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/opensource/designofflogger/</guid>
+      <description>项目地址：https://github.com/cyfonly/FLogger 为什么要学习一个开源日志框架 FLogger？ 首先，日志非常重要</description>
+    </item>
+    
+  </channel>
+</rss>
