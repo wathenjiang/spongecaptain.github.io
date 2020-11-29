@@ -49,7 +49,7 @@
 <meta itemprop="description" content="项目地址：https://github.com/cyfonly/FLogger 为什么要学习一个开源日志框架 FLogger？ 首先，日志非常重要">
 <meta itemprop="datePublished" content="2020-11-21T23:27:47&#43;08:00" />
 <meta itemprop="dateModified" content="2020-11-21T23:27:47&#43;08:00" />
-<meta itemprop="wordCount" content="3660">
+<meta itemprop="wordCount" content="3680">
 
 
 
@@ -304,6 +304,9 @@
 <li>系统关闭</li>
 <li>使用 Kill pid 命令干掉进程（kill -9 不会触发）</li>
 </ol>
+<blockquote>
+<p>关于 shutdownHook 机制可以参考个人 <a href="https://github.com/Spongecaptain/JavaShutdownHookTest">https://github.com/Spongecaptain/JavaShutdownHookTest</a> 项目进一步了解。</p>
+</blockquote>
 <p>Runtime#shutdownHook 方法的具体执行逻辑好比：在 JVM 退出前，先保留堆内的相关实例，然后运行已经通过 Runtime#shutdownHook 方法注册的 Thread 的 run 方法。</p>
 <p>FLogger 项目中的 shutdownHook 方法接收的 Thread 实例的 run 方法运行逻辑就是将缓冲队列中的所有消息强制刷新到磁盘中的日志文件上，如下：</p>
 <div class="highlight"><div class="chroma">
