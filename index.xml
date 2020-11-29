@@ -12,6 +12,15 @@
     
     
     <item>
+      <title>时间轮算法</title>
+      <link>https://spongecaptain.cool/post/widget/timingwheel/</link>
+      <pubDate>Sun, 29 Nov 2020 15:48:57 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/widget/timingwheel/</guid>
+      <description>时间轮算法 1. 基于队列的定时任务执行模型缺陷 在计算机世界中，只有待解决的问题变得大规模后，算法的价值才能够最大化的体现。时间轮算法可以将插入和</description>
+    </item>
+    
+    <item>
       <title>日志开源项目 FLogger 的设计思路解析</title>
       <link>https://spongecaptain.cool/post/opensource/designofflogger/</link>
       <pubDate>Sat, 21 Nov 2020 23:27:47 +0800</pubDate>
