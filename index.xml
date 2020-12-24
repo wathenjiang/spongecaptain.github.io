@@ -12,6 +12,15 @@
     
     
     <item>
+      <title>Kafka 的总体框架</title>
+      <link>https://spongecaptain.cool/post/kafka/frameworkofkafka/</link>
+      <pubDate>Thu, 24 Dec 2020 23:14:29 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/kafka/frameworkofkafka/</guid>
+      <description>Kafka 总体框架如上图所示，但是为了更好地理解，我们可以把 Kafka 中的各个组件按照逻辑以及物理进行划分，如下： 逻辑上的概念： Producer：消息生产者</description>
+    </item>
+    
+    <item>
       <title>时间轮算法</title>
       <link>https://spongecaptain.cool/post/widget/timingwheel/</link>
       <pubDate>Sun, 29 Nov 2020 15:48:57 +0800</pubDate>

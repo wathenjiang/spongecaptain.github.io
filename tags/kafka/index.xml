@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kafka on Spongecaptain 的个人技术博客</title>
+    <link>https://spongecaptain.cool/tags/kafka/</link>
+    <description>Recent content in kafka on Spongecaptain 的个人技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 24 Dec 2020 23:14:29 +0800</lastBuildDate>
+    
+	<atom:link href="https://spongecaptain.cool/tags/kafka/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Kafka 的总体框架</title>
+      <link>https://spongecaptain.cool/post/kafka/frameworkofkafka/</link>
+      <pubDate>Thu, 24 Dec 2020 23:14:29 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/kafka/frameworkofkafka/</guid>
+      <description>Kafka 总体框架如上图所示，但是为了更好地理解，我们可以把 Kafka 中的各个组件按照逻辑以及物理进行划分，如下： 逻辑上的概念： Producer：消息生产者</description>
+    </item>
+    
+  </channel>
+</rss>

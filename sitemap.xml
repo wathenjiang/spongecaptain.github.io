@@ -3,21 +3,42 @@
   
   <url>
     <loc>https://spongecaptain.cool/categories/</loc>
-    <lastmod>2020-11-29T15:48:57+08:00</lastmod>
+    <lastmod>2020-12-24T23:14:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/tags/kafka/</loc>
+    <lastmod>2020-12-24T23:14:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/categories/kafka/</loc>
+    <lastmod>2020-12-24T23:14:29+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/post/kafka/frameworkofkafka/</loc>
+    <lastmod>2020-12-24T23:14:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://spongecaptain.cool/post/</loc>
-    <lastmod>2020-11-29T15:48:57+08:00</lastmod>
+    <lastmod>2020-12-24T23:14:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
   
   <url>
     <loc>https://spongecaptain.cool/tags/</loc>
-    <lastmod>2020-11-29T15:48:57+08:00</lastmod>
+    <lastmod>2020-12-24T23:14:29+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
