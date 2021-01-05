@@ -49,7 +49,7 @@
 <meta itemprop="description" content="MapReduce 论文学习 不少人说，最近 20 年互联网技术的发展就是其他公司学习谷歌的过程，MapReduce: Simpliﬁed Data Processing on Large Clusters 论文是 Google 开源后影响深">
 <meta itemprop="datePublished" content="2020-07-27T22:45:21&#43;08:00" />
 <meta itemprop="dateModified" content="2020-07-27T22:45:21&#43;08:00" />
-<meta itemprop="wordCount" content="4902">
+<meta itemprop="wordCount" content="5029">
 
 
 
@@ -174,7 +174,36 @@
 <p>如果每一台 server 仅仅读取本地磁盘的数据进行计算，那么就不会受限于网络带宽的限制。</p>
 </blockquote>
 <p>另一方面 Map 和 Reduce 概念首次提出并不是在 Google 的这篇论文上，而是在 Lisp 语言中提出。Lisp 是一门古老而有先进的语言，起源于 1958 年，显得古老。但是其推崇函数式编程，到现在看起来，理念还是非常先进。Map 和 Reduce 实际上也是推荐使用函数式编程的方式进行处理，因为通常我们会面临不同结构、内容的初始数据集，但是具体处理的方法逻辑是相同的，函数式风格（functional style）就能很好地将相同的方法逻辑抽象出来。因此 Map、Reduce 只需要专注于单个处理元素，比如一份 html 文档、一个日志文件，而非 TB 级别的数据。</p>
-<h2 id="2-mapreduce-用户编程范式">2. MapReduce 用户编程范式</h2>
+<p>事实上，Java 在 JDK8 中也提出 Map/Reduce 流式（函数式）编程模型，因为 Map/Reduce 本身就源于函数式编程模型，下面是两个例子。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//java.util.stream.Stream#map 将 String 元素映射为其长度
+</span><span class="c1"></span><span class="n">Object</span><span class="o">[]</span> <span class="n">lens</span> <span class="o">=</span>  <span class="n">Stream</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">&#34;hello&#34;</span><span class="o">,</span><span class="s">&#34;world&#34;</span><span class="o">,</span><span class="s">&#34;spongecaptain&#34;</span><span class="o">).</span><span class="na">map</span><span class="o">(</span><span class="n">String</span><span class="o">::</span><span class="n">length</span><span class="o">).</span><span class="na">toArray</span><span class="o">();</span>
+<span class="k">for</span> <span class="o">(</span><span class="n">Object</span> <span class="n">len</span> <span class="o">:</span> <span class="n">lens</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">len</span> <span class="o">+</span> <span class="s">&#34; &#34;</span><span class="o">);</span>
+<span class="o">}</span>
+<span class="c1">//仅仅为了换行
+</span><span class="c1"></span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+
+<span class="c1">//java.util.stream.Stream#reduce 计算流中所有元素的和
+</span><span class="c1"></span><span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="n">Stream</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">1</span><span class="o">,</span> <span class="n">2</span><span class="o">,</span> <span class="n">3</span><span class="o">,</span> <span class="n">4</span><span class="o">,</span> <span class="n">5</span><span class="o">,</span> <span class="n">6</span><span class="o">,</span> <span class="n">7</span><span class="o">,</span> <span class="n">8</span><span class="o">,</span> <span class="n">9</span><span class="o">).</span><span class="na">reduce</span><span class="o">(</span><span class="n">0</span><span class="o">,</span> <span class="o">(</span><span class="n">acc</span><span class="o">,</span> <span class="n">n</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">acc</span> <span class="o">+</span> <span class="n">n</span><span class="o">);</span>
+<span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">sum</span><span class="o">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="2-mapreduce-用户编程范式">2. MapReduce 用户编程范式</h2>
 <blockquote>
 <p>用户编程范式指的是非架构程序员，即业务程序员该如何来编写 MapReduce 代码，这部分代码被称为 User Program。</p>
 </blockquote>
