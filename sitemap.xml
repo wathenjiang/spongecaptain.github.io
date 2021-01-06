@@ -3,7 +3,56 @@
   
   <url>
     <loc>https://spongecaptain.cool/categories/</loc>
-    <lastmod>2020-12-30T22:03:10+08:00</lastmod>
+    <lastmod>2021-01-06T15:49:22+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/post/</loc>
+    <lastmod>2021-01-06T15:49:22+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/tags/rpc/</loc>
+    <lastmod>2021-01-06T15:49:22+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/categories/rpc/</loc>
+    <lastmod>2021-01-06T15:49:22+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/tags/</loc>
+    <lastmod>2021-01-06T15:49:22+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/post/rpc/addloadbalanceintorpc/</loc>
+    <lastmod>2021-01-06T15:49:22+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</loc>
+    <lastmod>2021-01-06T15:49:22+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/categories/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</loc>
+    <lastmod>2021-01-06T15:49:22+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -24,20 +73,6 @@
   
   <url>
     <loc>https://spongecaptain.cool/post/kafka/why-kafka-is-high-performance/</loc>
-    <lastmod>2020-12-30T22:03:10+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/post/</loc>
-    <lastmod>2020-12-30T22:03:10+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/tags/</loc>
     <lastmod>2020-12-30T22:03:10+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -102,20 +137,6 @@
   <url>
     <loc>https://spongecaptain.cool/post/opensource/designofflogger/</loc>
     <lastmod>2020-11-21T23:27:47+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/tags/rpc/</loc>
-    <lastmod>2020-11-15T15:53:59+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/categories/rpc/</loc>
-    <lastmod>2020-11-15T15:53:59+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>

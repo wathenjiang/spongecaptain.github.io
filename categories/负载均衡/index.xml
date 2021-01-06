@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>RPC on Spongecaptain 的个人技术博客</title>
-    <link>https://spongecaptain.cool/categories/rpc/</link>
-    <description>Recent content in RPC on Spongecaptain 的个人技术博客</description>
+    <title>负载均衡 on Spongecaptain 的个人技术博客</title>
+    <link>https://spongecaptain.cool/categories/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</link>
+    <description>Recent content in 负载均衡 on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Wed, 06 Jan 2021 15:49:22 +0800</lastBuildDate>
     
-	<atom:link href="https://spongecaptain.cool/categories/rpc/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://spongecaptain.cool/categories/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -18,15 +18,6 @@
       
       <guid>https://spongecaptain.cool/post/rpc/addloadbalanceintorpc/</guid>
       <description>1. 负载均衡是在说一件什么事情？ 下图引用自知乎：什么是负载均衡？，很好地说明了负载均衡是一件什么事情： 取自 WiKi： 负载平衡（Load bala</description>
-    </item>
-    
-    <item>
-      <title>我的 RPC 框架设计</title>
-      <link>https://spongecaptain.cool/post/rpc/myrpcframework/</link>
-      <pubDate>Sun, 15 Nov 2020 15:53:59 +0800</pubDate>
-      
-      <guid>https://spongecaptain.cool/post/rpc/myrpcframework/</guid>
-      <description>个人项目地址：https://github.com/Spongecaptain/RPCFramework，欢迎 star&amp;amp;fork。 1.</description>
     </item>
     
   </channel>
