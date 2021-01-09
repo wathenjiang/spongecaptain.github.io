@@ -49,7 +49,7 @@
 <meta itemprop="description" content="Kafka 总体框架如上图所示，但是为了更好地理解，我们可以把 Kafka 中的各个组件按照逻辑以及物理进行划分，如下： 逻辑上的概念： Producer：消息生产者">
 <meta itemprop="datePublished" content="2020-12-24T23:14:29&#43;08:00" />
 <meta itemprop="dateModified" content="2020-12-24T23:14:29&#43;08:00" />
-<meta itemprop="wordCount" content="1413">
+<meta itemprop="wordCount" content="1455">
 
 
 
@@ -150,8 +150,8 @@
 <li>物理上的概念：
 <ul>
 <li><strong>Broker</strong>：一台 Kafka 物理服务器就是一个 broker。一个集群由多个 broker 组成。一个 broker 可以容纳多个 topic。</li>
-<li><strong>Partition</strong>：为了实现 Topic 的负载均衡，逻辑上的一个 Topic 可以分为物理上多个 partitions，不同的 partition 分别存储于不同的 broker 上。</li>
-<li><strong>Replica</strong>：Kafka 中 Partition 是复制冗余的基本单位，但 Kafka 中的复制机制仅仅用于分布式系统中的分区容错（这里的分区与上述 Partition 语义不同），而不用于负载均衡，replicas 中只有 leader 支持与客户端（包括 Consumer 以及 Producer）的读写操作。</li>
+<li><strong>Partition</strong>：为了实现 Topic 的负载均衡，逻辑上的一个 Topic 可以分为物理上多个 partitions，不同的 partition 可以存储于不同的 broker 上，也可以存储于相同的 broker 上。</li>
+<li><strong>Replica</strong>：Kafka 中 Partition 是复制冗余的基本单位，但 Kafka 中的复制机制仅仅用于分布式系统中的分区容错（这里的分区与上述 Partition 语义不同），而不用于负载均衡，replicas 中只有 leader 支持与客户端（包括 Consumer 以及 Producer）的读写操作。为了支持分布式容错，replica 应当分布于不同的 broker 节点上。</li>
 </ul>
 </li>
 </ul>
