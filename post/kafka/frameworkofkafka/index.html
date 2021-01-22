@@ -49,7 +49,7 @@
 <meta itemprop="description" content="Kafka 总体框架如上图所示，但是为了更好地理解，我们可以把 Kafka 中的各个组件按照逻辑以及物理进行划分，如下： 逻辑上的概念： Producer：消息生产者">
 <meta itemprop="datePublished" content="2020-12-24T23:14:29&#43;08:00" />
 <meta itemprop="dateModified" content="2020-12-24T23:14:29&#43;08:00" />
-<meta itemprop="wordCount" content="1455">
+<meta itemprop="wordCount" content="1854">
 
 
 
@@ -166,7 +166,16 @@
 <p>如果我们能抓住集群并发读性能的决定要素，那么就能理解 Kafka 如此设计的原因了。</p>
 <p>首先，Kakfa 分布式集群的设计比 ZooKeeper 等分布式集群更复杂。ZooKeeper 的 Master 物理服务器上存储了集群中最完整的所有数据，但是 Kafka 的任意一台物理服务器通常仅仅存储了集群的部分数据。</p>
 <p>其次，<strong>无论你如何设计，分布式集群的读性能最大值取决于物理机的个数</strong>，而不是 replica 的个数。Kakfa 认为，即使并发读同一个 topic 上的消息，也会因为消息分布于不同的 partition 上，不同的 partition 又分布于不同的 broker 上（物理服务器）上，并发读也能均匀地打在不同的物理机上。虽然确实可以将 replicas 设置为支持并发读（即 follower partition 也支持读操作），但是又要加一层负载均衡，大大增加了系统的复杂性，但是好处是什么呢？并发对同一个消息的读吗？是的，事实上，并没有可以利用此优化的场景，因此 Kafka 并没有这么做。</p>
-<p>总之，Kafka 的设计目标是：为同一个 topic 的所有消息们进行负载均衡，负载均衡的物理实现是一个 topic 分为物理机上的多个 partition。replicas 仅仅用于分区容错，而不用于负载均衡（或者说增加并发读写能力）。</p>
+<p>总之，Kafka 的设计目标是：为同一个 topic 的所有消息们进行负载均衡，负载均衡的物理实现是一个 topic 分为物理机上的多个 partition。replicas 仅仅用于分区容错，而不用于负载均衡（或者说增加并发读写能力）。不过，Kafka 这种设计并不是没有代价的，这给负载均衡引入了额外的复杂性：</p>
+<ul>
+<li>一个 partition 的所有副本需要尽量均匀地分布在所有 broker 上。</li>
+<li>所有 partition 副本中的 Leader 副本需要尽量均匀地分布在所有 broker 上。</li>
+<li>&hellip;</li>
+</ul>
+<p>主写从读架构在负载均衡设计上就简单很多，只要求消费者负载均匀地向从节点拉取消息即可。不过，其也逃不过 trade-off（也需要付出相应代价），主写从读架构的缺陷主要是从节点间的一致性视图问题：由于不同从节点并不能确保在同一个时刻向拉取消息，因此可能会出现这样的问题：消费者 A 向从节点 1 上读，能够得到消息 x，但是消费者 B 向从节点 2 上并不能够得到消息 x（此时从节点 2 还没有来得及向主节点拉取消息 x），这可能会给客户端带来困惑。如果只有 Leader 节点对消费者提供读写功能，那么就没有此问题。</p>
+<blockquote>
+<p>虽然 Kafka 没有这个从节点间一致性视图问题，但是其他许多分布式框架都对一定程度的非一致性（最终一致性）给予一定容忍，选择了主写从读，例如 ZooKeeper。</p>
+</blockquote>
 
     </div>
 
