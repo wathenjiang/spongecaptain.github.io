@@ -6,6 +6,7 @@
     <description>Recent content in skip list on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
+    <copyright>Spongecaptain</copyright>
     <lastBuildDate>Tue, 04 Aug 2020 16:11:01 +0800</lastBuildDate>
     
 	<atom:link href="https://spongecaptain.cool/tags/skip-list/index.xml" rel="self" type="application/rss+xml" />

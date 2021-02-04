@@ -6,6 +6,7 @@
     <description>Recent content in RPC on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
+    <copyright>Spongecaptain</copyright>
     <lastBuildDate>Wed, 06 Jan 2021 15:49:22 +0800</lastBuildDate>
     
 	<atom:link href="https://spongecaptain.cool/tags/rpc/index.xml" rel="self" type="application/rss+xml" />
