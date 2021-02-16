@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>MySQL 的零拷贝技术 - Spongecaptain 的个人技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Spongecaptain" /><meta name="description" content="1. Buffer 与 cache 的区别？ Bbuffer 与 Cache 非常类似，因为它们都用于存储数据数据，被应用层读取字节数据。在很多场合它们有着相同的概念，但是特定场合也有一定的区别[" /><meta name="keywords" content="MySQL, 零拷贝技术" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.67.0 with theme even" />
+
+
+<link rel="canonical" href="https://spongecaptain.cool/post/mysql/zerocopyofmysql/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.e6549b501dbc4389b872bd7b2f32a09625027aa099dcfd924adda23a8e9b81bf.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="MySQL 的零拷贝技术" />
+<meta property="og:description" content="1. Buffer 与 cache 的区别？ Bbuffer 与 Cache 非常类似，因为它们都用于存储数据数据，被应用层读取字节数据。在很多场合它们有着相同的概念，但是特定场合也有一定的区别[" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://spongecaptain.cool/post/mysql/zerocopyofmysql/" />
+<meta property="article:published_time" content="2021-02-16T11:08:38+08:00" />
+<meta property="article:modified_time" content="2021-02-16T11:08:38+08:00" />
+<meta itemprop="name" content="MySQL 的零拷贝技术">
+<meta itemprop="description" content="1. Buffer 与 cache 的区别？ Bbuffer 与 Cache 非常类似，因为它们都用于存储数据数据，被应用层读取字节数据。在很多场合它们有着相同的概念，但是特定场合也有一定的区别[">
+<meta itemprop="datePublished" content="2021-02-16T11:08:38&#43;08:00" />
+<meta itemprop="dateModified" content="2021-02-16T11:08:38&#43;08:00" />
+<meta itemprop="wordCount" content="2347">
+
+
+
+<meta itemprop="keywords" content="MySQL,零拷贝技术," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MySQL 的零拷贝技术"/>
+<meta name="twitter:description" content="1. Buffer 与 cache 的区别？ Bbuffer 与 Cache 非常类似，因为它们都用于存储数据数据，被应用层读取字节数据。在很多场合它们有着相同的概念，但是特定场合也有一定的区别["/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body class = body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/about/index.html">
+        <li class="mobile-menu-item">关于</li>
+      </a><a href="https://spongecaptain.cool/SimpleClearFileIO/">
+        <li class="mobile-menu-item">文件I/O简明概述</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/index.html">关于</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="https://spongecaptain.cool/SimpleClearFileIO/">文件I/O简明概述</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">MySQL 的零拷贝技术</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2021-02-16 </span>
+        <div class="post-category">
+            <a href="/categories/mysql/"> MySQL </a>
+            <a href="/categories/%E9%9B%B6%E6%8B%B7%E8%B4%9D%E6%8A%80%E6%9C%AF/"> 零拷贝技术 </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-buffer-与-cache-的区别">1. Buffer 与 cache 的区别？</a></li>
+    <li><a href="#2-mysql-缓冲区设计">2. MySQL 缓冲区设计</a></li>
+    <li><a href="#3-write-throughback-与-direct-io">3. Write Through/Back 与 Direct I/O</a></li>
+    <li><a href="#4-mysql-日志的刷新策略">4. MySQL 日志的刷新策略</a></li>
+    <li><a href="#5-mysql-的典型配置">5. MySQL 的典型配置</a></li>
+    <li><a href="#reference">REFERENCE</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h2 id="1-buffer-与-cache-的区别">1. Buffer 与 cache 的区别？</h2>
+<p>Bbuffer 与 Cache 非常类似，因为它们都用于存储数据数据，被应用层读取字节数据。在很多场合它们有着相同的概念，但是特定场合也有一定的区别[1]。</p>
+<p>Buffer 与 Cache 的用途有所不一定：</p>
+<ol>
+<li>Buffer 的主要目的是在不同应用、线程、进程之间共享字节数据，例如为了让不同速度的设备能够进行数据同步，就会使用共享 Buffer；</li>
+<li>Cache 的主要目的是提高字节数据的读取/写入速度，例如根据时间局部性、地址局部性操作系统提供 page cache 机制；</li>
+</ol>
+<p>当然，在很多场合下 Buffer 与 Cache 有着相同的语义，因此我们可以认为缓冲区既用于提高读写速度，又用于数据共享与同步。</p>
+<h2 id="2-mysql-缓冲区设计">2. MySQL 缓冲区设计</h2>
+<p>MySQL 的缓冲区设计如下图所示：</p>
+<p><img src="../../../images/img_mysql/MysqlFileIO-3445289.png" alt="MysqlFileIO" style="zoom:25%;" /></p>
+<blockquote>
+<p>Figure1.MySQL 的缓冲区设计</p>
+</blockquote>
+<p>如上图所示，MySQL 在不同层次使用了与缓存机制不同的配套技术。其中有：</p>
+<ul>
+<li>应用层：
+<ul>
+<li>Redo Log Buffer：对写操作进行缓存，用于实现 MySQL InnoDB 的事务性；</li>
+<li>InnoDB Buffer Pool：用于对 MySQL table 的数据进行缓存。读内存而不是磁盘，通过减少磁盘读操的方式提高读操作性能；写内存而不是磁盘，通过减少磁盘写操的方式提高写操作性能；</li>
+</ul>
+</li>
+<li>操作系统的 VFS（Virtual file system，虚拟文件系统）层：
+<ul>
+<li>Page Cache：操作系统通过缓存以及预读机制对文件系统中的 block 基于 page 进行缓存管理；</li>
+<li>Direct Buffer：当使用 Direct I/O 提供的相关 API 时，操作系统不再提供基于 Page Cache 机制的缓存，而是直接使用 Direct Buffer；</li>
+</ul>
+</li>
+<li>磁盘的 Disk Buffer：磁盘也可以提供磁盘缓存，通常在 MySQL 中会关闭磁盘缓存，我们仅仅需要了解有 Disk Buffer 这一概念即可。</li>
+</ul>
+<h2 id="3-write-throughback-与-direct-io">3. Write Through/Back 与 Direct I/O</h2>
+<p>Write Through 与 Write Back 指的是在使用内存空间作为缓存的应用在处理写操作时是否直接落盘：</p>
+<ul>
+<li>Write Through：写操作&quot;穿过&quot;缓存区直接落盘，这种策略能够确保数据不会因为宕机而丢失内存缓冲区的数据；</li>
+<li>Write Back：一次写操作仅仅更新了内存缓存区中的数据，数据落盘通常通过间隔一个时间进行落盘一次；</li>
+</ul>
+<p>MySQL 为此提供了一些参数来控制 Page Cache 数据落盘的具体行为，例如：</p>
+<p><strong>（1）innodb_flush_log_at_trx_commit</strong></p>
+<p>innodb_flush_log_at_trx_commit 参数用于控制基于 Page Cache 的 Redo Log Buffer 的数据落盘机制[2]。此参数用于控制以下两个特性之间的平衡：</p>
+<ol>
+<li>严格的事务管理机制；</li>
+<li>事务提交 commit 操作执行时的高性能；</li>
+</ol>
+<p>innodb_flush_log_at_trx_commit 有三个可选配置值：</p>
+<ul>
+<li>
+<p>1（默认值）：每次事务提交时都日志必须刷新到磁盘上，提供了最可靠的事务性保证；</p>
+</li>
+<li>
+<p>0：日志每间隔 1 秒刷新到磁盘上，这意味着在缓存中还没有来得及刷新到磁盘上的数据在宕机时会丢失；</p>
+</li>
+<li>
+<p>2：日志在事务提交后以及每间隔 1 秒刷新到磁盘上，这意味着在缓存中还没有来得及刷新到磁盘上的数据在宕机时会丢失；</p>
+</li>
+</ul>
+<p>注意事项：配置 0 与 2 并不能保证 100% 每间隔一秒刷新到磁盘一次，这是因为 DDL 的修改以及 InnoDB 活动可能会导致日志刷新更频繁。另一方面，由于事务调度问题，刷新频率甚至会降低。</p>
+<blockquote>
+<p>刷新频率默认为 1 s，由参数 <a href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_flush_log_at_timeout"><code>innodb_flush_log_at_timeout</code></a> 进行配置。</p>
+</blockquote>
+<p><strong>（2）innodb_flush_method</strong></p>
+<p>innodb_flush_method 参数同时控制 redo log buffer 和 innodb buffer pool 缓冲区刷新策略，其中：</p>
+<ul>
+<li>log files：redo log buffer 是 log files 在内存中的缓存区， log files 是磁盘上的 Redo Log 文件；</li>
+<li>data files：innodb buffer pool 是 data files 在内存中的缓存区，data files 是磁盘上的数据文件（B+tree）；</li>
+</ul>
+<p>innodb_flush_method 参数目前有 6 种可选配置值[3]：</p>
+<ol>
+<li>fdatasync；</li>
+<li>O_DSYNC</li>
+<li>O_DIRECT</li>
+<li>O_DIRECT_NO_FSYNC</li>
+<li>littlesync</li>
+<li>nosync</li>
+</ol>
+<blockquote>
+<p>这里只讨论 Unix-like 操作系统，而不讨论 Windows 系统。</p>
+</blockquote>
+<p>其中，littlesync 与 nosync 仅仅用于内部性能测试，并不建议使用。</p>
+<ul>
+<li>
+<p>fdatasync，即取值 0，这是默认配置值。对 log files 以及 data files 都采用 fsync 的方式进行同步；</p>
+</li>
+<li>
+<p>O_DSYNC，即取值 1。对 log files 使用 O_SYNC 打开与刷新日志文件，使用 fsync 来刷新 data files 中的数据；</p>
+</li>
+<li>
+<p>O_DIRECT，即取值 4。利用 Direct I/O 的方式打开 data file，并且每次写操作都通过执行 fsync 系统调用的方式落盘；</p>
+</li>
+<li>
+<p>O_DIRECT_NO_FSYNC，即取值 5。利用 Direct I/O 的方式打开 data files，但是每次写操作并不会调用 fsync 系统调用进行落盘；</p>
+</li>
+</ul>
+<blockquote>
+<p>补充说明：以 O_SYNC 方式打开文件意味着文件的每一次写操作都直接导致将数据本身以及元数据刷新到磁盘上。</p>
+</blockquote>
+<p><strong>为什么有 O_DIRECT 与 O_DIRECT_NO_FSYNC 配置的区别？</strong></p>
+<p>虽然在 Direct I/O 模式下都会导致每次写操作对应的数据直接落盘，但是文件元数据是否直接落盘依赖于是否在每次写操作执行 flush 系统调用。如果可以接受在宕机时发生数据不丢失但元数据丢失的情况，为了提高性能可以使用 O_DIRECT_NO_FSYNC 配置，否则请使用 O_DIRECT 配置。</p>
+<h2 id="4-mysql-日志的刷新策略">4. MySQL 日志的刷新策略</h2>
+<p>MySQL 日志刷新策略通过 sync_binlog 参数进行配置，其有 3 个可选配置：</p>
+<ol>
+<li>sync_binlog=0：MySQL 应用将完全不负责日志同步到磁盘，将缓存中的日志数据刷新到磁盘全权交给操作系统来完成；</li>
+<li>sync_binlog=1：MySQL 应用在事务提交前将缓存区的日志刷新到磁盘；</li>
+<li>sync_binlog=N：当 N 不为 0 与 1 时，MySQL 在收集到 N 个日志提交后，才会将缓存区的日志同步到磁盘。</li>
+</ol>
+<p>事实上，这个参数也用于控制日志是通过 Write Through 还是 Write Back 策略刷新到磁盘上。</p>
+<p><strong>注意事项</strong>：使用 Page Cache 机制的数据刷盘机制，即使基于同步策略，即每次写操作都要求数据直接落盘，但在数据落盘之前，数据总是先要写于 Page Cache 中，再将 Page Cache 中的具体 Page 刷新到磁盘上。</p>
+<h2 id="5-mysql-的典型配置">5. MySQL 的典型配置</h2>
+<ul>
+<li>innodb_flush_log_at_trx_commit 参数配置为 1：Redo Log 走 Page Cache，并且每次写操作的日志在事务提交前都通过 fsync 刷新到磁盘；</li>
+<li>innodb_flush_method 参数配置为 O_DIRECT：InnoDB Buffer Pool 走 Direct I/O，并且每次写操作导致的文件元数据都通过 fsync 系统调用刷新到磁盘；</li>
+</ul>
+<p>写一条 redo log 涉及到的步骤有：</p>
+<ul>
+<li>日志写入 Redo Log buffer；</li>
+<li>日志写入 Page Cache；</li>
+<li>通过系统调用 fsync 将 Page Cache 中的脏页刷新到磁盘；</li>
+<li>日志提交；</li>
+</ul>
+<p>修改表的一行记录涉及到的步骤有：</p>
+<ol>
+<li>
+<p>更新后的数据写于 InnoDB Buffer Pool；</p>
+</li>
+<li>
+<p>定时进行如下逻辑（异步进行）：</p>
+<ol>
+<li>InnoDB Buffer Pool 脏数据进行刷新，通过文件的 write 方法进行；</li>
+<li>文件的 write 方法直接导致数据写于磁盘上；</li>
+<li>定时进行文件的 fysnc 调用，确保文件元数据写于磁盘上；</li>
+</ol>
+</li>
+</ol>
+<h2 id="reference">REFERENCE</h2>
+<ul>
+<li>[1]<a href="http://www.penglixun.com/tech/system/buffer_and_cache_diff.html">Buffer与Cache</a></li>
+<li>[2]<a href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html">MySQL :: MySQL 8.0 Reference Manual :: 15.14 InnoDB Startup Options and System Variables</a></li>
+<li>[3]<a href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_flush_method">MySQL 8.0 innodb_flush_method</a></li>
+<li>[4]<a href="https://dev.mysql.com/doc/refman/8.0/en/replication-options-binary-log.html#sysvar_sync_binlog">MySQL :: MySQL 8.0 Reference Manual :: 17.1.6.4 Binary Logging Options and Variables</a></li>
+</ul>
+
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/mysql/">MySQL</a>
+          <a href="/tags/%E9%9B%B6%E6%8B%B7%E8%B4%9D%E6%8A%80%E6%9C%AF/">零拷贝技术</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/distributedsystem/walandfsync/">
+            <span class="next-text nav-default">分布式组件的 WAL 与 fsync</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+
+
+      <h3>转载申请</h3>
+      <a rel=license href=https://creativecommons.org/licenses/by/4.0>
+        <img alt=知识共享许可协议 style=border-width:0 src=../../static/creative-commons.png>
+      </a>
+      <br>本作品采用
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/ target="_blank" style="text-decoration:underline;" >
+      知识共享署名 4.0 国际许可协议</a>
+      进行许可，转载时请注明作者姓名以及原文链接，图片在使用时请保留全部内容，可适当缩放并在引用处附上图片所在的文章链接。
+
+      
+    </footer>
+  </article>
+        </div>
+        <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '2021-02-16 11:08:38 \x2b0800 CST',
+        title: 'MySQL 的零拷贝技术',
+        clientID: 'b8e9909664fb69930809',
+        clientSecret: '847d9069c9532ab260721afb9f036cdb8f52aec4',
+        repo: 'Spongecaptain.github.io',
+        owner: 'Spongecaptain',
+        admin: ['Spongecaptain'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a></noscript>
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:wjjiang19@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/spongecaptain" class="iconfont icon-github" title="github"></a>
+  <a href="https://spongecaptain.cool/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2021
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Spongecaptain</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.d7b7ada643c9c1a983026e177f141f7363b4640d619caf01d8831a6718cd44ea.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

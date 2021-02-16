@@ -2,14 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>MySQL on Spongecaptain 的个人技术博客</title>
-    <link>https://spongecaptain.cool/tags/mysql/</link>
+    <link>https://spongecaptain.cool/categories/mysql/</link>
     <description>Recent content in MySQL on Spongecaptain 的个人技术博客</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
     <lastBuildDate>Tue, 16 Feb 2021 11:08:38 +0800</lastBuildDate>
     
-	<atom:link href="https://spongecaptain.cool/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://spongecaptain.cool/categories/mysql/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -19,15 +19,6 @@
       
       <guid>https://spongecaptain.cool/post/mysql/zerocopyofmysql/</guid>
       <description>1. Buffer 与 cache 的区别？ Bbuffer 与 Cache 非常类似，因为它们都用于存储数据数据，被应用层读取字节数据。在很多场合它们有着相同的概念，但是特定场合也有一定的区别[</description>
-    </item>
-    
-    <item>
-      <title>窥探 MySQL 索引</title>
-      <link>https://spongecaptain.cool/post/mysql/mysqlindexsummary/</link>
-      <pubDate>Fri, 10 Jul 2020 23:11:12 +0800</pubDate>
-      
-      <guid>https://spongecaptain.cool/post/mysql/mysqlindexsummary/</guid>
-      <description>MySQL 索引 1. 什么是数据库索引 在关系数据库中，如果有上万甚至上亿条记录，在查找记录的时候，想要获得非常快的速度，就需要使用索引。 索引是关系数据库中</description>
     </item>
     
   </channel>
