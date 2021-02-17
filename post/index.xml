@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Tue, 16 Feb 2021 11:08:38 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 17 Feb 2021 10:11:57 +0800</lastBuildDate>
     
 	<atom:link href="https://spongecaptain.cool/post/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>逻辑日志与物理日志</title>
+      <link>https://spongecaptain.cool/post/database/logicalandphicallog/</link>
+      <pubDate>Wed, 17 Feb 2021 10:11:57 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/database/logicalandphicallog/</guid>
+      <description>Thanks to Prof. Dr. Jens Dittrich&amp;rsquo;s teaching video. 日志主要分为逻辑日志以及物理日志： 逻辑日志 Logic log[1]； 物理日志 Physical log[2]； 1. 物理日志与逻辑日志的存储内容 1.1 Physical Logging 物理日</description>
+    </item>
     
     <item>
       <title>MySQL 的零拷贝技术</title>

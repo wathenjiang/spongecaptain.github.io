@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>数据库 on Spongecaptain 的个人技术博客</title>
+    <link>https://spongecaptain.cool/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/</link>
+    <description>Recent content in 数据库 on Spongecaptain 的个人技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>Spongecaptain</copyright>
+    <lastBuildDate>Wed, 17 Feb 2021 10:11:57 +0800</lastBuildDate>
+    
+	<atom:link href="https://spongecaptain.cool/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>逻辑日志与物理日志</title>
+      <link>https://spongecaptain.cool/post/database/logicalandphicallog/</link>
+      <pubDate>Wed, 17 Feb 2021 10:11:57 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/database/logicalandphicallog/</guid>
+      <description>Thanks to Prof. Dr. Jens Dittrich&amp;rsquo;s teaching video. 日志主要分为逻辑日志以及物理日志： 逻辑日志 Logic log[1]； 物理日志 Physical log[2]； 1. 物理日志与逻辑日志的存储内容 1.1 Physical Logging 物理日</description>
+    </item>
+    
+  </channel>
+</rss>
