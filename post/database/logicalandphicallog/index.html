@@ -49,7 +49,7 @@
 <meta itemprop="description" content="Thanks to Prof. Dr. Jens Dittrich&rsquo;s teaching video. 日志主要分为逻辑日志以及物理日志： 逻辑日志 Logic log[1]； 物理日志 Physical log[2]； 1. 物理日志与逻辑日志的存储内容 1.1 Physical Logging 物理日">
 <meta itemprop="datePublished" content="2021-02-17T10:11:57&#43;08:00" />
 <meta itemprop="dateModified" content="2021-02-17T10:11:57&#43;08:00" />
-<meta itemprop="wordCount" content="4266">
+<meta itemprop="wordCount" content="4329">
 
 
 
@@ -355,7 +355,7 @@ CameraLingo:capitaLetter(term)
 <p>逻辑日志比物理日志在重放时有着更低的效率，这主要有两个方面的原因：</p>
 <ul>
 <li>额外的解释步骤：逻辑日志需要额外地解释更新语句、额外查找实际 page 位置；</li>
-<li>物理日志可以并发进行：当系统判断两个物理日志作用域不同的 page 时，就可以进行完全的并行处理，而逻辑日志通常只能串行执行。</li>
+<li>物理日志可以并发进行：当系统判断两个物理日志作用于不同的 page 时，就可以进行完全的并行处理，而逻辑日志通常只能串行执行。</li>
 </ul>
 <h3 id="25-磁盘内存式日志系统的-trade-off">2.5 磁盘/内存式日志系统的 trade-off</h3>
 <p>其次，基于磁盘的存储系统与基于内存的存储系统对逻辑日志以及物理日志有着不同的 trade-off，如下面两张图所示。</p>
@@ -419,17 +419,14 @@ CameraLingo:capitaLetter(term)
 </li>
 </ul>
 <p><strong>（2）数据引擎层的 redo log/undo log</strong></p>
-<p>MySQL 的 InnoDB 存储引擎使用 redo log 以及 undo log，它们属于 Physiological Logging，虽然很多人认为其数据物理日志。</p>
+<p>MySQL 的 InnoDB 存储引擎使用 redo log 以及 undo log，它们属于 Physiological Logging，虽然很多人认为其属于物理日志。</p>
 <p>MySQL InnoDB 的 redo log 可以分为三种类型：作用于Page，作用于 Space 以及提供额外信息的 Logic 类型。</p>
-<p>以作用于 Page 的 redo log 的格式为例：</p>
+<p>这里以作用于 Page 的 redo log 的格式为例：</p>
 <p><img src="../../../images/img_database/redo_insert.png" alt="redo_insert"></p>
+<p>可见，MySQL 的 redo log 属于 Physiological Logging：</p>
 <ul>
-<li>
-<p>物理上，其使用 Page Number + Record Offset 来指定具体作用于哪一个 page 上的一条记录。</p>
-</li>
-<li>
-<p>逻辑上，使用 Field Number（Field编号）来说明更新操作作用于哪些字段；</p>
-</li>
+<li>物理上，其使用 Page Number + Record Offset 来指定具体作用于哪一个 page 上的一条记录。</li>
+<li>逻辑上，使用 Field Number（Field编号）来说明更新操作作用于哪些字段；</li>
 </ul>
 <h3 id="33-redis">3.3 Redis</h3>
 <p>Redis 是一个内存型 key-value NoSQL 数据库的典型代表。</p>
@@ -437,9 +434,9 @@ CameraLingo:capitaLetter(term)
 <p>AOF 中的每一条日志代表 Redis 节点接收到的一条写操作，其格式为 Redis 命令格式，因此 AOF 属于逻辑日志。</p>
 <p>Redis 基于内存快照（RDB）+check point + AOF 的方式实现持久化。</p>
 <h3 id="34-kafka">3.4 Kafka</h3>
-<p>在关系型数据库看来，日志不是数据本身，例如对于 MySQL 的 InnoDB 存储引擎来说，数据本身是存储于磁盘上的 B+Tree 树，日志是用于确保单机事务以及分布式事务的一种手段。换言之，关系型数据库提供的读 API 不是直接读日志，而是读 B+Tree。</p>
+<p>在关系型数据库看来，日志不是数据本身，例如对于 MySQL 的 InnoDB 存储引擎来说，数据本身是存储于磁盘上的 B+Tree 树，日志是用于确保单机事务以及分布式事务的一种手段。换言之，关系型数据库提供的读/查询 API 不是直接读日志，而是直接读 B+Tree。</p>
 <p>但是对于 Kakfa 而言，日志本身就是数据本身。因此就没有必要将这类数据库分为逻辑日志与物理日志。Kakfa 的日志一方面服务于单机事务与分布式事务，另一方面服务于消息的读/写 API。</p>
-<p>根据 [8]，我们可知，Kakfa 消息包括如下重要字段：</p>
+<p>根据[8]，我们可知，Kakfa 消息包括如下重要字段：</p>
 <table>
 <thead>
 <tr>
@@ -488,6 +485,7 @@ CameraLingo:capitaLetter(term)
 </tr>
 </tbody>
 </table>
+<p>可见，Kafka 在 message-logging 中的一条消息并不是用于描述更新，其就是数据本身。</p>
 <p>总之，当日志本身就是数据而不是描述更新操作时，不需要将日志区分为逻辑日志与物理日志。</p>
 <h2 id="reference">REFERENCE</h2>
 <ul>
