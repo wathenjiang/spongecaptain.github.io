@@ -49,7 +49,7 @@
 <meta itemprop="description" content="1. Buffer 与 cache 的区别？ Bbuffer 与 Cache 非常类似，因为它们都用于存储数据数据，被应用层读取字节数据。在很多场合它们有着相同的概念，但是特定场合也有一定的区别[">
 <meta itemprop="datePublished" content="2021-02-16T11:08:38&#43;08:00" />
 <meta itemprop="dateModified" content="2021-02-16T11:08:38&#43;08:00" />
-<meta itemprop="wordCount" content="2347">
+<meta itemprop="wordCount" content="2355">
 
 
 
@@ -255,7 +255,7 @@
 <h2 id="5-mysql-的典型配置">5. MySQL 的典型配置</h2>
 <ul>
 <li>innodb_flush_log_at_trx_commit 参数配置为 1：Redo Log 走 Page Cache，并且每次写操作的日志在事务提交前都通过 fsync 刷新到磁盘；</li>
-<li>innodb_flush_method 参数配置为 O_DIRECT：InnoDB Buffer Pool 走 Direct I/O，并且每次写操作导致的文件元数据都通过 fsync 系统调用刷新到磁盘；</li>
+<li>innodb_flush_method 参数配置为 O_DIRECT：InnoDB Buffer Pool 走 Direct I/O，并且每次写操作导致的文件数据（包括文件元数据）都通过 fsync 系统调用刷新到磁盘；</li>
 </ul>
 <p>写一条 redo log 涉及到的步骤有：</p>
 <ul>
