@@ -49,7 +49,7 @@
 <meta itemprop="description" content="1. Buffer 与 cache 的区别？ Bbuffer 与 Cache 非常类似，因为它们都用于存储数据数据，被应用层读取字节数据。在很多场合它们有着相同的概念，但是特定场合也有一定的区别[">
 <meta itemprop="datePublished" content="2021-02-16T11:08:38&#43;08:00" />
 <meta itemprop="dateModified" content="2021-02-16T11:08:38&#43;08:00" />
-<meta itemprop="wordCount" content="2355">
+<meta itemprop="wordCount" content="2464">
 
 
 
@@ -242,7 +242,8 @@
 <p>补充说明：以 O_SYNC 方式打开文件意味着文件的每一次写操作都直接导致将数据本身以及元数据刷新到磁盘上。</p>
 </blockquote>
 <p><strong>为什么有 O_DIRECT 与 O_DIRECT_NO_FSYNC 配置的区别？</strong></p>
-<p>虽然在 Direct I/O 模式下都会导致每次写操作对应的数据直接落盘，但是文件元数据是否直接落盘依赖于是否在每次写操作执行 flush 系统调用。如果可以接受在宕机时发生数据不丢失但元数据丢失的情况，为了提高性能可以使用 O_DIRECT_NO_FSYNC 配置，否则请使用 O_DIRECT 配置。</p>
+<p>首先，我们需要理解更新操作落盘分为两个具体的子步骤：①文件数据更新落盘②文件元数据更新落盘。O_DIRECT 的在部分操作系统中会导致文件元数据不落盘，除非主动调用 fsync，为此，MySQL 提供了 O_DIRECT 以及 O_DIRECT_NO_FSYNC 这两个配置[5]。</p>
+<p>如果你确定在自己的操作系统上，即使不进行 fsync 调用，也能够确保文件元数据落盘，那么请使用 O_DIRECT_NO_FSYNC 配置，这对 MySQL 性能略有帮助。否则，请使用 O_DIRECT，不然文件元数据的丢失可能会导致 MySQL 运行错误。</p>
 <h2 id="4-mysql-日志的刷新策略">4. MySQL 日志的刷新策略</h2>
 <p>MySQL 日志刷新策略通过 sync_binlog 参数进行配置，其有 3 个可选配置：</p>
 <ol>
@@ -284,6 +285,7 @@
 <li>[2]<a href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html">MySQL :: MySQL 8.0 Reference Manual :: 15.14 InnoDB Startup Options and System Variables</a></li>
 <li>[3]<a href="https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_flush_method">MySQL 8.0 innodb_flush_method</a></li>
 <li>[4]<a href="https://dev.mysql.com/doc/refman/8.0/en/replication-options-binary-log.html#sysvar_sync_binlog">MySQL :: MySQL 8.0 Reference Manual :: 17.1.6.4 Binary Logging Options and Variables</a></li>
+<li>[5] <a href="https://stackoverflow.com/questions/41440492/why-mysql-still-use-fsync-to-flush-the-data-when-the-option-is-o-direct">Why MYSQL still use fsync() to flush the data when the option is O_DIRECT?</a></li>
 </ul>
 
     </div>
