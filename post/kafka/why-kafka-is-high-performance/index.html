@@ -49,7 +49,7 @@
 <meta itemprop="description" content="Kafka 的高性能的源头-概述">
 <meta itemprop="datePublished" content="2020-12-30T22:03:10&#43;08:00" />
 <meta itemprop="dateModified" content="2020-12-30T22:03:10&#43;08:00" />
-<meta itemprop="wordCount" content="4457">
+<meta itemprop="wordCount" content="4551">
 
 
 
@@ -174,11 +174,11 @@
 </ul>
 <p>而刷新（flush）操作通常通过异步 I/O 线程实现（异步是强调其与处理写操作的线程并非一个线程），过程如下图所示：</p>
 <p><img src="../../../images/img_kafka/ApplicationFlush-0293606.png" alt="ApplicationFlush" style="zoom: 20%;" /></p>
-<p>上图中，方式 1 就是大多数应用程序的做法。而方式 2 对应于 Kafka 的做法。</p>
+<p>上图中，方式 1 是部分强调事务安全性应用的选择，例如 MySQL 持久化 redo log。而方式 2 对应于 Kafka 的做法。</p>
 <p>在 Kafka 看来，其所有的数据都立即写入文件系统的持久化日志文件，但不进行刷新数据的任何调用（例如 fsync 系统调用）。但在事实上，由于操作系统的磁盘缓存机制，上述数据现在是在内存中，而不是磁盘中，操作系统会随后将磁盘缓存刷新到磁盘中。</p>
 <p>换句话说，Kafka 服务端给 Producer 回复写成功的 ack 时，Producer 产生的消息并不一定已经持久化到磁盘中。这就是让 Kafka 作为一个基于磁盘的消息队列，能够表现得如同一个内存消息队列的原因之一：Kafka 仅仅将数据写入内存就向 Producer 返回 ack，表示写操作执行成功。原来，Kafka 本质上是一个 disk-backed in-memory queue，不过，其受到操作系统的磁盘缓存大小的限制。</p>
 <p><strong>那么，代价是什么呢？</strong></p>
-<p>这种写操作的持久化是不彻底的，一个 Producer 明明收到了来自 Kafka 服务端的写成功请求，但消息可能并没有持久化。例如，操作系统还没来得及将磁盘缓存中的消息刷新到磁盘，就发生了宕机。消息彻底丢失了！Kafka 的这种做法与传统与关系型数据库截然不同，<strong>一个写操作成功的 ack ≠ 持久化成功</strong>。</p>
+<p>这种写操作的持久化是不彻底的，一个 Producer 明明收到了来自 Kafka 服务端的写成功请求，但消息可能并没有持久化。例如，操作系统还没来得及将磁盘缓存中的消息刷新到磁盘，就发生了宕机。**消息彻底丢失了！**Kafka 的这种做法与传统与关系型数据库截然不同，<strong>一个写操作成功的 ack ≠ 持久化成功</strong>。</p>
 <p>正因为如此，Kafka 的消息持久化机制只能确保消息丢失的概率非常小，而不是彻底的消息持久化。例如，当 replicas 为 3，acks 设置为 all 时，只有 3 个 broker 同时在将消息刷入磁盘前宕机，才会出现消息丢失问题。</p>
 <p><strong>3.数据结构</strong></p>
 <p>Kafka 使用了一种分段式、只追加（Append-Only）日志作为持久化层的数据结构，能够把生产者的写消息请求在物理层通过磁盘顺序 I/O 的方式得以实现。</p>
@@ -196,7 +196,7 @@
 <p>零拷贝技术提出的目的在于避免在不同硬件之间交换数据时，非必要地涉及用户空间（其在内存中），非必要的内存间拷贝数据。零拷贝技术主要依赖于文件描述符的“共享” 实现，但是这里不介绍其原理，仅仅说明其特性。</p>
 <p>一般 I/O 过程与零拷贝技术下的 I/O 过程的比较如下图所示：</p>
 <p><img src="../../../images/img_kafka/zeroCopy-1609336312920-0293597.png" alt="zeroCopy" style="zoom:25%;" /></p>
-<p>其中，绿色代表出于内存中，黄色代表位于非内存硬件中。</p>
+<p>其中，绿色代表出于内存中，黄色代表位于非内存硬件中，具体的零拷贝技术可以参考我的另一篇文章：<a href="https://spongecaptain.cool/SimpleClearFileIO/2.%20DMA%20%E4%B8%8E%E9%9B%B6%E6%8B%B7%E8%B4%9D%E6%8A%80%E6%9C%AF.html">DMA 与零拷贝技术</a>。</p>
 <p><strong>4.磁盘顺序读/写</strong></p>
 <p>为什么 Kafka 基于磁盘的消息存储也能够提供非常高的系统吞吐量？</p>
 <p>Kafka 的工作原理与 Apache ActiveMQ 或 RabbitMQ 这样的传统消息传递系统差别很大。最大的一个区别就是，对于传统系统来说，持久化是一个成本高昂的可选项，它通常会带来两个数量级的性能下降。相反，对于 Kafka 来说，即使单个服务器每秒处理的消息量高达 GB 级甚至更多，系统仍然能够自动持久化所有消息。造成这种性能上巨大差异的原因之一是，Kafka 类系统不支持逐个消息确认（message-by-message
@@ -207,9 +207,9 @@ acknowledgment），而是让服务按照顺序读取消息，<strong>偶尔</st
 <p>批量处理的最大好处是能够节约网络 I/O 带宽，但另一个好处也不容忽视：批量处理是进行压缩的前提。压缩算法的压缩比率收到数据重复性的极大影响，因此对单个消息进行压缩意义并不大，只有对批量消息的压缩才能达到一个理想的压缩率。特别是当使用 JSON 等基于文本的数据格式时，批量消息的压缩效果会非常显著，压缩比通常能达到 5 到 7 倍。</p>
 <p>注意：日志记录批处理在很大程度上是在 Client 侧完成的，把负载转移到 Client 上，有三个好处：</p>
 <ol>
-<li>节约网络带宽；</li>
-<li>提高 Brokers 的磁盘 I/O 利用率；</li>
-<li>降低 Brokers 的 CPU 负载（Client 负责完成批量消息的压缩与解压）；</li>
+<li>节约网络带宽：消息在发送前就已经完成了压缩；</li>
+<li>提高 Brokers 的磁盘 I/O 利用率：Broker 持久化压缩后的消息；</li>
+<li>降低 Brokers 的 CPU 负载：Client 负责完成批量消息的压缩与解压，Broker 仅仅需要进行持久化；</li>
 </ol>
 <p><strong>2.并行流数据处理</strong></p>
 <p>并行流数据处理得益于 Kafka 的分布式设计。Kafka 将一个 topic 设计为多个 partiition，如果 partition 个数设计合理，那么 partition 能够均匀分布于整个 broker 集群。这样一来，Kafka 可以将对一个 topic 的消息读/写能够以整个 broker 集群规模并行化。如果与更传统的 MQ 进行比较：在 RabbitMQ 的等效设置中，多个并发的 Consumers 可能以轮询的方式从队列读取数据，然而这样做，一方面失去了消息消费的顺序性，而且没有并行化。</p>
