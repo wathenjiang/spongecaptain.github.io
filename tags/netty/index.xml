@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Sat, 24 Oct 2020 22:11:20 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 28 Feb 2021 11:22:24 +0800</lastBuildDate>
     
 	<atom:link href="https://spongecaptain.cool/tags/netty/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Netty 的 Sharable 注解</title>
+      <link>https://spongecaptain.cool/post/netty/sharableannotationinnetty/</link>
+      <pubDate>Sun, 28 Feb 2021 11:22:24 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/netty/sharableannotationinnetty/</guid>
+      <description>1. 我向 Apache Dubbo 提的一个 PR 我为 Apache Dubbo 提了如下的一个 PR，试图为 Telnet 通信模式提供一个 Idle 连接计时关闭特性。 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24</description>
+    </item>
     
     <item>
       <title>Netty 如何实现自己的解码器与解码器</title>
