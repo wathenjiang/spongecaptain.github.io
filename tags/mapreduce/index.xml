@@ -7,11 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Mon, 27 Jul 2020 22:45:21 +0800</lastBuildDate>
-    
-	<atom:link href="https://spongecaptain.cool/tags/mapreduce/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 27 Jul 2020 22:45:21 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/tags/mapreduce/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>MapReduce 论文学习</title>
       <link>https://spongecaptain.cool/post/paper/mapreduce/</link>

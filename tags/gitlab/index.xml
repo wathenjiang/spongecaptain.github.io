@@ -7,11 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Fri, 02 Oct 2020 20:59:57 +0800</lastBuildDate>
-    
-	<atom:link href="https://spongecaptain.cool/tags/gitlab/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Fri, 02 Oct 2020 20:59:57 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/tags/gitlab/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>在实验室服务器部署 GitLab</title>
       <link>https://spongecaptain.cool/post/life/deploygitlab/</link>

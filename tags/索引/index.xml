@@ -7,11 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Fri, 10 Jul 2020 23:11:12 +0800</lastBuildDate>
-    
-	<atom:link href="https://spongecaptain.cool/tags/%E7%B4%A2%E5%BC%95/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Fri, 10 Jul 2020 23:11:12 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/tags/%E7%B4%A2%E5%BC%95/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>窥探 MySQL 索引</title>
       <link>https://spongecaptain.cool/post/mysql/mysqlindexsummary/</link>

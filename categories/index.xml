@@ -7,11 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Sun, 28 Feb 2021 11:22:24 +0800</lastBuildDate>
-    
-	<atom:link href="https://spongecaptain.cool/categories/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 28 Feb 2021 11:22:24 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Netty</title>
       <link>https://spongecaptain.cool/categories/netty/</link>

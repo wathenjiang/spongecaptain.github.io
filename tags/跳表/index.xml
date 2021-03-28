@@ -7,11 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Tue, 04 Aug 2020 16:11:01 +0800</lastBuildDate>
-    
-	<atom:link href="https://spongecaptain.cool/tags/%E8%B7%B3%E8%A1%A8/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 04 Aug 2020 16:11:01 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/tags/%E8%B7%B3%E8%A1%A8/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>跳表-skip list</title>
       <link>https://spongecaptain.cool/post/datastracture/skiplist/</link>

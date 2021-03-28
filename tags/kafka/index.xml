@@ -7,11 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Wed, 30 Dec 2020 22:03:10 +0800</lastBuildDate>
-    
-	<atom:link href="https://spongecaptain.cool/tags/kafka/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Wed, 30 Dec 2020 22:03:10 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/tags/kafka/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Kafka 的高性能的源头</title>
       <link>https://spongecaptain.cool/post/kafka/why-kafka-is-high-performance/</link>

@@ -7,11 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Wed, 05 Aug 2020 10:56:59 +0800</lastBuildDate>
-    
-	<atom:link href="https://spongecaptain.cool/tags/gfs/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Wed, 05 Aug 2020 10:56:59 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/tags/gfs/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Google File System-GFS 论文阅读</title>
       <link>https://spongecaptain.cool/post/paper/googlefilesystem/</link>

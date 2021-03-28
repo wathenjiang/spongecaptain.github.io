@@ -7,11 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Wed, 22 Jul 2020 21:03:57 +0800</lastBuildDate>
-    
-	<atom:link href="https://spongecaptain.cool/categories/aspectj/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Wed, 22 Jul 2020 21:03:57 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/categories/aspectj/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>AspectJ 动态代理的实际演练</title>
       <link>https://spongecaptain.cool/post/java/aspectjproxy/</link>

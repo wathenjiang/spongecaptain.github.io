@@ -7,11 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Wed, 22 Jul 2020 20:56:48 +0800</lastBuildDate>
-    
-	<atom:link href="https://spongecaptain.cool/tags/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Wed, 22 Jul 2020 20:56:48 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/tags/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Java 的代理模式的实现</title>
       <link>https://spongecaptain.cool/post/java/proxypattern/</link>
