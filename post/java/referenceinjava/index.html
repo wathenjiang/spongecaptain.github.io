@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Java 强引用、软引用、弱引用以及虚引用 - Spongecaptain 的个人技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Spongecaptain" /><meta name="description" content="1. Java 中的强引用、软引用、弱引用、虚引用 Java 中强引用、软引用、弱引用、虚引用用于控制堆内实例被回收时的特性，如下表所示： 引用类型 回收时机 强引用 StrongReference" /><meta name="keywords" content="Java" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.82.0 with theme even" />
+
+
+<link rel="canonical" href="https://spongecaptain.cool/post/java/referenceinjava/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.20eaaf634d4dd8fdd9ee27392a8a8d7542264cd21577a22499a924b5f4a112ef.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Java 强引用、软引用、弱引用以及虚引用" />
+<meta property="og:description" content="1. Java 中的强引用、软引用、弱引用、虚引用 Java 中强引用、软引用、弱引用、虚引用用于控制堆内实例被回收时的特性，如下表所示： 引用类型 回收时机 强引用 StrongReference" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://spongecaptain.cool/post/java/referenceinjava/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-03-28T15:07:50&#43;08:00" />
+<meta property="article:modified_time" content="2021-03-28T15:07:50&#43;08:00" />
+
+<meta itemprop="name" content="Java 强引用、软引用、弱引用以及虚引用">
+<meta itemprop="description" content="1. Java 中的强引用、软引用、弱引用、虚引用 Java 中强引用、软引用、弱引用、虚引用用于控制堆内实例被回收时的特性，如下表所示： 引用类型 回收时机 强引用 StrongReference"><meta itemprop="datePublished" content="2021-03-28T15:07:50&#43;08:00" />
+<meta itemprop="dateModified" content="2021-03-28T15:07:50&#43;08:00" />
+<meta itemprop="wordCount" content="4311">
+<meta itemprop="keywords" content="Java," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Java 强引用、软引用、弱引用以及虚引用"/>
+<meta name="twitter:description" content="1. Java 中的强引用、软引用、弱引用、虚引用 Java 中强引用、软引用、弱引用、虚引用用于控制堆内实例被回收时的特性，如下表所示： 引用类型 回收时机 强引用 StrongReference"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body class = body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/about/index.html">
+        <li class="mobile-menu-item">关于</li>
+      </a><a href="https://spongecaptain.cool/SimpleClearFileIO/">
+        <li class="mobile-menu-item">文件I/O简明概述</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/index.html">关于</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="https://spongecaptain.cool/SimpleClearFileIO/">文件I/O简明概述</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Java 强引用、软引用、弱引用以及虚引用</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2021-03-28 </span>
+        <div class="post-category">
+            <a href="/categories/java/"> Java </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-java-中的强引用软引用弱引用虚引用">1. Java 中的强引用、软引用、弱引用、虚引用</a>
+      <ul>
+        <li><a href="#11-强引用">1.1 强引用</a></li>
+        <li><a href="#12-软引用">1.2 软引用</a></li>
+        <li><a href="#13-弱引用">1.3 弱引用</a></li>
+        <li><a href="#14-虚引用">1.4 虚引用</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-referencequeue-与-referencehandler">2. ReferenceQueue 与 ReferenceHandler</a>
+      <ul>
+        <li><a href="#21-reference-的四种状态">2.1 Reference 的四种状态</a></li>
+        <li><a href="#22-referencehandler-线程">2.2 ReferenceHandler 线程</a></li>
+        <li><a href="#23-referencequeue-队列">2.3 ReferenceQueue 队列</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-应用案例">3. 应用案例</a>
+      <ul>
+        <li><a href="#31-weakhashmap">3.1 WeakHashMap</a></li>
+        <li><a href="#32-netty-内存泄漏检测">3.2 Netty 内存泄漏检测</a></li>
+      </ul>
+    </li>
+    <li><a href="#4-总结">4. 总结</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h2 id="1-java-中的强引用软引用弱引用虚引用">1. Java 中的强引用、软引用、弱引用、虚引用</h2>
+<p>Java 中强引用、软引用、弱引用、虚引用用于控制堆内实例被回收时的特性，如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>引用类型</th>
+<th>回收时机</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>强引用 StrongReference</td>
+<td>never</td>
+</tr>
+<tr>
+<td>软引用 SoftReference</td>
+<td>内存不足</td>
+</tr>
+<tr>
+<td>弱引用 WeakReference</td>
+<td>GC 时</td>
+</tr>
+<tr>
+<td>虚引用 PhantomReference</td>
+<td>Unknown</td>
+</tr>
+</tbody>
+</table>
+<p>最基础的引用方式就是强引用，如果一个对象被强引用着，那么这个对象就无法被 GC。</p>
+<p>因此测试软引用、弱引用、虚引用必须确保对象本身没有被强引用，否则实例总是无法被回收。或者说要确保该实例仅仅被SoftReference、WeakReference 或者 PhantomReference 实例引用。</p>
+<p>下面是测试代码，可以在如下仓库中找到源码。</p>
+<p><a href="https://github.com/Spongecaptain/referenceInJava">Spongecaptain/referenceInJava: Java 强引用、软引用、弱引用以及虚引用测试项目 (github.com)</a></p>
+<p>为了实验的完整性，在此说明 JDK 版本：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">$ java -version
+openjdk version <span class="s2">&#34;1.8.0_282&#34;</span>
+OpenJDK Runtime Environment <span class="o">(</span>Zulu 8.52.0.23-CA-macos-aarch64<span class="o">)</span> <span class="o">(</span>build 1.8.0_282-b08<span class="o">)</span>
+OpenJDK 64-Bit Server VM <span class="o">(</span>Zulu 8.52.0.23-CA-macos-aarch64<span class="o">)</span> <span class="o">(</span>build 25.282-b08, mixed mode<span class="o">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="11-强引用">1.1 强引用</h3>
+<p>强引用的实例是一种无论何时都不会被 GC 回收的实例，测试代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestStrongReference</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">1024</span><span class="o">*</span><span class="n">1024</span><span class="o">*</span><span class="n">9</span><span class="o">];</span>
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes_2</span> <span class="o">=</span> <span class="n">bytes</span><span class="o">;</span>
+        <span class="n">bytes</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">gc</span><span class="o">();</span>
+        <span class="c1">//make sure gc is done
+</span><span class="c1"></span>        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="n">3000</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">bytes_2</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>输出：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">[B@28d93b30
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="12-软引用">1.2 软引用</h3>
+<p>软引用的实例会在内存不足时会被回收，测试代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">java.lang.ref.SoftReference</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestSoftReference</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">1024</span><span class="o">*</span><span class="n">1024</span><span class="o">*</span><span class="n">9</span><span class="o">];</span>
+        <span class="n">SoftReference</span><span class="o">&lt;</span><span class="kt">byte</span><span class="o">[]&gt;</span> <span class="n">softReference</span>  <span class="o">=</span> <span class="k">new</span> <span class="n">SoftReference</span><span class="o">&lt;&gt;(</span><span class="n">bytes</span><span class="o">);</span>
+        <span class="n">bytes</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span><span class="c1">//delete strong reference
+</span><span class="c1"></span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;before gc&#34;</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">softReference</span><span class="o">.</span><span class="na">get</span><span class="o">());</span>
+        <span class="c1">//内存充足的情况下进行 GC
+</span><span class="c1"></span>        <span class="n">System</span><span class="o">.</span><span class="na">gc</span><span class="o">();</span>
+        <span class="c1">//make sure gc is done
+</span><span class="c1"></span>        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="n">3000</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;after gc&#34;</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">softReference</span><span class="o">.</span><span class="na">get</span><span class="o">());</span>
+        <span class="c1">//手动导致内存不足的 OOM Error
+</span><span class="c1"></span>        <span class="kt">boolean</span> <span class="n">isOOM</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;after memory is not enough&#34;</span><span class="o">);</span>
+            <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes_2</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">1024</span><span class="o">*</span><span class="n">1024</span><span class="o">*</span><span class="n">4</span><span class="o">];</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">OutOfMemoryError</span> <span class="n">e1</span><span class="o">){</span>
+            <span class="n">isOOM</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+            <span class="n">e1</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">softReference</span><span class="o">.</span><span class="na">get</span><span class="o">());</span>
+        <span class="o">}</span>
+        <span class="k">if</span><span class="o">(!</span><span class="n">isOOM</span><span class="o">){</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">softReference</span><span class="o">.</span><span class="na">get</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>输出：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">before gc
+[B@28d93b30
+after gc
+[B@28d93b30
+after memory is not enough
+null
+</code></pre></td></tr></table>
+</div>
+</div><p>上述代码需要将堆内存大小进行限制，可以在 IntelliJ 的 Run/Debug Configurations 中配置 VM Options 为 <code>-Xms10m -Xmx10m</code>。可以这么认为：</p>
+<ul>
+<li>堆内内存限制为最大 10MB</li>
+<li>依次申请 9MB 以及 4 MB 的内存；</li>
+<li>第二次申请内存时，合计的内存超过 10MB，因此就将 9MB 的软引用内存释放。</li>
+</ul>
+<p><strong>注意事项</strong>：任意一次内存申请超过最大堆内存时会抛出 OOM Error，此时也会导致内存不足，释放软引用实例。</p>
+<h3 id="13-弱引用">1.3 弱引用</h3>
+<p>虚引用的实例会在 GC 时就会被回收，测试代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">java.lang.ref.WeakReference</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestWeakReference</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">1024</span> <span class="o">*</span> <span class="n">1024</span> <span class="o">*</span> <span class="n">9</span><span class="o">];</span>
+        <span class="n">WeakReference</span><span class="o">&lt;</span><span class="kt">byte</span><span class="o">[]&gt;</span> <span class="n">weakReference</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WeakReference</span><span class="o">&lt;&gt;(</span><span class="n">bytes</span><span class="o">);</span>
+        <span class="n">bytes</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span><span class="c1">//
+</span><span class="c1"></span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;before gc&#34;</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">weakReference</span><span class="o">.</span><span class="na">get</span><span class="o">());</span>
+        <span class="c1">//内存充足的情况下进行 GC
+</span><span class="c1"></span>        <span class="n">System</span><span class="o">.</span><span class="na">gc</span><span class="o">();</span>
+        <span class="c1">//make sure gc is done
+</span><span class="c1"></span>        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="n">3000</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;after gc&#34;</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">weakReference</span><span class="o">.</span><span class="na">get</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>输出：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">before gc
+[B@28d93b30
+after gc
+null
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="14-虚引用">1.4 虚引用</h3>
+<p>虚引用的实例在何时被回收是不确定的。并且其必须结合 ReferenceQueue 一起使用，因为其构造器定义如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="nf">PhantomReference</span><span class="o">(</span><span class="n">T</span> <span class="n">referent</span><span class="o">,</span> <span class="n">ReferenceQueue</span><span class="o">&lt;?</span> <span class="kd">super</span> <span class="n">T</span><span class="o">&gt;</span> <span class="n">q</span><span class="o">)</span> <span class="o">{</span>
+  <span class="kd">super</span><span class="o">(</span><span class="n">referent</span><span class="o">,</span> <span class="n">q</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>虚拟用的测试代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">java.lang.ref.PhantomReference</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.ref.ReferenceQueue</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestPhantomReference</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">1024</span> <span class="o">*</span> <span class="n">1024</span> <span class="o">*</span> <span class="n">9</span><span class="o">];</span>
+        <span class="n">ReferenceQueue</span><span class="o">&lt;</span><span class="kt">byte</span><span class="o">[]&gt;</span> <span class="n">referenceQueue</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ReferenceQueue</span><span class="o">&lt;&gt;();</span>
+        <span class="n">PhantomReference</span><span class="o">&lt;</span><span class="kt">byte</span><span class="o">[]&gt;</span> <span class="n">weakReference</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PhantomReference</span><span class="o">&lt;&gt;(</span><span class="n">bytes</span><span class="o">,</span><span class="n">referenceQueue</span><span class="o">);</span>
+        <span class="c1">//bytes = null;//无论是否进行强引用的删除，下面这一步总是返回 null
+</span><span class="c1"></span>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">weakReference</span><span class="o">.</span><span class="na">get</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>输出：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">null
+</code></pre></td></tr></table>
+</div>
+</div><p>虚拟引用 weakReference#get 总是会返回 null，引用形同虚设。</p>
+<h2 id="2-referencequeue-与-referencehandler">2. ReferenceQueue 与 ReferenceHandler</h2>
+<h3 id="21-reference-的四种状态">2.1 Reference 的四种状态</h3>
+<p>你可以在 Reference 类的 Javadocs 中看到，一个被 Reference 引用的实例处于如下几种可能状态：</p>
+<ol>
+<li>Active：创建 Reference 实例成功后的初始状态。</li>
+<li>Pending：在 pending-Reference list 中的 Reference 元素，待被 ReferenceHandler 线程处理；</li>
+<li>Enqueued：进入 ReferenceQueue 中的对象，等待被回收；</li>
+<li>Inactive：ReferenceQueue 中的对象被取出后，就会处于 Inactive 状态。</li>
+</ol>
+<p>可见，Reference 实例的状态与 ReferenceQueue 队列以及 ReferenceHandler 线程密切相关。</p>
+<h3 id="22-referencehandler-线程">2.2 ReferenceHandler 线程</h3>
+<p>下图是 Reference 类的继承关系：</p>
+<p><img src="../../../images/img_java/image-20210327180305898-6847988.png" alt="img"></p>
+<p>Reference 拥有一个静态字段 ReferenceHandler，后者是 Thread 的子类。可见，ReferenceHandler 线程是全局共享的静态实例。</p>
+<p>ReferenceHandler 线程在 Reference 的 static 语句块中被初始化并启动，其线程优先级被设置为最高。</p>
+<p>ReferenceHandler 作为 daemon 线程而存在，其运行逻辑就是在 <code>while(true)</code> 循环中不断调用 Reference#tryHandlePending 方法。此方法的运行逻辑主要为：</p>
+<ul>
+<li>得到 Reference 的静态类字段 <code>Reference&lt;Object&gt; pending</code></li>
+<li>为 pending 是否为 Cleaner 实例做一个标记</li>
+<li>将 pending 赋值为 pedding.discovered</li>
+<li>取消 pedding.discovered 的强引用</li>
+<li>当 pending 为 Cleaner 类的实例时，调用其 clean 方法</li>
+<li>检查 pending 构造时的 ReferenceQueue 是否有指定，如果有就将 pedding 加入到此 ReferenceQueue 中，否则不做其他工作。</li>
+</ul>
+<p>但是你会发现，没有任何 Java 回负责 Reference#pending 字段的赋值。事实上，这个字段由 GC 线程负责赋值。</p>
+<h3 id="23-referencequeue-队列">2.3 ReferenceQueue 队列</h3>
+<p>不仅仅 PhantomReference 虚引用的构造器可以接收一个 ReferenceQueue 实例，事实上，上面的 SoftReference、WeakReference 类的构造器也能接收一个 ReferenceQueue 实例，如下所示：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="nf">SoftReference</span><span class="o">(</span><span class="n">T</span> <span class="n">referent</span><span class="o">,</span> <span class="n">ReferenceQueue</span><span class="o">&lt;?</span> <span class="kd">super</span> <span class="n">T</span><span class="o">&gt;</span> <span class="n">q</span><span class="o">)</span> <span class="o">{</span>
+  <span class="kd">super</span><span class="o">(</span><span class="n">referent</span><span class="o">,</span> <span class="n">q</span><span class="o">);</span>
+  <span class="k">this</span><span class="o">.</span><span class="na">timestamp</span> <span class="o">=</span> <span class="n">clock</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="nf">WeakReference</span><span class="o">(</span><span class="n">T</span> <span class="n">referent</span><span class="o">,</span> <span class="n">ReferenceQueue</span><span class="o">&lt;?</span> <span class="kd">super</span> <span class="n">T</span><span class="o">&gt;</span> <span class="n">q</span><span class="o">)</span> <span class="o">{</span>
+  <span class="kd">super</span><span class="o">(</span><span class="n">referent</span><span class="o">,</span> <span class="n">q</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>并且 SoftReference、WeakReference 内部都有 ReferenceQueue 实例：</p>
+<ul>
+<li>当构造器不输入 ReferenceQueue 实例时，其默认使用 ReferenceQueue.NULL 实例，其类型为 <code>ReferenceQueue&lt;Object&gt;</code>；</li>
+<li>否则，使用构造器输入的 ReferenceQueue 实例；</li>
+</ul>
+<p><strong>那么问题来了，谁来负责此队列上 Reference 实例的处理呢？</strong></p>
+<ul>
+<li>首先，ReferenceHandler 线程仅最多会将从 GC 线程传递来的 Reference 实例存放到 ReferenceQueue 队列中，自己不负责处理。</li>
+<li>其次，没有任何类库线程负责从 ReferenceQueue 队列中取出 Reference 元素。</li>
+</ul>
+<p>因此，就是我们程序员自己需要负责从 ReferenceQueue 队列中取出 Reference 元素，否则就不要选择带有 ReferenceQueue 的 Reference 类构造器。</p>
+<p>换言之，ReferenceQueue 起到了一个延迟回收的机制：</p>
+<ul>
+<li>如果不使用 ReferenceQueue，那么 ReferenceHandler 线程就会将 Reference 实例就交给 GC 线程释放；</li>
+<li>如果使用 ReferenceQueue，那么 ReferenceHandler 线程会将 Reference 实例放入到 ReferenceQueue 中，用户线程决定 ReferenceQueue 中的元素如何处理。</li>
+</ul>
+<p>基于这种思路，我们可以写出如下的代码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">java.lang.ref.ReferenceQueue</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.ref.WeakReference</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.concurrent.atomic.AtomicLong</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestReferenceQueue</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">test</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">test</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+        <span class="kt">byte</span><span class="o">[]</span> <span class="n">bytes</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">byte</span><span class="o">[</span><span class="n">1024</span> <span class="o">*</span> <span class="n">10</span><span class="o">];</span>
+        <span class="n">ReferenceQueue</span><span class="o">&lt;</span><span class="n">MyWeakReference</span><span class="o">&gt;</span> <span class="n">referenceQueue</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ReferenceQueue</span><span class="o">&lt;&gt;();</span>
+        <span class="n">MyWeakReference</span><span class="o">&lt;</span><span class="kt">byte</span><span class="o">[]&gt;</span> <span class="n">weakReference</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MyWeakReference</span><span class="o">&lt;&gt;(</span><span class="n">bytes</span><span class="o">,</span><span class="n">referenceQueue</span><span class="o">);</span>
+
+        <span class="n">bytes</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+        <span class="n">System</span><span class="o">.</span><span class="na">gc</span><span class="o">();</span>
+        <span class="c1">//make sure gc is done
+</span><span class="c1"></span>        <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="n">1000</span><span class="o">);</span>
+        <span class="c1">//在 GC 后，GC 线程将 WeakReference 实例内部的 referent 字段被置为 null
+</span><span class="c1"></span>        <span class="c1">//并且 WeakReference 实例被 ReferenceHandler 线程加入到 ReferenceQueue 队列中
+</span><span class="c1"></span>        <span class="n">MyWeakReference</span> <span class="n">poll</span> <span class="o">=</span> <span class="o">(</span><span class="n">MyWeakReference</span><span class="o">)</span> <span class="n">referenceQueue</span><span class="o">.</span><span class="na">poll</span><span class="o">();</span>
+
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">poll</span><span class="o">==</span><span class="n">weakReference</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">poll</span><span class="o">.</span><span class="na">get</span><span class="o">());</span>
+        <span class="n">poll</span><span class="o">.</span><span class="na">releaseOneReference</span><span class="o">();</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">poll</span><span class="o">.</span><span class="na">getCount</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="kd">static</span> <span class="kd">class</span> <span class="nc">MyWeakReference</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">WeakReference</span><span class="o">{</span>
+
+        <span class="kd">private</span> <span class="kd">static</span> <span class="n">AtomicLong</span> <span class="n">count</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AtomicLong</span><span class="o">(</span><span class="n">0L</span><span class="o">);</span>
+
+        <span class="kd">public</span> <span class="nf">MyWeakReference</span><span class="o">(</span><span class="n">Object</span> <span class="n">referent</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kd">super</span><span class="o">(</span><span class="n">referent</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="nf">MyWeakReference</span><span class="o">(</span><span class="n">Object</span> <span class="n">referent</span><span class="o">,</span> <span class="n">ReferenceQueue</span> <span class="n">q</span><span class="o">)</span> <span class="o">{</span>
+            <span class="kd">super</span><span class="o">(</span><span class="n">referent</span><span class="o">,</span> <span class="n">q</span><span class="o">);</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">long</span> <span class="nf">getCount</span><span class="o">(){</span>
+            <span class="k">return</span> <span class="n">count</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">releaseOneReference</span><span class="o">(){</span>
+            <span class="n">count</span><span class="o">.</span><span class="na">incrementAndGet</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="3-应用案例">3. 应用案例</h2>
+<h3 id="31-weakhashmap">3.1 WeakHashMap</h3>
+<p>如下是一个 WeakHashMap 的使用案例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">java.util.WeakHashMap</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestWeakHashMap</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+        <span class="c1">//init
+</span><span class="c1"></span>        <span class="n">WeakHashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">WeakHashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;();</span>
+        <span class="n">String</span> <span class="n">key</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="o">(</span><span class="s">&#34;hello&#34;</span><span class="o">);</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span><span class="s">&#34;world&#34;</span><span class="o">);</span>
+
+        <span class="c1">//检查 WeakHashMap 是否有该 key
+</span><span class="c1"></span>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;hello&#34;</span><span class="o">));</span>
+
+        <span class="n">key</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span><span class="c1">//delete strong reference
+</span><span class="c1"></span>        <span class="n">System</span><span class="o">.</span><span class="na">gc</span><span class="o">();</span>
+        <span class="c1">//make sure gc is done
+</span><span class="c1"></span>        <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="n">2000</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;hello&#34;</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>WeakHashMap 基于如下技术实现：</p>
+<ol>
+<li>WeakReference</li>
+<li>ReferenceQueue</li>
+<li>Finalizer</li>
+</ol>
+<p>其中 Finalizer 也是一种 Reference 列实例，其内部拥有一个全局静态 FinalizerThread 线程实例。</p>
+<p>WeakHashMap 类的内部原理如下：</p>
+<ul>
+<li>Entry 继承于 WeakReference，其 WeakReference#referent 字段指向 key</li>
+<li>当 key 失去强引用后，并 GC 后，任何线程调用 WeakHashMap#expungeStaleEntries 方法都会将 Entry.val 置为 null，便于后续 GC 回收，并将 Entry 删除；</li>
+</ul>
+<p>调用 WeakHashMap#expungeStaleEntries  方法的线程分为两种类型：</p>
+<ol>
+<li>Finalizer#FinalizerThread 线程，其由 GC 线程触发；</li>
+<li>用户线程：当用户线程调用 WeakHashMap#put、get、remove、size 等方法都会先执行一遍 WeakHashMap#expungeStaleEntries  方法；</li>
+</ol>
+<p><strong>注意事项</strong>：很多文章并没有注意到 Finalizer#FinalizerThread 线程也会负责调用 WeakHashMap#expungeStaleEntries  方法，事实上，如果你在案例代码中 <code>System.out.println(map.get(&quot;hello&quot;));</code> 打上断点，早在执行 get 方法前，WeakHashMap 内部的 size 就已经是 0 了。</p>
+<h3 id="32-netty-内存泄漏检测">3.2 Netty 内存泄漏检测</h3>
+<p>内存泄漏（Memory leak）是在计算机科学中，由于疏忽或错误造成程序未能释放已经不再使用的内存。内存泄漏并非指内存在物理上的消失，而是应用程序分配某段内存后，由于设计错误，导致在释放该段内存之前就失去了对该段内存的控制，从而造成了内存的浪费。</p>
+<p>Netty 利用：</p>
+<ul>
+<li>WeakReference</li>
+<li>计数机制</li>
+</ul>
+<p>来检测内存泄漏，具体来说，Netty 通过如下的方式实现：</p>
+<ul>
+<li><code>ResourceLeakDetector&lt;T&gt;</code> 类负责为某一种资源的泄漏检测，资源的类型即泛型类型 <code>T</code>；</li>
+<li>ResourceLeakTracker 接口其有一个默认唯一子类：ResourceLeakDetector.DefaultResourceLeak。ResourceLeakTracker 实例与一个资源实例一一对应，例如 ByteBuf。其用于存储资源释放情况的相关字段以及提供相关方法。</li>
+<li>ResourceLeakDetector.DefaultResourceLeak 类继承了 WeakReference 类，其一开始指向待被释放的资源。当资源被 GC 回收时，其会被加入到 ResourceLeakDetector#refQueue 队列中。</li>
+<li>Record 类用于存储方法调用栈，便于内存泄漏问题出现时的问题定位。</li>
+</ul>
+<p>Netty 的将内存泄漏定义为：资源已经被 GC 回收，但是并没有执行指定次数的 release 方法。如果光这样说，你一定难以理解这种情况为啥算是内存泄漏了？这里解释一下。Netty 中内存分配即申请一个 ByteBuf 实例，ByteBuf 可以是池化的，也可以是未池化的。如果 ByteBuf 未池化，最终被 GC 线程回收，那也无妨。但是如果 GC 了内存池中的实例，那么相当于没有利用到内存池能够重用内存的特性，这是不符合要求的。</p>
+<p>总之，本节内存泄漏实际上指的是：该返回内存池的内存应当返回内存池，而不是交给 GC 线程来回收。因为内存池的目的就在于重用内存，避免 GC，提高运行效率。</p>
+<p>回过头来，下面说明一下 Netty 内存泄漏检测的内部执行原理：</p>
+<p><strong>1.内存申请</strong></p>
+<p>内存申请时，计数器+1，并将 ByteBuf 对应的弱引用对象 DefaultResourceLeak 加入到 ResourceLeakDetector.allLeaks 队列中；</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="n">ByteBuf</span> <span class="n">buffer</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="na">alloc</span><span class="o">().</span><span class="na">buffer</span><span class="o">();</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>ResourceLeakDetector.allLeaks 存放着弱引用对象，弱引用对象内部维护着一个资源释放计数器。allLeaks 本质是一个 Hashset，利用 ConcurrentHashMap 实现。</p>
+<p><strong>注意</strong>：正如前面章节所述，allLeaks 链表引用弱引用 DefaultResourceLeak 实例并不会影响 DefaultResourceLeak 对应的 ByteBuf 资源被 GC 线程回收。</p>
+<p><strong>2.内存释放</strong></p>
+<p>内存释放时，将 ByteBuf 在 ResourceLeakDetector.allLeaks 的 DefaultResourceLeak 实例内部计数器 -1。如果计数器的个数为 0，那么说明内存正确被释放了，那么就将此资源对应的 DefaultResourceLeak 从 allLeaks 中移除。</p>
+<p><strong>3.GC 时</strong></p>
+<p>当 ByteBuf 被 GC 回收时，通过 GC 线程、ReferenceHandler 线程的合作，会将 ByteBuf 对应的弱引用对象 DefaultResourceLeak 实例放入到 ResourceLeakDetector#refQueue 队列。</p>
+<p><strong>4.内存泄漏检测</strong></p>
+<p>当 NioEventLoop 在 ChannelPipeline 中试图向内存池申请内存时，就会先进行一次内存泄漏检测，其方式是调用 ResourceLeakDetector#track0 方法，然后进入最核心的 ResourceLeakDetector#reportLeak 方法。</p>
+<ul>
+<li>如果内存泄漏检测被关闭，那么仅仅是将 ResourceLeakDetector#refQueue 队列清空；</li>
+<li>否则，遍历弹出 refQueue 队列中所有弱引用实例，将 refQueue 队列中的每一个元素到 allLeaks 队列中检查是否也存在，如果存在，先移除，此情况说明内存泄漏了。否则内存没有泄漏；</li>
+<li>内存泄漏最终通过打印 Report 中的堆栈信息日志反映出来；</li>
+</ul>
+<p>可见，Netty 内存泄漏检测的本质就是维护两个数据结构：</p>
+<ul>
+<li>allLeaks 存放着没有执行指定资源释放次数的弱引用对象；</li>
+<li>refQueue 将存放资源已经被 GC 回收的弱引用对象；</li>
+</ul>
+<p>本质就是基于队列+异步线程（GC 线程、ReferenceHandler 线程、NioEventLoop 用户线程）维护的一个异步消息通知与回调机制。通知是资源被 GC 了，回调则是用户线程自己负责执行。</p>
+<h2 id="4-总结">4. 总结</h2>
+<p>Java 中强引用、软引用、弱引用、虚引用用于控制堆内实例被回收时的特性，如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>引用类型</th>
+<th>回收时机</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>强引用 StrongReference</td>
+<td>never</td>
+</tr>
+<tr>
+<td>软引用 SoftReference</td>
+<td>内存不足</td>
+</tr>
+<tr>
+<td>弱引用 WeakReference</td>
+<td>GC 时</td>
+</tr>
+<tr>
+<td>虚引用 PhantomReference</td>
+<td>Unknown</td>
+</tr>
+</tbody>
+</table>
+<p>GC 线程会负责一件事：</p>
+<ul>
+<li>当触发事件时，将 Reference 实例的 referent 字段设置为 null；</li>
+<li>将 Reference 实例赋值给 Reference#pending 静态字段；</li>
+</ul>
+<p>ReferenceHandler 线程在 Reference 的 static 语句块中启动，其负责如下的策略：</p>
+<ul>
+<li>如果 Reference 实例是 Cleaner 实例，那么调用 Cleaner#clean 方法；</li>
+<li>如果 Reference 实例内部有指定的 ReferenceQueue 队列实例，那么就将此 Reference 实例加入到 ReferenceQueue 队列中；</li>
+<li>继续处理 pending 链表中下一个元素（Reference.discovered）；</li>
+</ul>
+<p>用户线程则可以选择继承 Reference 以及 ReferenceQueue 队列，负责从队列中取出 Reference 实例，做出相应处理后，最终释放 Reference 实例。</p>
+<p>其中，基于 ReferenceQueue 可以实现一种回调通知机制，通知的方式是：ReferenceHandler 线程负责将 Reference 实例放入到 ReferenceQueue 队列中。回调策略由用户线程编写，ReferenceQueue 内部的 Reference 实例也由用户线程负责取出以及处理。</p>
+<p><strong>注意</strong>：放入到 ReferenceQueue 中的 Reference 实例，其指向的资源已经被 GC 回收了。</p>
+
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/java/">Java</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/netty/sharableannotationinnetty/">
+            <span class="next-text nav-default">Netty 的 Sharable 注解</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+
+
+      <h3>转载申请</h3>
+      <a rel=license href=https://creativecommons.org/licenses/by/4.0>
+        <img alt=知识共享许可协议 style=border-width:0 src=../../static/creative-commons.png>
+      </a>
+      <br>本作品采用
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/ target="_blank" style="text-decoration:underline;" >
+      知识共享署名 4.0 国际许可协议</a>
+      进行许可，转载时请注明作者姓名以及原文链接，图片在使用时请保留全部内容，可适当缩放并在引用处附上图片所在的文章链接。
+
+      
+    </footer>
+  </article>
+        </div>
+        <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '2021-03-28 15:07:50 \u002b0800 CST',
+        title: 'Java 强引用、软引用、弱引用以及虚引用',
+        clientID: 'b8e9909664fb69930809',
+        clientSecret: '847d9069c9532ab260721afb9f036cdb8f52aec4',
+        repo: 'Spongecaptain.github.io',
+        owner: 'Spongecaptain',
+        admin: ['Spongecaptain'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a></noscript>
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:wjjiang19@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/spongecaptain" class="iconfont icon-github" title="github"></a>
+  <a href="https://spongecaptain.cool/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2021
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Spongecaptain</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

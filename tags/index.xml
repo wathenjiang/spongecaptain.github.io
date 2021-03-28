@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Sun, 28 Feb 2021 11:22:24 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 28 Mar 2021 15:07:50 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Java</title>
+      <link>https://spongecaptain.cool/tags/java/</link>
+      <pubDate>Sun, 28 Mar 2021 15:07:50 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/tags/java/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Netty</title>
       <link>https://spongecaptain.cool/tags/netty/</link>
@@ -176,15 +185,6 @@
       <pubDate>Fri, 02 Oct 2020 20:59:57 +0800</pubDate>
       
       <guid>https://spongecaptain.cool/tags/gitlab/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Java</title>
-      <link>https://spongecaptain.cool/tags/java/</link>
-      <pubDate>Sun, 13 Sep 2020 22:14:03 +0800</pubDate>
-      
-      <guid>https://spongecaptain.cool/tags/java/</guid>
       <description></description>
     </item>
     
