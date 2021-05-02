@@ -3,7 +3,63 @@
   
   <url>
     <loc>https://spongecaptain.cool/categories/</loc>
-    <lastmod>2021-03-28T15:07:50+08:00</lastmod>
+    <lastmod>2021-05-02T23:32:23+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/tags/join/</loc>
+    <lastmod>2021-05-02T23:32:23+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/categories/join/</loc>
+    <lastmod>2021-05-02T23:32:23+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/tags/mysql/</loc>
+    <lastmod>2021-05-02T23:32:23+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/categories/mysql/</loc>
+    <lastmod>2021-05-02T23:32:23+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/post/mysql/joininmysql/</loc>
+    <lastmod>2021-05-02T23:32:23+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/post/</loc>
+    <lastmod>2021-05-02T23:32:23+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/</loc>
+    <lastmod>2021-05-02T23:32:23+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/tags/</loc>
+    <lastmod>2021-05-02T23:32:23+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -24,27 +80,6 @@
   
   <url>
     <loc>https://spongecaptain.cool/post/java/referenceinjava/</loc>
-    <lastmod>2021-03-28T15:07:50+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/post/</loc>
-    <lastmod>2021-03-28T15:07:50+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/</loc>
-    <lastmod>2021-03-28T15:07:50+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/tags/</loc>
     <lastmod>2021-03-28T15:07:50+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
@@ -102,20 +137,6 @@
   <url>
     <loc>https://spongecaptain.cool/post/database/logicalandphicallog/</loc>
     <lastmod>2021-02-17T10:11:57+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/tags/mysql/</loc>
-    <lastmod>2021-02-16T11:08:38+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/categories/mysql/</loc>
-    <lastmod>2021-02-16T11:08:38+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>join on Spongecaptain 的个人技术博客</title>
+    <link>https://spongecaptain.cool/categories/join/</link>
+    <description>Recent content in join on Spongecaptain 的个人技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>Spongecaptain</copyright>
+    <lastBuildDate>Sun, 02 May 2021 23:32:23 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/categories/join/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MySQL join 学习</title>
+      <link>https://spongecaptain.cool/post/mysql/joininmysql/</link>
+      <pubDate>Sun, 02 May 2021 23:32:23 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/mysql/joininmysql/</guid>
+      <description>1. 数学基础：笛卡尔乘积 笛卡尔乘积是一个数学概念： 笛卡尔乘积是指在数学中，两个集合 X 和 Y 的笛卡尔积（Cartesian product），又称直</description>
+    </item>
+    
+  </channel>
+</rss>

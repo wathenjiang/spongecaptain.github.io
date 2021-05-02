@@ -7,7 +7,25 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Sun, 28 Mar 2021 15:07:50 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 02 May 2021 23:32:23 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>join</title>
+      <link>https://spongecaptain.cool/categories/join/</link>
+      <pubDate>Sun, 02 May 2021 23:32:23 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/categories/join/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>MySQL</title>
+      <link>https://spongecaptain.cool/categories/mysql/</link>
+      <pubDate>Sun, 02 May 2021 23:32:23 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/categories/mysql/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Java</title>
       <link>https://spongecaptain.cool/categories/java/</link>
@@ -41,15 +59,6 @@
       <pubDate>Wed, 17 Feb 2021 10:11:57 +0800</pubDate>
       
       <guid>https://spongecaptain.cool/categories/%E6%97%A5%E5%BF%97/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>MySQL</title>
-      <link>https://spongecaptain.cool/categories/mysql/</link>
-      <pubDate>Tue, 16 Feb 2021 11:08:38 +0800</pubDate>
-      
-      <guid>https://spongecaptain.cool/categories/mysql/</guid>
       <description></description>
     </item>
     

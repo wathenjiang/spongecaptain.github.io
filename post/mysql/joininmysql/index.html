@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>MySQL join 学习 - Spongecaptain 的个人技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Spongecaptain" /><meta name="description" content="1. 数学基础：笛卡尔乘积 笛卡尔乘积是一个数学概念： 笛卡尔乘积是指在数学中，两个集合 X 和 Y 的笛卡尔积（Cartesian product），又称直" /><meta name="keywords" content="MySQL, join" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.82.0 with theme even" />
+
+
+<link rel="canonical" href="https://spongecaptain.cool/post/mysql/joininmysql/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.20eaaf634d4dd8fdd9ee27392a8a8d7542264cd21577a22499a924b5f4a112ef.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="MySQL join 学习" />
+<meta property="og:description" content="1. 数学基础：笛卡尔乘积 笛卡尔乘积是一个数学概念： 笛卡尔乘积是指在数学中，两个集合 X 和 Y 的笛卡尔积（Cartesian product），又称直" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://spongecaptain.cool/post/mysql/joininmysql/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-05-02T23:32:23&#43;08:00" />
+<meta property="article:modified_time" content="2021-05-02T23:32:23&#43;08:00" />
+
+<meta itemprop="name" content="MySQL join 学习">
+<meta itemprop="description" content="1. 数学基础：笛卡尔乘积 笛卡尔乘积是一个数学概念： 笛卡尔乘积是指在数学中，两个集合 X 和 Y 的笛卡尔积（Cartesian product），又称直"><meta itemprop="datePublished" content="2021-05-02T23:32:23&#43;08:00" />
+<meta itemprop="dateModified" content="2021-05-02T23:32:23&#43;08:00" />
+<meta itemprop="wordCount" content="3640">
+<meta itemprop="keywords" content="MySQL,join," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MySQL join 学习"/>
+<meta name="twitter:description" content="1. 数学基础：笛卡尔乘积 笛卡尔乘积是一个数学概念： 笛卡尔乘积是指在数学中，两个集合 X 和 Y 的笛卡尔积（Cartesian product），又称直"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body class = body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/about/index.html">
+        <li class="mobile-menu-item">关于</li>
+      </a><a href="https://spongecaptain.cool/SimpleClearFileIO/">
+        <li class="mobile-menu-item">文件I/O简明概述</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/index.html">关于</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="https://spongecaptain.cool/SimpleClearFileIO/">文件I/O简明概述</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">MySQL join 学习</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2021-05-02 </span>
+        <div class="post-category">
+            <a href="/categories/mysql/"> MySQL </a>
+            <a href="/categories/join/"> join </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-数学基础笛卡尔乘积">1. 数学基础：笛卡尔乘积</a></li>
+    <li><a href="#2-join-的作用是什么">2. join 的作用是什么？</a></li>
+    <li><a href="#3-不同的-join-类型的语义">3. 不同的 join 类型的语义</a></li>
+    <li><a href="#4-典型带有-join-的-sql-语法分析">4. 典型带有 join 的 SQL 语法分析</a></li>
+    <li><a href="#5-join-性能优化">5. join 性能优化</a>
+      <ul>
+        <li><a href="#51-join-可以跨库吗">5.1 join 可以跨库吗？</a></li>
+        <li><a href="#52-join-内部执行过程与索引">5.2 join 内部执行过程与索引</a></li>
+        <li><a href="#53-join-与数据库范式">5.3 join 与数据库范式</a></li>
+        <li><a href="#54-join-来代替子查询">5.4 join 来代替子查询</a></li>
+      </ul>
+    </li>
+    <li><a href="#6-是否应当使用-join">6. 是否应当使用 join？</a></li>
+    <li><a href="#summary">SUMMARY</a></li>
+    <li><a href="#reference">REFERENCE</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h2 id="1-数学基础笛卡尔乘积">1. 数学基础：笛卡尔乘积</h2>
+<p>笛卡尔乘积是一个数学概念：</p>
+<p>笛卡尔乘积是指在数学中，两个集合 X 和 Y 的笛卡尔积（Cartesian product），又称直积，表示为 X × Y，第一个对象是 X 的成员而第二个对象是 Y 的所有可能有序对的其中一个成员。公式表示就是如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">X×Y = {(x,y)|x∈X,y∈Y}
+</code></pre></td></tr></table>
+</div>
+</div><p>案例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">X = {1,2}
+Y = {a,b,c}
+X×Y = {(1,a),(1,b),(1,c),(2,a),(2,b),(2,c)}
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="2-join-的作用是什么">2. join 的作用是什么？</h2>
+<p>join 是关系型数据库在<strong>关系</strong>二字上的集中体现，其作用在于将两张及以上表根据列中字段间的相关关系，将多表中的行融合在一起。</p>
+<h2 id="3-不同的-join-类型的语义">3. 不同的 join 类型的语义</h2>
+<table>
+<thead>
+<tr>
+<th>join 类型</th>
+<th>语义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cross join</td>
+<td>Cross 即交叉，代表笛卡尔乘积中符号 ×，其也就是两表的笛卡尔乘积结果</td>
+</tr>
+<tr>
+<td>inner join</td>
+<td>语义上等效为从笛卡尔乘积中选出符合条件的交集记录</td>
+</tr>
+<tr>
+<td>left join</td>
+<td>语义上等效为从笛卡尔乘积中选出符合条件的交集记录+左表剩余的所有记录（不属于左表的字段会被置为 NULL）</td>
+</tr>
+<tr>
+<td>right join</td>
+<td>语义上等效为从笛卡尔乘积中选出符合条件的交集记录+右表剩余的所有记录（不属于右表的字段会被置为 NULL）</td>
+</tr>
+<tr>
+<td>full join</td>
+<td>MySQL 并不支持 full join，不过可以等效为相同条件的 left join 与 right 的 union</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>full join 补充说明，在 MySQL 中如下语句是一个典型的 Full join：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-mysql" data-lang="mysql"><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">t1</span> <span class="k">left</span> <span class="k">join</span> <span class="n">t2</span> <span class="k">on</span> <span class="n">t2</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">t1</span><span class="p">.</span><span class="n">name</span>
+<span class="k">union</span>
+<span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">t1</span> <span class="k">right</span> <span class="k">join</span> <span class="n">t2</span> <span class="k">on</span> <span class="n">t2</span><span class="p">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">t1</span><span class="p">.</span><span class="n">name</span><span class="p">;</span>
+</code></pre></td></tr></table>
+</div>
+</div></blockquote>
+<p>也可以用集合的语言来表示，如下图所示：</p>
+<p><img src="../../../images/img_mysql/image-20210502193126769.png" alt="image-20210502193126769"></p>
+<p>在 SQL 实际上又把 inner join 称为内连接，其余所有 join 类型都称为外连接。因此 join 有等效别名关键字：</p>
+<ul>
+<li>
+<p>inner join：join</p>
+<blockquote>
+<p>显示(explicit) inner join 与隐式(implicit) inner join 性能上没有区别。</p>
+</blockquote>
+</li>
+<li>
+<p>left join：left outer join</p>
+</li>
+<li>
+<p>right join：right outer join</p>
+</li>
+<li>
+<p>cross join：cross outer join</p>
+</li>
+<li>
+<p>full join：full outer join</p>
+</li>
+</ul>
+<p><strong>LEFT JOIN</strong> 和 <strong>RIGHT JOIN</strong>没什么差别，两者的结果差异取决于左右表的放置顺序。</p>
+<h2 id="4-典型带有-join-的-sql-语法分析">4. 典型带有 join 的 SQL 语法分析</h2>
+<p>典型带有 join 的 SQL 语句如下所示：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">SELECT</span> <span class="o">&lt;</span><span class="n">row_list</span><span class="o">&gt;</span> 
+  <span class="k">FROM</span> <span class="o">&lt;</span><span class="n">left_table</span><span class="o">&gt;</span> 
+    <span class="o">&lt;</span><span class="k">inner</span><span class="o">|</span><span class="k">left</span><span class="o">|</span><span class="k">right</span><span class="o">&gt;</span> <span class="k">JOIN</span> <span class="o">&lt;</span><span class="n">right_table</span><span class="o">&gt;</span> 
+      <span class="k">ON</span> <span class="o">&lt;</span><span class="k">join</span> <span class="n">condition</span><span class="o">&gt;</span> 
+        <span class="k">WHERE</span> <span class="o">&lt;</span><span class="n">where_condition</span><span class="o">&gt;</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>我们按照 SQL 语句的执行顺序来对上述 SQL 语句进行说明：</p>
+<blockquote>
+<p><strong>注意事项</strong>：下面的说法仅仅从 MySQL 执行语义上进行说明，实际上 MySQL 在内存中不会建立 vt1、vt2、vt3 表。</p>
+</blockquote>
+<ul>
+<li>
+<p><strong>FROM</strong>：MySQL 中 FROM 子句总是第一个被执行的，FROM 的作用是对 join 涉及的多个表进行笛卡尔乘积 vt1 表，结果有 m*n 行（m 为左表的行数，n 为右表的行数）；</p>
+</li>
+<li>
+<p><strong>ON</strong>：新建一张 vt2 表，并根据 ON 的条件筛选 vt1 表，符合条件的行加入到 vt2 中；</p>
+<blockquote>
+<p>ON 只有对 Cross join 不是必须的。</p>
+</blockquote>
+</li>
+<li>
+<p><strong>JOIN</strong>：如果是 left join 或者 right join，那么就需要添加外部行，如果是 inner join 就不需要添加外部行。添加外部行以 left join 为例，首先遍历左表的每一行，其中不在 vt2 中的行会被添加到 vt2 中，不属于左表的字段会被置为 NULL，最终形成 vt3；</p>
+</li>
+<li>
+<p><strong>WHERE</strong>：对 vt3 表按照条件进行过滤，满足条件的行被输出到 vt4；</p>
+</li>
+<li>
+<p><strong>SELECT</strong>：从 vt4 中取出指定的字段到 vt5；</p>
+</li>
+</ul>
+<p><strong>ON 与 WHERE 的区别是什么？</strong></p>
+<p>ON 与 WHERE 在使用 inner join 时，无论是在结果上还是在性能上都没有区别。</p>
+<ul>
+<li>从结果上看，inner join 中无论条件写在 ON 还是 WHERE 后，结果相同。在使用 left/left join 时，结果有区别。例如，在 left join 中对 ON 后不符合条件的左表中的行还是会被纳入到结果中，但是却可以被 WHERE 后的条件过滤掉。</li>
+<li>从效率的角度上看，虽然很多中文资源认为有所区别，但实际上没区别，可以参考：<a href="https://stackoverflow.com/questions/354070/sql-join-where-clause-vs-on-clause">SQL JOIN - WHERE clause vs. ON clause</a>，查询优化器会避免写法的不同导致执行效率的不同。</li>
+</ul>
+<h2 id="5-join-性能优化">5. join 性能优化</h2>
+<h3 id="51-join-可以跨库吗">5.1 join 可以跨库吗？</h3>
+<p>MySQL 可以利用 FEDERATED 引擎等方式实现跨库 join，但查询效率实际上并不高。通常认为 MySQL join 操作指的同数据库的多表 join。</p>
+<h3 id="52-join-内部执行过程与索引">5.2 join 内部执行过程与索引</h3>
+<p>在单表查询中，我们通常会强调两点：</p>
+<ul>
+<li>WHERE 后的字段是否可以走索引，如果不行，那么将直接走簇集索引，进行全表扫描，效率很差；</li>
+<li>SELECT 后的字段是否可以走覆盖索引，如果不行，那么则需要回表到簇集索引；</li>
+</ul>
+<p>但在 join 多表问题中，索引不仅仅需要考虑上述两个问题。</p>
+<p>MySQL 中的 join 操作并<strong>不会</strong>在内存中构造临时表，第四节中的说法只是方便从语义上进行理解。join 具体如何执行取决于查询优化器的选择。</p>
+<p>MySQL 支持如下三种 join 操作（以两张表 join 为例）：</p>
+<ul>
+<li>nested loop join：利用嵌套 for 循环对两张表中的每一行数据进行两两比较。需要遍历第一张表 n 行，每一行都需要进行时间复杂度为 O(n) 的非索引查询，因此总的比较的时间复杂度为 O(n^2^)</li>
+<li>block nested loop join：对 nested loop join 的优化，利用对第一张表的行进行查询缓存，这样内层 for 循环中第二张表的每一条行数据一次性与第一张表的多条行数据进行比较，减少了对内表的比较次数。需要遍历第一张表 n 行，每 k 行都需要进行时间复杂度为 O(n) 的非索引查询，因此总的比较的时间复杂度为 O(n^2^/k)，k 为常数。</li>
+<li>index nested loop join：从第一张表读一行，然后在第二张表的索引中查找这个数据，索引是 B+ 树索引。需要遍历第一张表 n 行，每一行都需要进行时间复杂度为 O(logn) 的非索引查询，因此总的比较的时间复杂度为 O(nlogn)。</li>
+<li>batched key access join：其也是利用对外循环表的字段进行缓存，减少对内循环表的访问次数。比较次数得到一定减少，但是比较的时间复杂度还是为 O(nlogn/k)，k 为常数。</li>
+</ul>
+<p>可见，join 操作的性能非常取决于第二张表是否基于索引进行查询。<strong>不过，为什么不要求第一张表也使用索引？</strong></p>
+<p>实际上，第一张表被称为驱动表，亦可称之为基表，MySQL 总是要遍历该表的所有行，每一行都去第二张表中进行匹配查询。遍历可以不建立索引，走簇集索引即可，而查询操作则需要依赖于二级索引。</p>
+<p><strong>那么，MySQL 如何决定将哪一张表作为驱动表呢？</strong></p>
+<p>MySQL 选择驱动表的原则是：在对最终结果集没影响的前提下，优先选择结果集最少的那张表作为驱动表。原因在于驱动表的行数决定了在非驱动表中进行查询的次数，驱动表行数越少，进行查询的次数越少。</p>
+<p>如果是 left join，那么基表通常是 left join 左侧表，right join 的基表通常为 right join 右侧表。</p>
+<p>因此，我们要非常注意非驱动表的索引，在 ON 以及 WHERE 后的字段都应该被索引覆盖。</p>
+<h3 id="53-join-与数据库范式">5.3 join 与数据库范式</h3>
+<p>数据库范式有若干条[4]，定义偏于学术性，但核心思路是简洁明了的：数据库范式目的是使结构更合理，消除存储异常，使数据冗余尽量小，便于插入、删除和更新。</p>
+<p>join 操作的原因就在于多表之间有关系并且多个表之间数据几乎没有冗余。</p>
+<p>举一个例子，我们有三个表：</p>
+<ul>
+<li>student(id,name)</li>
+<li>class(id,description)</li>
+<li>student_class(student_id,class_id)</li>
+</ul>
+<p>如果要查询一个学生对应的班级描述，那么就需要对上述三标进行 join，join 的性能问题可能会使我们产生担心。</p>
+<p>为此，我们可以故意破坏范式，制造出一张存在冗余的“大表”：</p>
+<ul>
+<li>student_class_full(student_id, class_id, name, description)</li>
+</ul>
+<p>你会发现，class 的 description 可能存储在两个表中（student_class_full 与 class），这不符合范式，并且为写操作带来了一致性问题以及写性能下降。另一方面，我们不再需要使用 join 来完成查询，读性能得到提高。</p>
+<p>可见，在一些场景下，我们可以选择破坏数据库范式，避免使用 join 来提高读性能。代价是不同表之间出现的字段冗余、写性能下降，写操作出现多表间的一致性问题。</p>
+<h3 id="54-join-来代替子查询">5.4 join 来代替子查询</h3>
+<p>join 比子查询在空间复杂度上要低，因此很多人建议利用 join 来代替子查询：</p>
+<ul>
+<li>子查询：执行子查询时，MYSQL 需要创建临时表，查询完毕后再删除这些临时表，所以，子查询的速度会受到一定的影响，这里多了一个创建和销毁临时表的过程。</li>
+<li>join：正如 5.3 小节所述，join 走嵌套查询。小表驱动大表，通过索引字段进行关联。</li>
+</ul>
+<h2 id="6-是否应当使用-join">6. 是否应当使用 join？</h2>
+<p>阿里巴巴在 Java 开发手册中建议[8]：超过三个表禁止 join。需要 join 的字段，数据类型保持绝对一致。</p>
+<p>可见，阿里巴巴的意思是可以用 join，但是不要超过3张表。</p>
+<p><strong>（1）为什么 join 表的个数不能太多？</strong></p>
+<p>虽然我们可以利用索引来优化查询，但是如果是 k 张 n 行的数据库进行 join 查询，<strong>最坏的</strong>情况下时间复杂度为 O(n*(logn)^k-1^)，因此 join 表的数量应当得到控制。</p>
+<p>例如，我们假设每一张表的行数为 1000,000 行，那么时间复杂度有：</p>
+<table>
+<thead>
+<tr>
+<th>join 表的数量(k)</th>
+<th>时间复杂度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>20*1000,000</td>
+</tr>
+<tr>
+<td>3</td>
+<td>400*1000,000</td>
+</tr>
+<tr>
+<td>4</td>
+<td>8000*1000,000</td>
+</tr>
+<tr>
+<td>k</td>
+<td>O(n*(logn)^k-1^</td>
+</tr>
+</tbody>
+</table>
+<p><strong>（2）为什么可以使用 join？</strong></p>
+<p>很多场景下 join  是最优选择。例如两张表各有 10W 条数据，我们的确可以利用 service 层，分两步向两个数据库索要对应的行数据，然后在 service 层完成数据行的关联与过滤。但是 2*10 W 行数据有很大的网络传输压力，并且会对 service 层所在的服务器内存有一定压力。而 join 在 mysql server 处实际可能仅仅会得到 100 条符合要求的记录，那么对比起来，在 service 层的额外开销更难以接受。</p>
+<p>当然，分库的 join 避免不了网络传输的额外开销（排除一机多库）。</p>
+<h2 id="summary">SUMMARY</h2>
+<ul>
+<li>基于笛卡尔乘积，我们能够方便地<strong>从语义上</strong>理解 MySQL 各种 join 语义；</li>
+<li>第 4 节从语义上说明了典型带有 join 的 SQL 语法的执行过程，但是注意其内部并不会建立多个虚拟表；</li>
+<li>第 5 节分析了 join 操作的内部机制：join 基于小表驱动大表地进行嵌套查询，被驱动表是否能够走索引进行查询将决定整个 join 语句的执行效率；</li>
+<li>第 6 节分析了 join 使用建议，并给出其时间复杂度模型，解释了阿里巴巴建议 join 表数量不应当超过 3 张的原因；</li>
+</ul>
+<h2 id="reference">REFERENCE</h2>
+<ul>
+<li>[1] <a href="https://segmentfault.com/a/1190000015572505">Mysql-JOIN详解</a></li>
+<li>[2] <a href="https://www.w3schools.com/sql/sql_join.asp">SQL Joins</a></li>
+<li>[3] <a href="https://www.zhihu.com/question/35789938">分布式数据库如何实现跨库join?</a></li>
+<li>[4] <a href="https://baike.baidu.com/item/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%8C%83%E5%BC%8F">百度百科-数据库范式</a></li>
+<li>[5] <a href="https://www.zhihu.com/question/56236190">《阿里巴巴JAVA开发手册》里面写超过三张表禁止join 这是为什么？这样的话那sql要怎么写？</a></li>
+<li>[6] <a href="https://www.cnblogs.com/youzhibing/p/12004986.html">神奇的 SQL 之 联表细节 → MySQL JOIN 的执行过程（一）</a></li>
+<li>[7] <a href="https://www.cnblogs.com/youzhibing/p/12012952.html">神奇的 SQL 之 联表细节 → MySQL JOIN 的执行过程（二）</a></li>
+<li>[8] <a href="https://developer.aliyun.com/topic/java20">嵩山版Java开发手册-阿里云开发者社区</a></li>
+<li>[9] <a href="https://www.zhihu.com/question/68258877">MySQL多表关联查询效率高点还是多次单表查询效率高，为什么？</a></li>
+</ul>
+
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/mysql/">MySQL</a>
+          <a href="/tags/join/">join</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/java/referenceinjava/">
+            <span class="next-text nav-default">Java 强引用、软引用、弱引用以及虚引用</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+
+
+      <h3>转载申请</h3>
+      <a rel=license href=https://creativecommons.org/licenses/by/4.0>
+        <img alt=知识共享许可协议 style=border-width:0 src=../../static/creative-commons.png>
+      </a>
+      <br>本作品采用
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/ target="_blank" style="text-decoration:underline;" >
+      知识共享署名 4.0 国际许可协议</a>
+      进行许可，转载时请注明作者姓名以及原文链接，图片在使用时请保留全部内容，可适当缩放并在引用处附上图片所在的文章链接。
+
+      
+    </footer>
+  </article>
+        </div>
+        <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '2021-05-02 23:32:23 \u002b0800 CST',
+        title: 'MySQL join 学习',
+        clientID: 'b8e9909664fb69930809',
+        clientSecret: '847d9069c9532ab260721afb9f036cdb8f52aec4',
+        repo: 'Spongecaptain.github.io',
+        owner: 'Spongecaptain',
+        admin: ['Spongecaptain'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a></noscript>
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:wjjiang19@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/spongecaptain" class="iconfont icon-github" title="github"></a>
+  <a href="https://spongecaptain.cool/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2021
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Spongecaptain</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

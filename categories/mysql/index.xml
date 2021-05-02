@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Tue, 16 Feb 2021 11:08:38 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/categories/mysql/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 02 May 2021 23:32:23 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/categories/mysql/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MySQL join 学习</title>
+      <link>https://spongecaptain.cool/post/mysql/joininmysql/</link>
+      <pubDate>Sun, 02 May 2021 23:32:23 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/mysql/joininmysql/</guid>
+      <description>1. 数学基础：笛卡尔乘积 笛卡尔乘积是一个数学概念： 笛卡尔乘积是指在数学中，两个集合 X 和 Y 的笛卡尔积（Cartesian product），又称直</description>
+    </item>
+    
     <item>
       <title>MySQL 的零拷贝技术</title>
       <link>https://spongecaptain.cool/post/mysql/zerocopyofmysql/</link>
