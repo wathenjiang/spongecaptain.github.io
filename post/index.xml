@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Sun, 02 May 2021 23:32:23 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 19 May 2021 16:50:11 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>写给 Java 程序员的 Go Web 框架 Gin 源码入门</title>
+      <link>https://spongecaptain.cool/post/gin/introductionofginforjavaer/</link>
+      <pubDate>Wed, 19 May 2021 16:50:11 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/gin/introductionofginforjavaer/</guid>
+      <description>本文会比较 Gin 与 Netty 以及 Spring 在一些设计上的异同。如果你没有 Java 开发经验，也完全可以略去对比 Java 的部门，并不影响理解本文。 1. Gin 启动过程过程概述 下面是使用</description>
+    </item>
+    
     <item>
       <title>MySQL join 学习</title>
       <link>https://spongecaptain.cool/post/mysql/joininmysql/</link>

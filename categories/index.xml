@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Sun, 02 May 2021 23:32:23 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 19 May 2021 16:50:11 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Gin</title>
+      <link>https://spongecaptain.cool/categories/gin/</link>
+      <pubDate>Wed, 19 May 2021 16:50:11 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/categories/gin/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>join</title>
       <link>https://spongecaptain.cool/categories/join/</link>

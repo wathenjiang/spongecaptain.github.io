@@ -3,7 +3,49 @@
   
   <url>
     <loc>https://spongecaptain.cool/categories/</loc>
-    <lastmod>2021-05-02T23:32:23+08:00</lastmod>
+    <lastmod>2021-05-19T16:50:11+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/tags/gin/</loc>
+    <lastmod>2021-05-19T16:50:11+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/categories/gin/</loc>
+    <lastmod>2021-05-19T16:50:11+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/post/</loc>
+    <lastmod>2021-05-19T16:50:11+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/</loc>
+    <lastmod>2021-05-19T16:50:11+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/tags/</loc>
+    <lastmod>2021-05-19T16:50:11+08:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://spongecaptain.cool/post/gin/introductionofginforjavaer/</loc>
+    <lastmod>2021-05-19T16:50:11+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -38,27 +80,6 @@
   
   <url>
     <loc>https://spongecaptain.cool/post/mysql/joininmysql/</loc>
-    <lastmod>2021-05-02T23:32:23+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/post/</loc>
-    <lastmod>2021-05-02T23:32:23+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/</loc>
-    <lastmod>2021-05-02T23:32:23+08:00</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  
-  <url>
-    <loc>https://spongecaptain.cool/tags/</loc>
     <lastmod>2021-05-02T23:32:23+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
