@@ -49,7 +49,7 @@
 <meta itemprop="name" content="MySQL join 学习">
 <meta itemprop="description" content="1. 数学基础：笛卡尔乘积 笛卡尔乘积是一个数学概念： 笛卡尔乘积是指在数学中，两个集合 X 和 Y 的笛卡尔积（Cartesian product），又称直"><meta itemprop="datePublished" content="2021-05-02T23:32:23&#43;08:00" />
 <meta itemprop="dateModified" content="2021-05-02T23:32:23&#43;08:00" />
-<meta itemprop="wordCount" content="3815">
+<meta itemprop="wordCount" content="3828">
 <meta itemprop="keywords" content="MySQL,join," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="MySQL join 学习"/>
 <meta name="twitter:description" content="1. 数学基础：笛卡尔乘积 笛卡尔乘积是一个数学概念： 笛卡尔乘积是指在数学中，两个集合 X 和 Y 的笛卡尔积（Cartesian product），又称直"/>
@@ -202,11 +202,11 @@ X×Y = {(1,a),(1,b),(1,c),(2,a),(2,b),(2,c)}
 </tr>
 <tr>
 <td>left join</td>
-<td>语义上等效为从笛卡尔乘积中选出符合条件的交集记录+左表剩余的所有记录（不属于左表的字段会被置为 NULL）</td>
+<td>语义上等效为从笛卡尔乘积中选出符合条件的交集记录+左表剩余的所有记录（把左表记录作为基础，依次添加右表字段，如果符合 ON 记录，那么赋值为右表字段值，否则赋值为 NULL）</td>
 </tr>
 <tr>
 <td>right join</td>
-<td>语义上等效为从笛卡尔乘积中选出符合条件的交集记录+右表剩余的所有记录（不属于右表的字段会被置为 NULL）</td>
+<td>语义上等效为从笛卡尔乘积中选出符合条件的交集记录+右表剩余的所有记录</td>
 </tr>
 <tr>
 <td>full join</td>
