@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>redis on Spongecaptain 的个人技术博客</title>
+    <link>https://spongecaptain.cool/tags/redis/</link>
+    <description>Recent content in redis on Spongecaptain 的个人技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>Spongecaptain</copyright>
+    <lastBuildDate>Sun, 27 Jun 2021 12:28:17 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/tags/redis/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Go 语言下基于 Redis 的分布式锁</title>
+      <link>https://spongecaptain.cool/post/go/redislock/</link>
+      <pubDate>Sun, 27 Jun 2021 12:28:17 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/go/redislock/</guid>
+      <description>项目地址：https://github.com/Spongecaptain/redisLock 1. Go 原生的互斥锁 Go 原生的互斥锁即 sync 包下的 Mutex 结构</description>
+    </item>
+    
+  </channel>
+</rss>
