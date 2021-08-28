@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Sun, 29 Nov 2020 15:48:57 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/tags/%E7%AE%97%E6%B3%95/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 28 Aug 2021 17:50:41 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/tags/%E7%AE%97%E6%B3%95/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>一个开源的时间轮算法介绍</title>
+      <link>https://spongecaptain.cool/post/widget/timingwheel2/</link>
+      <pubDate>Sat, 28 Aug 2021 17:50:41 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/widget/timingwheel2/</guid>
+      <description>1. 回顾：简单的时间轮算法 这是我介绍时间轮算法第一篇文章：时间轮算法。本文会基于上一篇文章进行扩展，给出代码，解决一些问题。这也算是对第一篇文</description>
+    </item>
+    
     <item>
       <title>时间轮算法</title>
       <link>https://spongecaptain.cool/post/widget/timingwheel/</link>
