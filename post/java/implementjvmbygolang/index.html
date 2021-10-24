@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>《自己动手写Java虚拟机》- 读后摘要 - Spongecaptain 的个人技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Spongecaptain" /><meta name="description" content="读书摘要" /><meta name="keywords" content="Java 虚拟机" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.82.0 with theme even" />
+
+
+<link rel="canonical" href="https://spongecaptain.cool/post/java/implementjvmbygolang/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.20eaaf634d4dd8fdd9ee27392a8a8d7542264cd21577a22499a924b5f4a112ef.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="《自己动手写Java虚拟机》- 读后摘要" />
+<meta property="og:description" content="读书摘要" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://spongecaptain.cool/post/java/implementjvmbygolang/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-10-24T17:46:05&#43;08:00" />
+<meta property="article:modified_time" content="2021-10-24T17:46:05&#43;08:00" />
+
+<meta itemprop="name" content="《自己动手写Java虚拟机》- 读后摘要">
+<meta itemprop="description" content="读书摘要"><meta itemprop="datePublished" content="2021-10-24T17:46:05&#43;08:00" />
+<meta itemprop="dateModified" content="2021-10-24T17:46:05&#43;08:00" />
+<meta itemprop="wordCount" content="4183">
+<meta itemprop="keywords" content="Java 虚拟机," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="《自己动手写Java虚拟机》- 读后摘要"/>
+<meta name="twitter:description" content="读书摘要"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body class = body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/about/index.html">
+        <li class="mobile-menu-item">关于</li>
+      </a><a href="https://spongecaptain.cool/SimpleClearFileIO/">
+        <li class="mobile-menu-item">文件I/O简明概述</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/index.html">关于</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="https://spongecaptain.cool/SimpleClearFileIO/">文件I/O简明概述</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">《自己动手写Java虚拟机》- 读后摘要</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2021-10-24 </span>
+        <div class="post-category">
+            <a href="/categories/java-%E8%99%9A%E6%8B%9F%E6%9C%BA/"> Java 虚拟机 </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-背景介绍">1. 背景介绍</a></li>
+    <li><a href="#2-如何实现垃圾回收算法">2. 如何实现垃圾回收算法？</a></li>
+    <li><a href="#3-go-语言如何理解-java-代码">3. Go 语言如何理解 Java 代码？</a></li>
+    <li><a href="#4-没有字节码的本地方法如何执行">4. 没有字节码的本地方法如何执行？</a></li>
+    <li><a href="#5-如何实现-java-异常机制">5. 如何实现 Java 异常机制？</a></li>
+    <li><a href="#6-总结">6. 总结</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <h2 id="1-背景介绍">1. 背景介绍</h2>
+<p><a href="https://book.douban.com/subject/26802084/">《自己动手写Java虚拟机》</a>一书介绍了如何基于 Go 语言来编写一个 Java 虚拟机。该书对于想通过实践了解 Java 字节码格式、Java 虚拟机实现思路的人有很大的帮助。</p>
+<p>在国内 Java 语言有很大的受众，而且试图学习 JVM 的人一般都有较好的 Java 语言基础。另一方面，Go 语言作为一个新生代语言，虽然使用用户没有 Java 那么多，但是逐年流行，而且语言的入门掌握速度很快。因此，从语言上看，这本书不会有较大的理解难度。</p>
+<p>不过，推荐在阅读此书之前，先学习 Java 虚拟机的理论知识，参考书籍为：<a href="https://book.douban.com/subject/34907497/">《深入理解Java虚拟机（第3版）》</a>。</p>
+<p>如何利用 Go 语言实现 Java 虚拟机，在我看来需要解决如下几个问题：</p>
+<ul>
+<li>如何实现垃圾回收算法？</li>
+<li>Go 语言如何理解 Java 代码？</li>
+<li>没有字节码的本地方法如何执行？</li>
+<li>如何实现 Java 异常机制？</li>
+</ul>
+<p>下文阐述一下使用 Go 语言开发一个 Java 虚拟机需要解决的核心问题，内容主要从《自己动手写Java虚拟机》一书中整理得到。</p>
+<h2 id="2-如何实现垃圾回收算法">2. 如何实现垃圾回收算法？</h2>
+<p>Java 语言有两个重要的特点：语言跨平台、垃圾回收。</p>
+<p>在所有语言中，对象分配的区域分为两类：栈、堆。栈中分配的内存，随着方法运行结束，会自动被回收，而堆中分配的对象，当对象不再被使用时，我们就需要手动回收该对象的内存，否则会造成内存泄漏。</p>
+<p><strong>而《自己动手写Java虚拟机》一书并没有如何设计 GC 的章节，为何？</strong></p>
+<p>这是由于书本选择使用 Go 语言来编写 Java 虚拟机，而 Go 语言本身就自带垃圾回收，利用 Go run-time 自带的垃圾回收机制，就能够避免我们手动编写垃圾回收代码。不过，需要注意：为了 Go 语言的垃圾回收机制起到实际作用，要及时将引用变量赋值为 nil。</p>
+<p>《自己动手写Java虚拟机》通过取巧的方式地解决了这个问题，避免了复杂的 GC 逻辑，极大降低了 Java 虚拟机的实现难度。</p>
+<h2 id="3-go-语言如何理解-java-代码">3. Go 语言如何理解 Java 代码？</h2>
+<p><strong>一个自然的问题：Java 与 Go 是不同的语言，如何在由 Go 语言编写的虚拟机中运行 Java 代码呢？</strong></p>
+<p>Java 源代码经过 javac 工具编译后得到的字节码，<strong>字节码 ≠ Java 源码</strong>，方法已经被翻译为 Java 虚拟机指令集。Java 虚拟机指令集基于局部变量表、操作数栈等数据结构工作。Go 语言编写的 Java 虚拟机并不需要直接理解 Java 源代码，而只需要理解 Java 虚拟机指令集，并且实现局部变量表、操作数栈等数据结构就能够完成运行 Java 代码的能力。</p>
+<p>如果我们有一定汇编语言基础，那么理解 Java 虚拟机指令集并不困难。在汇编中，CPU 会按序执行一个个 CPU 指令，而 Java 虚拟机则会按序执行一个个的 Java 虚拟机指令。</p>
+<p>举一个书本中的例子，我们有如下的 Java 源代码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">static</span> <span class="kt">float</span> <span class="nf">circumference</span><span class="o">(</span><span class="kt">float</span> <span class="n">r</span><span class="o">){</span>
+  <span class="kt">float</span> <span class="n">pi</span> <span class="o">=</span> <span class="n">3</span><span class="o">.</span><span class="na">14f</span><span class="o">;</span>
+  <span class="kt">float</span> <span class="n">area</span> <span class="o">=</span> <span class="n">2</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">*</span> <span class="n">r</span><span class="o">;</span>
+  <span class="k">return</span> <span class="n">area</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>如上的方法会被 javac 编译器编译为如下字节码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">00	ldc #4
+02	fstore_1
+03	fconst_2
+04	fload_1
+05	fmul
+06	fload_0
+07	fmul
+08	fstore_2
+09	fload_2
+10	return
+</code></pre></td></tr></table>
+</div>
+</div><p>下面分析这段字节码的执行过程。circumference() 方法的局部变量表大小是 3（因为涉及三个变量：r、pi 以及 area），操作数栈深度是 2（因为涉及两次乘法）。假设调用方法时，传递给它的参数是 1.6f，方法开始执行前，帧的状态如下图所示。</p>
+<p><img src="../../../images/img_java/image-20211023145437866.png" alt="image-20211023145437866"></p>
+<p>注意：</p>
+<ul>
+<li>pc：processor count，程序计数器，记录当前操作指令的编号，字节码右侧的代码代表了指令的编号。</li>
+<li>Local Vars：局部变量表</li>
+<li>Operand Stack：操作数栈</li>
+</ul>
+<p>第一条指令是 ldc，它把 3.14f 推入栈顶（3.14f 这个数来自常量池），用于准备稍后给 pi 赋初始值，如下图所示：</p>
+<p><img src="../../../images/img_java/image-20211023145859904.png" alt="image-20211023145859904"></p>
+<p>上面是局部变量表和操作数栈过去的状态，最下面是当前状态。</p>
+<p>接着是 fstore_1 指令，它把栈顶的 3.14f 弹出，放到 #1 号局部变量中（对应代码 3.14f 赋值给 pi），如下图所示。</p>
+<p><img src="../../../images/img_java/image-20211023150047318.png" alt="image-20211023150047318"></p>
+<p>fconst_2 指令把 2.0f 推到栈顶，为乘法计算做准备，如下图所示。</p>
+<p><img src="../../../images/img_java/image-20211023150136394.png" alt="image-20211023150136394"></p>
+<p>foad_1 指令把 #1 号局部变量 pi 推入栈顶，如下图所示。</p>
+<p><img src="../../../images/img_java/image-20211023150332032.png" alt="image-20211023150332032"></p>
+<p>fmul 指令执行浮点数乘法。它把栈顶的两个浮点数弹出，相乘，然后把结果推入栈顶，如下图所示。</p>
+<p><img src="../../../images/img_java/image-20211023150410723.png" alt="image-20211023150410723"></p>
+<p>此时刚好完成了 2 * pi 的计算，下面我们还需要乘以 r。</p>
+<p>foad_0 指令把 #0 号局部变量 r 推入栈顶，如下图所示。</p>
+<p><img src="../../../images/img_java/image-20211023150512220.png" alt="image-20211023150512220"></p>
+<p>fmul 继续乘法计算，如下图所示：</p>
+<p><img src="../../../images/img_java/image-20211023150551590.png" alt="image-20211023150551590"></p>
+<p>fstore_2 指令把操作数栈顶的 foat 值弹出，放入 #2 号局部变量表，即赋值给 area，如图下所示。</p>
+<p><img src="../../../images/img_java/image-20211023150626222.png" alt="image-20211023150626222"></p>
+<p>foad_2 指令把 #2 号局部变量推入操作数栈顶，用于稍后的 return 操作，如下图所示。</p>
+<p><img src="../../../images/img_java/image-20211023150730303.png" alt="image-20211023150730303"></p>
+<p>最后 freturn 指令把操作数栈顶的 foat 变量弹出，返回给方法调用者，如下图所示。</p>
+<p><img src="../../../images/img_java/image-20211023150809490.png" alt="image-20211023150809490"></p>
+<p>总结一下，Go 语言实现的 Java 虚拟机通过理解字节码中的 Java 虚拟机指令集，基于局部变量表、操作数栈这两种数据结构实现了运行 Java 字节码。事实上，Java 字节码是一种中立语言，独立于 Java 语言，例如 Kotlin、Groovy、JRuby、Jython、Scala 等语言都能够编译为 Java 字节码，并不是只有 Java 源代码能够编译为 Java 字节码。</p>
+<p>推荐阅读：<a href="https://www.zhihu.com/question/34345694/answer/59407625">知乎：Java为什么解释执行时不直接解释源码？</a></p>
+<h2 id="4-没有字节码的本地方法如何执行">4. 没有字节码的本地方法如何执行？</h2>
+<p>上一节说到：Java 源代码会被编译为字节码，Java 源代码中的每一个方法都会被编译为一组 Java 虚拟机指令。因此我们使用 Go 语言实现的 Java 虚拟机只需要理解 Java 虚拟机指令集，不需要理解 Java 源代码，就能够执行 Java 代码。</p>
+<p>Java 类库主要用 Java 语言编写，一些无法用 Java 语言实现的方法则使用本地语言编写，这些方法叫作本地方法。 如果你使用 Go 语言编写 Java 虚拟机，Go 语言实现的方法就是一种本地方法。</p>
+<p>举一个例子，Object 拥有一个 hashCode 本地方法，定义如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">native</span> <span class="kt">int</span> <span class="nf">hashCode</span><span class="o">();</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>Java 使用者并不需要理解上述方法是如何实现的，因为大多数 Java 开发者并不被要求理解 Java 虚拟机的方方面面。但是我们现在是要编写一个 Java 虚拟机，该如何实现 Java 本地方法的执行逻辑呢？</p>
+<p>Java 本地方法并不是由 Java 源代码实现的，因此并没有字节码。对于此，我们需要解决两个问题：</p>
+<ol>
+<li>
+<p>本地方法由谁负责实现，如何实现？</p>
+<p>在这里，本地方法由 Java 虚拟机负责提供，Go 语言负责实现。</p>
+</li>
+<li>
+<p>本地方法如何执行？</p>
+<p>首先，我们需要将实现好的本地方法注册到本地方法表中。然后，在执行本地方法时，通过查表确定 Java 本地方法的具体 Go 语言实现。</p>
+</li>
+</ol>
+<p>下面具体展开。</p>
+<p><strong>（1）本地方法与本地方法表</strong></p>
+<ul>
+<li>
+<p>本地方法表实际上就是一个 hashmap，其设计成如下数据结构：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">registry</span> <span class="p">=</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="nx">NativeMethod</span><span class="p">{}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>key 为方法的完全限定名，包括类名、方法名以及方法描述符。例如上述 Object.hashCode 方法的 key 可以为 <code>java/lang/Object~hashCode~()I</code></p>
+</li>
+<li>
+<p>value 为 Go 语言实现的具体 hashCode，代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// public native int hashCode();
+</span><span class="c1">// ()I
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">hashCode</span><span class="p">(</span><span class="nx">frame</span> <span class="o">*</span><span class="nx">rtda</span><span class="p">.</span><span class="nx">Frame</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">this</span> <span class="o">:=</span> <span class="nx">frame</span><span class="p">.</span><span class="nf">LocalVars</span><span class="p">().</span><span class="nf">GetThis</span><span class="p">()</span>
+	<span class="nx">hash</span> <span class="o">:=</span> <span class="nb">int32</span><span class="p">(</span><span class="nb">uintptr</span><span class="p">(</span><span class="nx">unsafe</span><span class="p">.</span><span class="nf">Pointer</span><span class="p">(</span><span class="nx">this</span><span class="p">)))</span>
+	<span class="nx">frame</span><span class="p">.</span><span class="nf">OperandStack</span><span class="p">().</span><span class="nf">PushInt</span><span class="p">(</span><span class="nx">hash</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>这里 hashCode 实现地比较粗暴，就是返回 int32 的地址。这个 return 操作被直接简化为将 hashcode 放到操作数栈顶。</p>
+</li>
+<li>
+<p>最后，需要利用 Go 的 init 方法实现 hashCode 本地方法注册到本地方法表中：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">native</span><span class="p">.</span><span class="nf">Register</span><span class="p">(</span><span class="s">&#34;java/lang/Object&#34;</span><span class="p">,</span> <span class="s">&#34;hashCode&#34;</span><span class="p">,</span> <span class="s">&#34;()I&#34;</span><span class="p">,</span> <span class="nx">hashCode</span><span class="p">)</span>
+  <span class="c1">// 省略其他方法
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<p><strong>（2）本地方法的执行</strong></p>
+<p>本地方法的执行是一个查表过程，方法的 native 修饰符能够告知 Java 虚拟机这是一个本地方法，需要基于查表后执行本地方法，而不是基于字节码执行。我们需要用方法的完全限定名进行查表，如果找不到，则抛出 UnsatisfiedLinkError 异常，否则直接调用本地方法。</p>
+<h2 id="5-如何实现-java-异常机制">5. 如何实现 Java 异常机制？</h2>
+<p>异常处理是 Java 语言提供的一类重要特性，下面是一个例子：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">class</span> <span class="nc">main</span><span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">Exception</span><span class="o">(</span><span class="s">&#34;My Exception&#34;</span><span class="o">);</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">&#34;catch a Exception: %s&#34;</span><span class="o">,</span><span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>控制台会打印出如下内容：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">catch a Exception: My Exception
+</code></pre></td></tr></table>
+</div>
+</div><p>事实上，异常处理属于 Java 虚拟机中既重要，而又复杂的内容。</p>
+<p><strong>（1）异常的构造</strong></p>
+<p>Java 中的异常都继承于 java.lang.Throwable 类，其无参构造方法定义如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="nf">Throwable</span><span class="o">()</span> <span class="o">{</span>
+  <span class="n">fillInStackTrace</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>事实上，Throwable 类还有其他构造器，但是无一例外地都调用了 fillInStackTrace 方法。</p>
+<p>而 fillInStackTrace 方法则定义如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">synchronized</span> <span class="n">Throwable</span> <span class="nf">fillInStackTrace</span><span class="o">()</span> <span class="o">{</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">stackTrace</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">||</span>
+      <span class="n">backtrace</span> <span class="o">!=</span> <span class="kc">null</span> <span class="cm">/* Out of protocol state */</span> <span class="o">)</span> <span class="o">{</span>
+    <span class="n">fillInStackTrace</span><span class="o">(</span><span class="n">0</span><span class="o">);</span>
+    <span class="n">stackTrace</span> <span class="o">=</span> <span class="n">UNASSIGNED_STACK</span><span class="o">;</span>
+  <span class="o">}</span>
+  <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>fillInStackTrace 方法会主动调用 fillInStackTrace 本地方法，后者定义如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">private</span> <span class="kd">native</span> <span class="n">Throwable</span> <span class="nf">fillInStackTrace</span><span class="o">(</span><span class="kt">int</span> <span class="n">dummy</span><span class="o">);</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>fillInStackTrace 是一个本地方法，由 Java 虚拟机负责实现并提供。这是由于虚拟机方法调用栈的信息由 Java 虚拟机维护，Java 代码无权访问。</p>
+<p>正如本地方法章节所述，我们需要基于 Go 语言实现的 Java 虚拟机，提供 Go 语言编写的 fillInStackTrace 本地方法，为 Exception 的构造提供方法调用栈信息。</p>
+<p><strong>（2）异常的抛出</strong></p>
+<p><code>new Exception(&quot;My Exception&quot;)</code> Java 代码被 javac 编译为 athrow 指令，负责抛出一个异常。</p>
+<p><strong>（3）异常的处理</strong></p>
+<p>在 Java 语言中，异常的处理通过 try-catch 语句实现，参考 Java 虚拟机规范的 3.12 节中的一个例子，代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kt">void</span> <span class="nf">catchOne</span><span class="o">(){</span>
+  <span class="k">try</span><span class="o">{</span>
+    <span class="n">tryInOut</span><span class="o">();</span>
+  <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="n">TestExc</span> <span class="n">e</span><span class="o">){</span>
+    <span class="n">handleExc</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>上面的方法编译之后，产生下面的字节码：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">1	aload_0	//	把局部变量0（this）推入操作数栈
+2 invokevirtual	#4	//	调用tryInOut方法
+4	goto 13	//	如果try{}没有抛出异常，调到编号13，也就是直接return
+7	astore_1	//	否则，异常对象引用在操作数栈顶，把它弹出，并放入局部变量1
+8	aload_0	//	把this推入栈顶（将作为handleExec()方法的参数0）
+9	aload_1	//	把异常对象引用推入栈顶（将作为handleExc方法的参数1）
+10	invokevirtual	#5	//调用handleExc()方法
+13 	return	// 方法返回
+</code></pre></td></tr></table>
+</div>
+</div><p><strong>那么如果有异常抛出，goto 和 return 之间的指令是如何执行的呢？</strong></p>
+<p>答案是查找方法的异常处理表。异常处理表是 Code 属性的一部分，它记录了方法是否有能力处理某种异常。</p>
+<p>异常表的数据结构如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">u2</span> <span class="nx">exception_table_length</span><span class="p">;</span>
+<span class="p">{</span>
+  <span class="nx">u2</span> <span class="nx">start_pc</span><span class="p">;</span>
+  <span class="nx">u2</span> <span class="nx">end_pc</span><span class="p">;</span>
+  <span class="nx">u2</span> <span class="nx">handler_pc</span><span class="p">;</span>
+  <span class="nx">u2</span> <span class="nx">catch_type</span><span class="p">;</span>
+<span class="p">}</span> <span class="nx">exception_table</span><span class="p">[</span><span class="nx">exception_table_length</span><span class="p">];</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>正如同代码中 try{} 负责括号内的代码块抛出异常的处理，在异常表中，start_pc 和 end_pc 负责锁定一部分字节码，这部分字节码对应某个可能抛出异常的 try{} 代码块。catch_type 是个索引，通过它可以从运行时常量池中查到一个类符号引用，解析后的类是个异常类，假定这个类是 X。如果位于 start_pc 和 end_pc 之间的指令抛出异常 x，且 x 是 X（或者 X 的子类）的实例，handler_pc 就指出负责异常处理的 catch{} 块在哪里。</p>
+<p>异常处理表属于某一个方法，一个方法可以拥有零到多个异常处理表。如果方法 A 的异常处理表无法处理此异常，那么就会继续查询方法 A 调用者的异常处理表。这个过程会一直继续下去，直到找到某个异常处理项，或者到达 Java 虚拟机栈的底部，最终不能够被处理的异常将导致 Java 虚拟机停止运行。</p>
+<h2 id="6-总结">6. 总结</h2>
+<p>最后，我们再次总结一下背景中提到的几个问题的解决方案：</p>
+<ul>
+<li>
+<p>如何实现垃圾回收算法？</p>
+<p>《自己动手写Java虚拟机》选择利用 Go 语言运行时的垃圾回收机制避免了我们自己实现一个垃圾回收机制。</p>
+</li>
+<li>
+<p>Go 语言如何理解 Java 代码？</p>
+<p>Go 语言不需要理解 Java 代码，只需要理解 Java 字节码。Java 字节码类似于汇编，其与 Java 语言没有绑定关系。</p>
+</li>
+<li>
+<p>没有字节码的本地方法如何执行？</p>
+<p>本地方法由 Java 虚拟机实现，Java 虚拟机在初始化时，就会负责将本地方法实现注册到本地方法表中，然后通过查表的方式来执行没有 Java 源代码实现的本地方法。这个过程类似于回调。</p>
+</li>
+<li>
+<p>如何实现 Java 异常机制？</p>
+<p>基于 try-catch 机制能够在字节码上注册异常处理表，异常处理表属于某一个方法。当抛出异常时，通过查询异常处理表能够得知该表管理的代码块范围、能够管理的异常类型。如果该方法的异常处理表无法处理异常，则会继续查询其调用方法的异常处理表是否能够处理该类型的异常，这个过程直到 Java 虚拟机栈的底部。最终不能够被处理的异常将导致 Java 虚拟机停止运行。</p>
+</li>
+</ul>
+
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/java-%E8%99%9A%E6%8B%9F%E6%9C%BA/">Java 虚拟机</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/widget/timingwheel2/">
+            <span class="next-text nav-default">一个开源的时间轮算法介绍</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+
+
+      <h3>转载申请</h3>
+      <a rel=license href=https://creativecommons.org/licenses/by/4.0>
+        <img alt=知识共享许可协议 style=border-width:0 src=../../static/creative-commons.png>
+      </a>
+      <br>本作品采用
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/ target="_blank" style="text-decoration:underline;" >
+      知识共享署名 4.0 国际许可协议</a>
+      进行许可，转载时请注明作者姓名以及原文链接，图片在使用时请保留全部内容，可适当缩放并在引用处附上图片所在的文章链接。
+
+      
+    </footer>
+  </article>
+        </div>
+        <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '2021-10-24 17:46:05 \u002b0800 CST',
+        title: '《自己动手写Java虚拟机》- 读后摘要',
+        clientID: 'b8e9909664fb69930809',
+        clientSecret: '847d9069c9532ab260721afb9f036cdb8f52aec4',
+        repo: 'Spongecaptain.github.io',
+        owner: 'Spongecaptain',
+        admin: ['Spongecaptain'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a></noscript>
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:wjjiang19@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/spongecaptain" class="iconfont icon-github" title="github"></a>
+  <a href="https://spongecaptain.cool/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2021
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Spongecaptain</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

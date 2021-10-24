@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Sat, 28 Aug 2021 17:50:41 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 24 Oct 2021 17:46:05 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>《自己动手写Java虚拟机》- 读后摘要</title>
+      <link>https://spongecaptain.cool/post/java/implementjvmbygolang/</link>
+      <pubDate>Sun, 24 Oct 2021 17:46:05 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/java/implementjvmbygolang/</guid>
+      <description>1. 背景介绍 《自己动手写Java虚拟机》一书介绍了如何基于 Go 语言来编写一个 Java 虚拟机。该书对于想通过实践了解 Java 字节码格式、Java 虚拟机实现思路</description>
+    </item>
+    
     <item>
       <title>一个开源的时间轮算法介绍</title>
       <link>https://spongecaptain.cool/post/widget/timingwheel2/</link>
