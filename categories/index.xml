@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <copyright>Spongecaptain</copyright>
-    <lastBuildDate>Sun, 24 Oct 2021 17:46:05 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 14 Jan 2022 11:58:07 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>设计模式</title>
+      <link>https://spongecaptain.cool/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Fri, 14 Jan 2022 11:58:07 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Java 虚拟机</title>
       <link>https://spongecaptain.cool/categories/java-%E8%99%9A%E6%8B%9F%E6%9C%BA/</link>
@@ -275,15 +284,6 @@
       <pubDate>Wed, 22 Jul 2020 21:03:45 +0800</pubDate>
       
       <guid>https://spongecaptain.cool/categories/cglib/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>设计模式</title>
-      <link>https://spongecaptain.cool/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
-      <pubDate>Wed, 22 Jul 2020 20:56:48 +0800</pubDate>
-      
-      <guid>https://spongecaptain.cool/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
       <description></description>
     </item>
     
