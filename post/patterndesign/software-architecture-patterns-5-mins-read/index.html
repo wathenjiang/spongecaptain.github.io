@@ -49,7 +49,7 @@
 <meta itemprop="name" content="五分钟理解软件结构模式（译文）">
 <meta itemprop="description" content="说明：本文翻译于：Software Architecture Patterns: 5 minute read 当一个人深入软件工程的世界时，总有一天他需要学习软件架构模式的基础知识。当我刚开始编码的时候，我"><meta itemprop="datePublished" content="2022-01-14T11:58:07&#43;08:00" />
 <meta itemprop="dateModified" content="2022-01-14T11:58:07&#43;08:00" />
-<meta itemprop="wordCount" content="2054">
+<meta itemprop="wordCount" content="2044">
 <meta itemprop="keywords" content="设计模式," /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="五分钟理解软件结构模式（译文）"/>
 <meta name="twitter:description" content="说明：本文翻译于：Software Architecture Patterns: 5 minute read 当一个人深入软件工程的世界时，总有一天他需要学习软件架构模式的基础知识。当我刚开始编码的时候，我"/>
@@ -164,21 +164,21 @@
 </ul>
 <h2 id="1-分层架构-layered-architecture">1. 分层架构-Layered architecture</h2>
 <p>它是单体应用最常见的架构。该模式的基本思想是将应用程序的逻辑划分为若干层，每层都封装了特定的角色。例如，持久层-Persistence layer 将负责你的应用程序与数据库引擎的通信。</p>
-<p>![image-20220114102747754](../../../images/img_patternDesign/Layered architecture.png)</p>
+<p><img src="../../../images/img_patternDesign/Layered_architecture.png" alt="image-20220114102747754"></p>
 <blockquote>
 <p>图1.分层架构模式（<a href="https://www.oreilly.com/content/software-architecture-patterns/"><em>link</em></a> <em>to the original source of the picture</em>）</p>
 </blockquote>
 <p>补充说明：在 7 种面向对象的设计原则中，单一职责原则建议一个类只负责一个功能领域中的相应职责。或者可以定义为：就一个类而言，应该只有一个引起它变化的原因。实际上分层架构的背后，符合了单一职责原则。</p>
 <h2 id="2-事件驱动架构-event-driven-architecture">2. 事件驱动架构-Event-driven architecture</h2>
 <p>这种模式背后的想法是<strong>将应用逻辑解耦为单一用途的事件处理组件，这些组件异步地接收和处理事件</strong>。这种模式是流行的分布式异步架构模式之一，以高可扩展性和适应性而闻名。</p>
-<p>![image-20220114103004965](../../../images/img_patternDesign/Event-driven architecture.png)</p>
+<p><img src="../../../images/img_patternDesign/Event-driven_architecture.png" alt="image-20220114103004965"></p>
 <blockquote>
 <p>图2.事件驱动架构（<a href="https://www.oreilly.com/content/software-architecture-patterns/"><em>link</em></a> <em>to the original source of the picture</em>）</p>
 </blockquote>
 <p>补充说明：一个注明的事件驱动 Java 应用网络框架为 <a href="https://github.com/netty/netty">Netty</a>。</p>
 <h2 id="3-微内核框架-microkernel-architecture">3. 微内核框架-Microkernel Architecture</h2>
 <p>微内核架构，也被称为插件架构，是有两个主要组成部分的设计模式：一个核心系统和插件模块（或扩展）。一个很好的例子是网络浏览器（核心系统），在那里你可以安装无尽的扩展（或插件）。</p>
-<p>![image-20220114103458538](../../../images/img_patternDesign/Microkernel Architecture.png)</p>
+<p><img src="../../../images/img_patternDesign/Microkernel_Architecture.png" alt="image-20220114103458538"></p>
 <blockquote>
 <p>图3.微内核框架（<a href="https://www.oreilly.com/content/software-architecture-patterns/"><em>link</em></a> <em>to the original source of the picture</em>）</p>
 </blockquote>
@@ -190,14 +190,14 @@
 <p>在原作者的项目中，所有插件被 Core System 统一对待，因此，插件之间的通信 Core System 并不负责，插件通信由插件内部的业务逻辑实现。例如你可以将一个插件 DB 作为插件 Service 构造器参数，通过组合的方式，插件 Service 与插件 DB 进行通信（业务逻辑依赖于 service）。但是，更好的做法是 Core System 提供一套插件通信机制，插件与插件之间不直接通信，插件间通信通过 Core System 来完成，<strong>Core System 实现了面向接口的插件间通信</strong>。例如，第一步，实现不同类型的插件接口，插件接口符合职责单一原则，例如 ServicePlugin 接口、DbPlugin 接口。插件之间的通信交给 Core System 来完成，我们在接口层面实现 ServicePlugin 接口依赖 DbPlugin 接口的关系，而不是交给具体的插件实现来通信。</p>
 <h2 id="4-微服务架构-microservices-architecture">4. 微服务架构-Microservices Architecture</h2>
 <p>微服务架构由<strong>单独部署的服务组成，每个服务都有理想的单一责任</strong>。这些服务是相互独立的，如果一个服务出现故障，其他服务不会停止运行。</p>
-<p>![image-20220114103723571](../../../images/img_patternDesign/Microservices Architecture.png)</p>
+<p><img src="../../../images/img_patternDesign/Microservices_Architecture.png" alt="image-20220114103723571"></p>
 <blockquote>
 <p>图4.微服务架构（<a href="https://www.oreilly.com/content/software-architecture-patterns/"><em>link</em></a> <em>to the original source of the picture</em>）</p>
 </blockquote>
 <h2 id="5-基于空间的架构-space-based-architecture">5. 基于空间的架构-Space-Based Architecture</h2>
 <p>基于空间的模式背后的主要想法是分布式共享内存，以缓解经常发生在数据库层面的问题。其假设是，通过使用内存数据处理大部分操作，我们可以避免在数据库中进行额外的操作，从而避免可能在将来出现的一些问题（例如，如果你的用户活动数据实体发生了变化，你不需要改变一堆代码来持久化和从数据库中检索该数据）。</p>
 <p>基本的方法是将应用程序分离成处理单元（可以根据需求自动扩大和缩小），数据将在这些单元之间复制和处理，而不需要持久化到中央数据库（尽管在系统故障的情况下会有本地存储）。</p>
-<p>![image-20220114103956005](../../../images/img_patternDesign/Space-Based Architecture.png)</p>
+<p><img src="../../../images/img_patternDesign/Space-Based_Architecture.png" alt="image-20220114103956005"></p>
 <blockquote>
 <p>图5.基于空间的架构（<a href="https://www.oreilly.com/content/software-architecture-patterns/"><em>link</em></a> <em>to the original source of the picture</em>）</p>
 </blockquote>
