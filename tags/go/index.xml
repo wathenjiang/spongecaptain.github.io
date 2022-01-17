@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>go on Spongecaptain 的个人技术博客</title>
+    <link>https://spongecaptain.cool/tags/go/</link>
+    <description>Recent content in go on Spongecaptain 的个人技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>Spongecaptain</copyright>
+    <lastBuildDate>Mon, 17 Jan 2022 14:53:27 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Go 中的变量命名</title>
+      <link>https://spongecaptain.cool/post/go/names/</link>
+      <pubDate>Mon, 17 Jan 2022 14:53:27 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/go/names/</guid>
+      <description>来自 Google 的 Andrew Gerrand 曾经关于 Go 中的参数命名规范进行了分享，slides 为 https://talks.golang.org/2014/names.slide 命名习惯很重要 良好的可读性是高质量代码的要求之一 良好的命名习惯有助于提高代</description>
+    </item>
+    
+  </channel>
+</rss>
