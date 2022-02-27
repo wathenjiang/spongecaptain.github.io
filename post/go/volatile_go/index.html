@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>go 没有 volatile 关键字 - Spongecaptain 的个人技术博客</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Spongecaptain" /><meta name="description" content="Java/C&#43;&#43; 程序员们在写 Go 程序时，也许会有如下的疑问，为什么 Go 没有 volatile 关键字。 本文会试图帮助我们理解如下两个问题： Java 中的 volatile 有什么作用 Go 为什么没有 vola" /><meta name="keywords" content="go, volatile" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.82.0 with theme even" />
+
+
+<link rel="canonical" href="https://spongecaptain.cool/post/go/volatile_go/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+<link href="/sass/main.min.20eaaf634d4dd8fdd9ee27392a8a8d7542264cd21577a22499a924b5f4a112ef.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="go 没有 volatile 关键字" />
+<meta property="og:description" content="Java/C&#43;&#43; 程序员们在写 Go 程序时，也许会有如下的疑问，为什么 Go 没有 volatile 关键字。 本文会试图帮助我们理解如下两个问题： Java 中的 volatile 有什么作用 Go 为什么没有 vola" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://spongecaptain.cool/post/go/volatile_go/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-02-27T15:20:54&#43;08:00" />
+<meta property="article:modified_time" content="2022-02-27T15:20:54&#43;08:00" />
+
+<meta itemprop="name" content="go 没有 volatile 关键字">
+<meta itemprop="description" content="Java/C&#43;&#43; 程序员们在写 Go 程序时，也许会有如下的疑问，为什么 Go 没有 volatile 关键字。 本文会试图帮助我们理解如下两个问题： Java 中的 volatile 有什么作用 Go 为什么没有 vola"><meta itemprop="datePublished" content="2022-02-27T15:20:54&#43;08:00" />
+<meta itemprop="dateModified" content="2022-02-27T15:20:54&#43;08:00" />
+<meta itemprop="wordCount" content="3287">
+<meta itemprop="keywords" content="go,volatile," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="go 没有 volatile 关键字"/>
+<meta name="twitter:description" content="Java/C&#43;&#43; 程序员们在写 Go 程序时，也许会有如下的疑问，为什么 Go 没有 volatile 关键字。 本文会试图帮助我们理解如下两个问题： Java 中的 volatile 有什么作用 Go 为什么没有 vola"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body class = body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/post/">
+        <li class="mobile-menu-item">归档</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">分类</li>
+      </a><a href="/about/index.html">
+        <li class="mobile-menu-item">关于</li>
+      </a><a href="https://spongecaptain.cool/SimpleClearFileIO/">
+        <li class="mobile-menu-item">文件I/O简明概述</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">Spongecaptain&#39;s Blog</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/post/">归档</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">分类</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/about/index.html">关于</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="https://spongecaptain.cool/SimpleClearFileIO/">文件I/O简明概述</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">go 没有 volatile 关键字</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2022-02-27 </span>
+        <div class="post-category">
+            <a href="/categories/go/"> go </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+  <ul>
+    <li><a href="#1-java-中的-volatile">1. Java 中的 volatile</a>
+      <ul>
+        <li><a href="#11-volatile-的可见性">1.1 volatile 的可见性</a></li>
+        <li><a href="#12-volatile-的有序性">1.2 volatile 的有序性</a></li>
+      </ul>
+    </li>
+    <li><a href="#2-go-没有-volatile">2. Go 没有 volatile</a>
+      <ul>
+        <li><a href="#21-并发安全问题示例">2.1 并发安全问题示例</a></li>
+        <li><a href="#22-利用-mutex-解决-go-没有-volatile">2.2 利用 mutex 解决 Go 没有 volatile</a></li>
+        <li><a href="#23-利用-channel-解决-go-没有-volatile">2.3 利用 channel 解决 Go 没有 volatile</a></li>
+        <li><a href="#24-利用-atomic-解决-go-没有-volatile">2.4 利用 atomic 解决 Go 没有 volatile</a></li>
+      </ul>
+    </li>
+    <li><a href="#3-总结">3. 总结</a></li>
+    <li><a href="#referece">REFERECE</a></li>
+  </ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      <p>Java/C++ 程序员们在写 Go 程序时，也许会有如下的疑问，为什么 Go 没有 volatile 关键字。</p>
+<p>本文会试图帮助我们理解如下两个问题：</p>
+<ol>
+<li>Java 中的 volatile 有什么作用</li>
+<li>Go 为什么没有 volatile，如何在 Go 中等效实现 Java 中 volatile 的作用</li>
+</ol>
+<h2 id="1-java-中的-volatile">1. Java 中的 volatile</h2>
+<p>Java 中的 volatile 用于确保：</p>
+<ul>
+<li><strong>可见性</strong>：当多个线程访问同一个变量时，一个线程修改了这个变量的值，其他线程能够立即看得到修改的值。</li>
+<li><strong>有序性</strong>：编译器优化、JIT 优化、CPU 优化都可能导致指令重排序，以提高执行效率。volatile 用于禁止对 volatile 字段操作的前后指令重排序。</li>
+</ul>
+<p>在 Java 中 synchronized 关键字能够提供 volatile 提供的并发安全语义同时，提供更好的并发安全能力，但是 synchronized 太重了，没有 volatile 轻量，性能差。</p>
+<h3 id="11-volatile-的可见性">1.1 volatile 的可见性</h3>
+<p>下面是一段代码，由于字段 flag 没有添加 volatile，flag 字段在子线程修改后的值对 main 线程不可见。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Visibility</span><span class="o">{</span>
+       <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Tag</span> <span class="n">tag</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Tag</span><span class="o">();</span>
+
+        <span class="k">new</span> <span class="n">Thread</span><span class="o">(()-&gt;{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="c1">// sleep is necessary
+</span><span class="c1"></span>                <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="n">1000</span><span class="o">);</span>
+                <span class="n">tag</span><span class="o">.</span><span class="na">flag</span> <span class="o">=</span> <span class="o">-</span><span class="n">1</span><span class="o">;</span>
+                <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;flag was updated to -1&#34;</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}).</span><span class="na">start</span><span class="o">();</span>
+        <span class="c1">// main thread check flag in loop
+</span><span class="c1"></span>        <span class="k">while</span><span class="o">(</span><span class="n">tag</span><span class="o">.</span><span class="na">flag</span> <span class="o">!=-</span><span class="n">1</span><span class="o">){</span>
+
+        <span class="o">}</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;main thread read flag is -1 successful&#34;</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Tag</span><span class="o">{</span>
+        <span class="c1">// volatile int flag = 0;
+</span><span class="c1"></span>        <span class="kt">int</span> <span class="n">flag</span> <span class="o">=</span><span class="n">0</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>运行代码后，在控制台会打印出：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">./run.sh
+flag was updated to -1
+</code></pre></td></tr></table>
+</div>
+</div><p>但是 main 线程无法得到退出，这说明 main 线程始终在 <code>while(tag.flag !=-1)</code> 的循环检测中，这也意味着 main 线程并没能读取到 flag 的最新值。</p>
+<p>如果我们给 flag 字段添加 volatile 修饰，再次运行代码，那么控制台会打印出：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">./run.sh
+main thread read flag is -1 successful
+flag was updated to -1
+</code></pre></td></tr></table>
+</div>
+</div><p>并且 main 线程得到了退出。</p>
+<p>这就证明了 volatile 修饰符在 Java 线程间起到的可见性作用。</p>
+<h3 id="12-volatile-的有序性">1.2 volatile 的有序性</h3>
+<p>处理器为了提高程序运行效率，可能会对输入代码进行优化，它不保证程序中各个语句的执行先后顺序同代码中的顺序一致，但是它会保证程序最终执行结果和代码顺序执行的结果是一致的。</p>
+<p><font color='red'>但是 CPU 指令重排序仅仅会考虑单线程执行模型，而不会考虑多线程执行模型。</font>即不考虑并发安全性。</p>
+<p>volatile 能够确保一定的有序性，例如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//这里 x、y 为非 volatile 变量
+</span><span class="c1">//而 flag 为 volatile 变量
+</span><span class="c1"></span><span class="n">x</span> <span class="o">=</span> <span class="n">2</span><span class="o">;</span>         <span class="c1">//语句1
+</span><span class="c1"></span><span class="n">y</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>         <span class="c1">//语句2
+</span><span class="c1"></span><span class="n">flag</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>   <span class="c1">//语句3
+</span><span class="c1"></span><span class="n">x</span> <span class="o">=</span> <span class="n">4</span><span class="o">;</span>         <span class="c1">//语句4
+</span><span class="c1"></span><span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="n">1</span><span class="o">;</span>        <span class="c1">//语句5
+</span></code></pre></td></tr></table>
+</div>
+</div><p>由于 flag 是 volatile 变量，确保了：指令 1、2 一定在语句 3 之前执行，语句 4、5 一定在语句 3 后面执行。但是 volatile 并不会确保语句 1、2 之间不进行指令重排序，语句 4、5 之间不进行指令重排序。</p>
+<p>理解指令重排序的例子是 doule check lock（DCL）单例模式，如下所示：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Student</span> <span class="o">{</span>
+      <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+      <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+      <span class="c1">// private constructor
+</span><span class="c1"></span>      <span class="kd">private</span> <span class="nf">Student</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">,</span> <span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+          <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+          <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+      <span class="o">}</span>
+      <span class="c1">// use volatile
+</span><span class="c1"></span>      <span class="kd">private</span> <span class="kd">static</span> <span class="kd">volatile</span> <span class="n">Student</span> <span class="n">student</span><span class="o">;</span>
+      <span class="c1">//double check null
+</span><span class="c1"></span>      <span class="kd">public</span> <span class="kd">static</span> <span class="n">Student</span> <span class="nf">getStudent</span><span class="o">()</span> <span class="o">{</span>
+          <span class="k">if</span> <span class="o">(</span><span class="n">student</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+              <span class="kd">synchronized</span> <span class="o">(</span><span class="n">Student</span><span class="o">.</span><span class="na">class</span><span class="o">)</span> <span class="o">{</span>
+                  <span class="k">if</span> <span class="o">(</span><span class="n">student</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+                      <span class="n">student</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Student</span><span class="o">(</span><span class="s">&#34;hello world&#34;</span><span class="o">,</span><span class="n">12</span><span class="o">);</span>
+                  <span class="o">}</span>
+              <span class="o">}</span>
+          <span class="o">}</span>
+          <span class="k">return</span> <span class="n">student</span><span class="o">;</span>
+      <span class="o">}</span>
+      <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+          <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+      <span class="o">}</span>
+      <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getAge</span><span class="o">()</span> <span class="o">{</span>
+          <span class="k">return</span> <span class="n">age</span><span class="o">;</span>
+      <span class="o">}</span>
+  <span class="o">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>单例模式通常会要求单例字段被 volatile 修饰，这是因为 new 一个实例实际上分为三步非原子操作来完成：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">memory=allocate(); //1：分配内存空间
+ctorInstance();   //2:初始化对象
+singleton=memory; //3:设置singleton指向刚排序的内存空间
+</code></pre></td></tr></table>
+</div>
+</div><p>CPU 会对上述三个操作进行指令重排序：</p>
+<ul>
+<li>内存分配一定要第一步执行，否则会影响语义，因此 CPU 不会对其进行指令重排；</li>
+<li>初始化对象以及设置 singleton 指向刚申请的内存空间可能会被指令重排，因为在单线程模型下这两步即使倒过来做，也没有影响。</li>
+</ul>
+<p>如果单例字段不使用 volatile 修饰，那么在并发环境下就会遇到这样的问题：线程 1 先给 student 赋值上没有初始化完成的 Student 类实例。线程 2 通过单例方法得到了该实例，在调用相关方法时却发现字段尚未初始化，最终抛出了异常。</p>
+<p><strong>使用 volatile 修饰单例字段就能够避免上述并发安全问题，为什么？</strong></p>
+<p>这是因为 new 操作对应的第三步实际上是给 volatile 字段赋值，它会要求第二步必须在其之前就已经运行完毕，这就能够避免因为指令重排序而导致的单例提前暴露。</p>
+<h2 id="2-go-没有-volatile">2. Go 没有 volatile</h2>
+<h3 id="21-并发安全问题示例">2.1 并发安全问题示例</h3>
+<p>Go 没有 volatile 关键字，这有可能导致多线程并发安全问题，下面的代码是一个示例。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">flag</span> <span class="kt">int</span> <span class="p">=</span> <span class="mi">0</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+		<span class="nx">flag</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;flag was updated to -1&#34;</span><span class="p">)</span>
+	<span class="p">}()</span>
+	<span class="k">for</span> <span class="nx">flag</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="p">{</span>
+	<span class="p">}</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;main goroutine read flag is -1 successful&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+
+</code></pre></td></tr></table>
+</div>
+</div><p>运行命令：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">go run -race main.go
+</code></pre></td></tr></table>
+</div>
+</div><p>其中 <code>-race</code> 用于开启多线程并发安全问题检测。输出如下内容：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">==================
+WARNING: DATA RACE
+Write at 0x0001005615e0 by goroutine 7:
+  main.main.func1()
+      /Users/wjjiang/goproject/volatile_javago/go/race/main.go:13 +0x44
+
+Previous read at 0x0001005615e0 by main goroutine:
+  main.main()
+      /Users/wjjiang/goproject/volatile_javago/go/race/main.go:16 +0x48
+
+Goroutine 7 (running) created at:
+  main.main()
+      /Users/wjjiang/goproject/volatile_javago/go/race/main.go:11 +0x38
+==================
+flag was updated to -1
+main goroutine read flag is -1 successful
+Found 1 data race(s)
+exit status 66
+</code></pre></td></tr></table>
+</div>
+</div><p>上述提示意味着多线程间字段更新不可见导致的多线程并发安全问题。</p>
+<p>如何解决 Go 中没有 volatile 的问题？</p>
+<p>有 3 个方案：</p>
+<ol>
+<li>使用锁来实现同步，这类似于 Java 中的 synchronized 关键字</li>
+<li>使用 channel，Go 的基本设计思想是 <code>&quot;Do not communicate by sharing memory; instead, share memory by communicating.&quot;</code></li>
+<li>使用原子操作解决 volatile 的可见性</li>
+</ol>
+<h3 id="22-利用-mutex-解决-go-没有-volatile">2.2 利用 mutex 解决 Go 没有 volatile</h3>
+<p>与 Java 相同，Go 也能利用锁来实现多线程间的同步，解决线程间的可见性问题。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">flag</span> <span class="kt">int</span> <span class="p">=</span> <span class="mi">0</span>
+<span class="kd">var</span> <span class="nx">lock</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+		<span class="nx">lock</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+		<span class="k">defer</span> <span class="nx">lock</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+		<span class="nx">flag</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;flag was updated to -1&#34;</span><span class="p">)</span>
+	<span class="p">}()</span>
+	<span class="k">for</span> <span class="p">{</span>
+		<span class="nx">lock</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+		<span class="k">if</span> <span class="nx">flag</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="p">{</span>
+			<span class="k">break</span>
+		<span class="p">}</span>
+		<span class="nx">lock</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+	<span class="p">}</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;main goroutine read flag is -1 successful&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>运行如下命令：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">go run -race main.go
+</code></pre></td></tr></table>
+</div>
+</div><p>控制台输出：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">flag was updated to -1
+main goroutine read flag is -1 successful
+</code></pre></td></tr></table>
+</div>
+</div><p>可见，我们利用 sync.Mutex 提供的互斥锁解决了 Go 没有 volatile 导致的字段不可见问题。</p>
+<h3 id="23-利用-channel-解决-go-没有-volatile">2.3 利用 channel 解决 Go 没有 volatile</h3>
+<p>Go 的基本设计思想是 <code>&quot;Do not communicate by sharing memory; instead, share memory by communicating.&quot;</code></p>
+<p>换言之，Go 并不推荐我们在内存中使用共享变量 flag 的形式来实现通信，而是利用 channel 来实现通信。在这个具体问题上，之前：</p>
+<ul>
+<li>child goroutine 负责写 flag 字段</li>
+<li>main goroutine 负责通过读取 flag 字段被修改为 -1 后，继续执行后续的代码逻辑</li>
+</ul>
+<p>使用 channel：</p>
+<ul>
+<li>child goroutine 负责向 channel 写一个 int 消息</li>
+<li>main goroutine 负责从 channel 中读取一个 int 消息后，继续执行后续的代码逻辑</li>
+</ul>
+<p>代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="c1">// var flag int = 0
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">c</span> <span class="kd">chan</span> <span class="kt">int</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+		<span class="nx">c</span> <span class="o">&lt;-</span> <span class="o">-</span><span class="mi">1</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;child goroutine send to channel a -1&#34;</span><span class="p">)</span>
+	<span class="p">}()</span>
+	<span class="o">&lt;-</span><span class="nx">c</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;main goroutine read from channel with a -1&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>运行命令：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">go run -race main.go
+</code></pre></td></tr></table>
+</div>
+</div><p>控制台输出：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">main goroutine read from channel with a -1
+child goroutine send to channel a -1
+</code></pre></td></tr></table>
+</div>
+</div><p>channel 也解决了 Go 中没有 volatile 的问题。</p>
+<p>注意事项：channel 只是 Go runtime 提供的编写多线程并发代码的设计模式，其内部实现还是基于锁。换言之，Go runtime 内部还是以共享内存+锁的形式实现并发安全，但是 Go 代码使用 channel 避免了手写共享内存的代码。因此从性能上看，使用 channel 和使用 sync.Mutex 不会有太大的区别。</p>
+<h3 id="24-利用-atomic-解决-go-没有-volatile">2.4 利用 atomic 解决 Go 没有 volatile</h3>
+<p>使用 sync/atomic 提供的原子读写能力，也能够解决 Go 没有 volatile 的问题，代码如下：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync/atomic&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">flag</span> <span class="kt">int64</span> <span class="p">=</span> <span class="mi">0</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+		<span class="c1">// flag = -1
+</span><span class="c1"></span>		<span class="nx">atomic</span><span class="p">.</span><span class="nf">StoreInt64</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">flag</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;flag was updated to -1&#34;</span><span class="p">)</span>
+	<span class="p">}()</span>
+	<span class="c1">// for flag != -1
+</span><span class="c1"></span>	<span class="k">for</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">LoadInt64</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">flag</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="p">{</span>
+
+	<span class="p">}</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;main goroutine read flag is -1 successful&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>运行命令：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">go run -race main.go
+</code></pre></td></tr></table>
+</div>
+</div><p>控制台输出：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">flag was updated to -1
+main goroutine read flag is -1 successful
+</code></pre></td></tr></table>
+</div>
+</div><p>可见，利用原子操作能够解决 Go 没有 volatile 的问题。从性能角度上看，原子操作的性能要快于基于 sync.Mutex 以及 channel 这两个解决办法。但是从编程难度上看，锁以及 channel 比使用 sync/atomic 更简单、更不易出错。</p>
+<h2 id="3-总结">3. 总结</h2>
+<p>Java 中的 volatile 关键字用于提供可见性以及有序性两个语义。</p>
+<p>Go 中没有 Java 的 volatile 关键字，这是因为 volatile 服务于共享内存，而 Go 的设计者推崇 Do not communicate by sharing memory; instead, share memory by communicating。换言之，如果没有共享内存，只有通信，那么就不需要 volatile 关键字了。</p>
+<p>Go 利用如下方案能够实现 volatile 提供的可见性能力：</p>
+<ul>
+<li>sync.Mutex 结构体</li>
+<li>channel 机制</li>
+<li>sync/atomic 包</li>
+</ul>
+<p>Go 比 Java 以及 C++ 更追求优雅&amp;简单地编写多线程并发程序，利用 <code>go</code> 关键字简单快速地启动一个协程就是最大的特点。因此，在大多数应用常见下，推荐使用 channel 机制来避免多线程之间共享内存。</p>
+<p>本文所有涉及的代码都在如下开源项目进行了开源：https://github.com/spongecaptain/volatile_go</p>
+<p>其中：</p>
+<ul>
+<li>1.1 节：<a href="https://github.com/spongecaptain/volatile_go/tree/main/java/visibility">https://github.com/spongecaptain/volatile_go/tree/main/java/visibility</a></li>
+<li>1.2 节：<a href="https://github.com/spongecaptain/volatile_go/tree/main/java/order">https://github.com/spongecaptain/volatile_go/tree/main/java/order</a></li>
+<li>2.1 节：<a href="https://github.com/spongecaptain/volatile_go/tree/main/go/race">https://github.com/spongecaptain/volatile_go/tree/main/go/race</a></li>
+<li>2.2 节：<a href="https://github.com/spongecaptain/volatile_go/tree/main/go/lock">https://github.com/spongecaptain/volatile_go/tree/main/go/lock</a></li>
+<li>2.3 节：<a href="https://github.com/spongecaptain/volatile_go/tree/main/go/channel">https://github.com/spongecaptain/volatile_go/tree/main/go/channel</a></li>
+<li>2.4 节：<a href="https://github.com/spongecaptain/volatile_go/tree/main/go/atomic">https://github.com/spongecaptain/volatile_go/tree/main/go/atomic</a></li>
+</ul>
+<h2 id="referece">REFERECE</h2>
+<ul>
+<li><a href="https://stackoverflow.com/questions/18491032/does-go-support-volatile-non-volatile-variables">Does Go support volatile / non-volatile variables?</a></li>
+</ul>
+
+    </div>
+
+    
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/go/">go</a>
+          <a href="/tags/volatile/">volatile</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/go/names/">
+            <span class="next-text nav-default">Go 中的变量命名</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+
+
+      <h3>转载申请</h3>
+      <a rel=license href=https://creativecommons.org/licenses/by/4.0>
+        <img alt=知识共享许可协议 style=border-width:0 src=../../static/creative-commons.png>
+      </a>
+      <br>本作品采用
+      <a rel=license href=http://creativecommons.org/licenses/by/4.0/ target="_blank" style="text-decoration:underline;" >
+      知识共享署名 4.0 国际许可协议</a>
+      进行许可，转载时请注明作者姓名以及原文链接，图片在使用时请保留全部内容，可适当缩放并在引用处附上图片所在的文章链接。
+
+      
+    </footer>
+  </article>
+        </div>
+        <div id="gitalk-container"></div>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      var gitalk = new Gitalk({
+        id: '2022-02-27 15:20:54 \u002b0800 CST',
+        title: 'go 没有 volatile 关键字',
+        clientID: 'b8e9909664fb69930809',
+        clientSecret: '847d9069c9532ab260721afb9f036cdb8f52aec4',
+        repo: 'Spongecaptain.github.io',
+        owner: 'Spongecaptain',
+        admin: ['Spongecaptain'],
+        body: decodeURI(location.href)
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://github.com/gitalk/gitalk">comments powered by gitalk.</a></noscript>
+
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="mailto:wjjiang19@gmail.com" class="iconfont icon-email" title="email"></a>
+      <a href="https://github.com/spongecaptain" class="iconfont icon-github" title="github"></a>
+  <a href="https://spongecaptain.cool/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2019 - 
+    2022
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Spongecaptain</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+
+
+
+<script type="text/javascript" src="/js/main.min.2517c0eb67172a0bae917de4af59b10ca2531411a009d4c0b82f5685259e5771.js"></script>
+
+
+
+
+
+
+
+
+</body>
+</html>

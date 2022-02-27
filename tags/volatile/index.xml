@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>volatile on Spongecaptain 的个人技术博客</title>
+    <link>https://spongecaptain.cool/tags/volatile/</link>
+    <description>Recent content in volatile on Spongecaptain 的个人技术博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <copyright>Spongecaptain</copyright>
+    <lastBuildDate>Sun, 27 Feb 2022 15:20:54 +0800</lastBuildDate><atom:link href="https://spongecaptain.cool/tags/volatile/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>go 没有 volatile 关键字</title>
+      <link>https://spongecaptain.cool/post/go/volatile_go/</link>
+      <pubDate>Sun, 27 Feb 2022 15:20:54 +0800</pubDate>
+      
+      <guid>https://spongecaptain.cool/post/go/volatile_go/</guid>
+      <description>Java/C++ 程序员们在写 Go 程序时，也许会有如下的疑问，为什么 Go 没有 volatile 关键字。 本文会试图帮助我们理解如下两个问题： Java 中的 volatile 有什么作用 Go 为什么没有 vola</description>
+    </item>
+    
+  </channel>
+</rss>
